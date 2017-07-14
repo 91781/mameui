@@ -82,29 +82,29 @@ void menu_tape_control::populate(float &customtop, float &custombottom)
 			state = current_device()->get_state();
 			item_append(
 						(state & CASSETTE_MASK_UISTATE) == CASSETTE_STOPPED
-						?   _("stopped")
+						? _LANGUAGE_CORE_TRANS_("stopped")
 						:   ((state & CASSETTE_MASK_UISTATE) == CASSETTE_PLAY
-								? ((state & CASSETTE_MASK_MOTOR) == CASSETTE_MOTOR_ENABLED ? _("playing") : _("(playing)"))
-								: ((state & CASSETTE_MASK_MOTOR) == CASSETTE_MOTOR_ENABLED ? _("recording") : _("(recording)"))
+								? ((state & CASSETTE_MASK_MOTOR) == CASSETTE_MOTOR_ENABLED ? _LANGUAGE_CORE_TRANS_("playing") : _LANGUAGE_CORE_TRANS_("(playing)"))
+								: ((state & CASSETTE_MASK_MOTOR) == CASSETTE_MOTOR_ENABLED ? _LANGUAGE_CORE_TRANS_("recording") : _LANGUAGE_CORE_TRANS_("(recording)"))
 								),
 								timepos.c_str(),
 						tapeflags,
 						TAPECMD_SLIDER);
 
 			// pause or stop
-			item_append(_("Pause/Stop"), "", 0, TAPECMD_STOP);
+			item_append(_LANGUAGE_CORE_TRANS_("Pause/Stop"), "", 0, TAPECMD_STOP);
 
 			// play
-			item_append(_("Play"), "", 0, TAPECMD_PLAY);
+			item_append(_LANGUAGE_CORE_TRANS_("Play"), "", 0, TAPECMD_PLAY);
 
 			// record
-			item_append(_("Record"), "", 0, TAPECMD_RECORD);
+			item_append(_LANGUAGE_CORE_TRANS_("Record"), "", 0, TAPECMD_RECORD);
 
 			// rewind
-			item_append(_("Rewind"), "", 0, TAPECMD_REWIND);
+			item_append(_LANGUAGE_CORE_TRANS_("Rewind"), "", 0, TAPECMD_REWIND);
 
 			// fast forward
-			item_append(_("Fast Forward"), "", 0, TAPECMD_FAST_FORWARD);
+			item_append(_LANGUAGE_CORE_TRANS_("Fast Forward"), "", 0, TAPECMD_FAST_FORWARD);
 		}
 	}
 }

@@ -366,7 +366,7 @@ static void Picker_InternalResetColumnDisplay(HWND hWnd, BOOL bFirstTime)
 		if (shown[order[i]])
 		{
 			lvc.mask = LVCF_FMT | LVCF_WIDTH | LVCF_SUBITEM | LVCF_TEXT;
-			lvc.pszText = (LPTSTR) pPickerInfo->ppszColumnNames[order[i]];
+			lvc.pszText = (LPTSTR)_UIW(pPickerInfo->ppszColumnNames[order[i]]);
 			lvc.iSubItem = nColumn;
 			lvc.cx = widths[order[i]];
 			lvc.fmt = LVCFMT_LEFT;

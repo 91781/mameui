@@ -40,7 +40,7 @@ menu_keyboard_mode::menu_keyboard_mode(mame_ui_manager &mui, render_container &c
 void menu_keyboard_mode::populate(float &customtop, float &custombottom)
 {
 	bool natural = machine().ioport().natkeyboard().in_use();
-	item_append(_("Keyboard Mode:"), natural ? _("Natural") : _("Emulated"), natural ? FLAG_LEFT_ARROW : FLAG_RIGHT_ARROW, nullptr);
+	item_append(_LANGUAGE_CORE_TRANS_("Keyboard Mode:"), natural ? _LANGUAGE_CORE_TRANS_("Natural") : _LANGUAGE_CORE_TRANS_("Emulated"), natural ? FLAG_LEFT_ARROW : FLAG_RIGHT_ARROW, nullptr);
 }
 
 menu_keyboard_mode::~menu_keyboard_mode()
@@ -94,7 +94,7 @@ void menu_bios_selection::populate(float &customtop, float &custombottom)
 	}
 
 	item_append(menu_item_type::SEPARATOR);
-	item_append(_("Reset"), "", 0, (void *)1);
+	item_append(_LANGUAGE_CORE_TRANS_("Reset"), "", 0, (void *)1);
 }
 
 menu_bios_selection::~menu_bios_selection()
@@ -240,13 +240,13 @@ void menu_bookkeeping::populate(float &customtop, float &custombottom)
 
 	/* show total time first */
 	if (prevtime.seconds() >= (60 * 60))
-		util::stream_format(tempstring, _("Uptime: %1$d:%2$02d:%3$02d\n\n"), prevtime.seconds() / (60 * 60), (prevtime.seconds() / 60) % 60, prevtime.seconds() % 60);
+		util::stream_format(tempstring, _LANGUAGE_CORE_TRANS_("Uptime: %1$d:%2$02d:%3$02d\n\n"), prevtime.seconds() / (60 * 60), (prevtime.seconds() / 60) % 60, prevtime.seconds() % 60);
 	else
-		util::stream_format(tempstring, _("Uptime: %1$d:%2$02d\n\n"), (prevtime.seconds() / 60) % 60, prevtime.seconds() % 60);
+		util::stream_format(tempstring, _LANGUAGE_CORE_TRANS_("Uptime: %1$d:%2$02d\n\n"), (prevtime.seconds() / 60) % 60, prevtime.seconds() % 60);
 
 	/* show tickets at the top */
 	if (tickets > 0)
-		util::stream_format(tempstring, _("Tickets dispensed: %1$d\n\n"), tickets);
+		util::stream_format(tempstring, _LANGUAGE_CORE_TRANS_("Tickets dispensed: %1$d\n\n"), tickets);
 
 	/* loop over coin counters */
 	for (ctrnum = 0; ctrnum < bookkeeping_manager::COIN_COUNTERS; ctrnum++)
@@ -257,10 +257,10 @@ void menu_bookkeeping::populate(float &customtop, float &custombottom)
 		/* display how many coins */
 		/* display whether or not we are locked out */
 		util::stream_format(tempstring,
-				(count == 0) ? _("Coin %1$c: NA%3$s\n") : _("Coin %1$c: %2$d%3$s\n"),
+				(count == 0) ? _LANGUAGE_CORE_TRANS_("Coin %1$c: NA%3$s\n") : _LANGUAGE_CORE_TRANS_("Coin %1$c: %2$d%3$s\n"),
 				ctrnum + 'A',
 				count,
-				machine().bookkeeping().coin_lockout_get_state(ctrnum) ? _(" (locked)") : "");
+				machine().bookkeeping().coin_lockout_get_state(ctrnum) ? _LANGUAGE_CORE_TRANS_(" (locked)") : "");
 	}
 
 	/* append the single item */
@@ -507,7 +507,7 @@ void menu_crosshair::populate(float &customtop, float &custombottom)
 
 		/* add CROSSHAIR_ITEM_AUTO_TIME menu */
 		sprintf(temp_text, "%d", machine().crosshair().auto_time());
-		item_append(_("Visible Delay"), temp_text, flags, data);
+		item_append(_LANGUAGE_CORE_TRANS_("Visible Delay"), temp_text, flags, data);
 	}
 //  else
 //      /* leave a blank filler line when not in auto time so size does not rescale */
@@ -606,7 +606,7 @@ void menu_export::handle()
 						info_xml_creator creator(drvlist, true);
 						creator.output(pfile, ((uintptr_t)menu_event->itemref == 1) ? false : true);
 						fclose(pfile);
-						machine().popmessage(_("%s.xml saved under ui folder."), filename.c_str());
+						machine().popmessage(_LANGUAGE_CORE_TRANS_("%s.xml saved under ui folder."), filename.c_str());
 					}
 				}
 				break;
@@ -634,7 +634,7 @@ void menu_export::handle()
 					{
 						// print the header
 						std::ostringstream buffer;
-						buffer << _("Name:             Description:\n");
+						buffer << _LANGUAGE_CORE_TRANS_("Name:             Description:\n");
 						driver_enumerator drvlist(machine().options());
 						drvlist.exclude_all();
 						for (auto & elem : m_list)
@@ -646,7 +646,7 @@ void menu_export::handle()
 								util::stream_format(buffer, "%-18s\"%s\"\n", drvlist.driver().name, drvlist.driver().description);
 						file.puts(buffer.str().c_str());
 						file.close();
-						machine().popmessage(_("%s.txt saved under ui folder."), filename.c_str());
+						machine().popmessage(_LANGUAGE_CORE_TRANS_("%s.txt saved under ui folder."), filename.c_str());
 					}
 				}
 				break;
@@ -664,9 +664,9 @@ void menu_export::handle()
 void menu_export::populate(float &customtop, float &custombottom)
 {
 	// add options items
-	item_append(_("Export list in XML format (like -listxml)"), "", 0, (void *)(uintptr_t)1);
-	item_append(_("Export list in XML format (like -listxml, but exclude devices)"), "", 0, (void *)(uintptr_t)3);
-	item_append(_("Export list in TXT format (like -listfull)"), "", 0, (void *)(uintptr_t)2);
+	item_append(_LANGUAGE_CORE_TRANS_("Export list in XML format (like -listxml)"), "", 0, (void *)(uintptr_t)1);
+	item_append(_LANGUAGE_CORE_TRANS_("Export list in XML format (like -listxml, but exclude devices)"), "", 0, (void *)(uintptr_t)3);
+	item_append(_LANGUAGE_CORE_TRANS_("Export list in TXT format (like -listfull)"), "", 0, (void *)(uintptr_t)2);
 	item_append(menu_item_type::SEPARATOR);
 }
 
@@ -719,7 +719,7 @@ void menu_machine_configure::handle()
 					{
 						std::string inistring = m_opts.output_ini();
 						file.puts(inistring.c_str());
-						ui().popup_time(2, "%s", _("\n    Configuration saved    \n\n"));
+						ui().popup_time(2, "%s", _LANGUAGE_CORE_TRANS_("\n    Configuration saved    \n\n"));
 					}
 					break;
 				}
@@ -771,28 +771,28 @@ void menu_machine_configure::handle()
 void menu_machine_configure::populate(float &customtop, float &custombottom)
 {
 	// add options items
-	item_append(_("Bios"), "", FLAG_DISABLE | FLAG_UI_HEADING, nullptr);
+	item_append(_LANGUAGE_CORE_TRANS_("Bios"), "", FLAG_DISABLE | FLAG_UI_HEADING, nullptr);
 	if (!m_bios.empty())
 	{
 		uint32_t arrows = get_arrow_flags(std::size_t(0), m_bios.size() - 1, m_curbios);
-		item_append(_("Driver"), m_bios[m_curbios].first, arrows, (void *)(uintptr_t)BIOS);
+		item_append(_LANGUAGE_CORE_TRANS_("Driver"), m_bios[m_curbios].first, arrows, (void *)(uintptr_t)BIOS);
 	}
 	else
-		item_append(_("This machine has no bios."), "", FLAG_DISABLE, nullptr);
+		item_append(_LANGUAGE_CORE_TRANS_("This machine has no bios."), "", FLAG_DISABLE, nullptr);
 
 	item_append(menu_item_type::SEPARATOR);
-	item_append(_(submenu::advanced_options[0].description), "", 0, (void *)(uintptr_t)ADVANCED);
-	item_append(_(submenu::video_options[0].description), "", 0, (void *)(uintptr_t)VIDEO);
-	item_append(_(submenu::control_options[0].description), "", 0, (void *)(uintptr_t)CONTROLLER);
+	item_append(_LANGUAGE_CORE_TRANS_(submenu::advanced_options[0].description), "", 0, (void *)(uintptr_t)ADVANCED);
+	item_append(_LANGUAGE_CORE_TRANS_(submenu::video_options[0].description), "", 0, (void *)(uintptr_t)VIDEO);
+	item_append(_LANGUAGE_CORE_TRANS_(submenu::control_options[0].description), "", 0, (void *)(uintptr_t)CONTROLLER);
 	item_append(menu_item_type::SEPARATOR);
 
 	if (!mame_machine_manager::instance()->favorite().isgame_favorite(m_drv))
-		item_append(_("Add To Favorites"), "", 0, (void *)ADDFAV);
+		item_append(_LANGUAGE_CORE_TRANS_("Add To Favorites"), "", 0, (void *)ADDFAV);
 	else
-		item_append(_("Remove From Favorites"), "", 0, (void *)DELFAV);
+		item_append(_LANGUAGE_CORE_TRANS_("Remove From Favorites"), "", 0, (void *)DELFAV);
 
 	item_append(menu_item_type::SEPARATOR);
-	item_append(_("Save machine configuration"), "", 0, (void *)(uintptr_t)SAVE);
+	item_append(_LANGUAGE_CORE_TRANS_("Save machine configuration"), "", 0, (void *)(uintptr_t)SAVE);
 	item_append(menu_item_type::SEPARATOR);
 	customtop = 2.0f * ui().get_line_height() + 3.0f * UI_BOX_TB_BORDER;
 }
@@ -807,7 +807,7 @@ void menu_machine_configure::custom_render(void *selectedref, float top, float b
 	std::string text[2];
 	float maxwidth = origx2 - origx1;
 
-	text[0] = _("Configure machine:");
+	text[0] = _LANGUAGE_CORE_TRANS_("Configure machine:");
 	text[1] = m_drv->description;
 
 	for (auto & elem : text)
@@ -870,7 +870,7 @@ void menu_machine_configure::setup_bios()
 
 			if (biosname == default_name)
 			{
-				name.append(_(" (default)"));
+				name.append(_LANGUAGE_CORE_TRANS_(" (default)"));
 				if (specbios == "default")
 					m_curbios = bios_count;
 			}
@@ -942,7 +942,7 @@ void menu_plugins_configure::populate(float &customtop, float &custombottom)
 		if (!curentry.is_header())
 		{
 			auto enabled = std::string(curentry.value()) == "1";
-			item_append(curentry.description(), enabled ? _("On") : _("Off"),
+			item_append(curentry.description(), enabled ? _LANGUAGE_CORE_TRANS_("On") : _LANGUAGE_CORE_TRANS_("Off"),
 				enabled ? FLAG_RIGHT_ARROW : FLAG_LEFT_ARROW, (void *)(uintptr_t)curentry.name());
 		}
 	}
@@ -958,7 +958,7 @@ void menu_plugins_configure::custom_render(void *selectedref, float top, float b
 {
 	float width;
 
-	ui().draw_text_full(container(), _("Plugins"), 0.0f, 0.0f, 1.0f, ui::text_layout::CENTER, ui::text_layout::TRUNCATE,
+	ui().draw_text_full(container(), _LANGUAGE_CORE_TRANS_("Plugins"), 0.0f, 0.0f, 1.0f, ui::text_layout::CENTER, ui::text_layout::TRUNCATE,
 		mame_ui_manager::NONE, rgb_t::white(), rgb_t::black(), &width, nullptr);
 	width += 2 * UI_BOX_LR_BORDER;
 	float maxwidth = std::max(origx2 - origx1, width);
@@ -978,7 +978,7 @@ void menu_plugins_configure::custom_render(void *selectedref, float top, float b
 	y1 += UI_BOX_TB_BORDER;
 
 	// draw the text within it
-	ui().draw_text_full(container(), _("Plugins"), x1, y1, x2 - x1, ui::text_layout::CENTER, ui::text_layout::TRUNCATE,
+	ui().draw_text_full(container(), _LANGUAGE_CORE_TRANS_("Plugins"), x1, y1, x2 - x1, ui::text_layout::CENTER, ui::text_layout::TRUNCATE,
 		mame_ui_manager::NORMAL, UI_TEXT_COLOR, UI_TEXT_BG_COLOR, nullptr, nullptr);
 }
 

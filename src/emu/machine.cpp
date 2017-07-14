@@ -1093,7 +1093,7 @@ std::string running_machine::nvram_filename(device_t &device) const
 		for (device_t *dev = &device; dev->owner() != nullptr; dev = dev->owner())
 		{
 			device_image_interface *intf;
-			if (dev->interface(intf))
+			if (dev->interface_my(intf))
 			{
 				software = intf->basename_noext();
 				break;

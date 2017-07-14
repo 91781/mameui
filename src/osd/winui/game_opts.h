@@ -129,6 +129,7 @@ public:
 		}
 	}
 
+#include "translate.h"
 	osd_file::error save_file(const char *filename)
 	{
 		osd_file::error filerr;
@@ -136,7 +137,9 @@ public:
 
 		save_settings();
 
-		output_ini(inistring, "GAME STATISTICS");
+		char *desc = ui_utf8_from_wstring(w_lang_message(UI_MSG_OSD1,TEXT("GAME STATISTICS")));
+		output_ini(inistring, desc);
+		free(desc);
 
 		emu_file file(OPEN_FLAG_WRITE | OPEN_FLAG_CREATE | OPEN_FLAG_CREATE_PATHS);
 		filerr = file.open(filename);

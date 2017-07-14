@@ -150,7 +150,7 @@ void menu_selector::populate(float &customtop, float &custombottom)
 void menu_selector::custom_render(void *selectedref, float top, float bottom, float origx1, float origy1, float origx2, float origy2)
 {
 	float width;
-	std::string tempbuf = std::string(_("Selection List - Search: ")).append(m_search).append("_");
+	std::string tempbuf = std::string(_LANGUAGE_CORE_TRANS_("Selection List - Search: ")).append(m_search).append("_");
 
 	// get the size of the text
 	ui().draw_text_full(container(), tempbuf.c_str(), 0.0f, 0.0f, 1.0f, ui::text_layout::CENTER, ui::text_layout::TRUNCATE,
@@ -179,7 +179,7 @@ void menu_selector::custom_render(void *selectedref, float top, float bottom, fl
 	// bottom text
 	// get the text for 'UI Select'
 	std::string ui_select_text = machine().input().seq_name(machine().ioport().type_seq(IPT_UI_SELECT, 0, SEQ_TYPE_STANDARD));
-	tempbuf = string_format(_("Double click or press %1$s to select"), ui_select_text);
+	tempbuf = string_format(_LANGUAGE_CORE_TRANS_("Double click or press %1$s to select"), ui_select_text);
 
 	ui().draw_text_full(container(), tempbuf.c_str(), 0.0f, 0.0f, 1.0f, ui::text_layout::CENTER, ui::text_layout::NEVER,
 		mame_ui_manager::NONE, rgb_t::white(), rgb_t::black(), &width, nullptr);

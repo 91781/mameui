@@ -291,21 +291,21 @@ void menu::reset(reset_options options)
 	// add an item to return
 	if (!m_parent)
 	{
-		item_append(_("Return to Machine"), "", 0, nullptr);
+		item_append(_LANGUAGE_CORE_TRANS_("Return to Machine"), "", 0, nullptr);
 	}
 	else if (m_parent->is_special_main_menu())
 	{
 		if (machine().options().ui() == emu_options::UI_SIMPLE)
-			item_append(_("Exit"), "", 0, nullptr);
+			item_append(_LANGUAGE_CORE_TRANS_("Exit"), "", 0, nullptr);
 		else
-			item_append(_("Exit"), "", FLAG_LEFT_ARROW | FLAG_RIGHT_ARROW, nullptr);
+			item_append(_LANGUAGE_CORE_TRANS_("Exit"), "", FLAG_LEFT_ARROW | FLAG_RIGHT_ARROW, nullptr);
 	}
 	else
 	{
 		if (machine().options().ui() != emu_options::UI_SIMPLE && stack_has_special_main_menu())
-			item_append(_("Return to Previous Menu"), "", FLAG_LEFT_ARROW | FLAG_RIGHT_ARROW, nullptr);
+			item_append(_LANGUAGE_CORE_TRANS_("Return to Previous Menu"), "", FLAG_LEFT_ARROW | FLAG_RIGHT_ARROW, nullptr);
 		else
-			item_append(_("Return to Previous Menu"), "", 0, nullptr);
+			item_append(_LANGUAGE_CORE_TRANS_("Return to Previous Menu"), "", 0, nullptr);
 	}
 
 }
@@ -718,13 +718,13 @@ void menu::draw(uint32_t flags)
 				}
 
 				// customize subitem text color
-				if (!core_stricmp(subitem_text, _("On")))
+				if (!core_stricmp(subitem_text, _LANGUAGE_CORE_TRANS_("On")))
 					fgcolor2 = rgb_t(0x00,0xff,0x00);
 
-				if (!core_stricmp(subitem_text, _("Off")))
+				if (!core_stricmp(subitem_text, _LANGUAGE_CORE_TRANS_("Off")))
 					fgcolor2 = rgb_t(0xff,0x00,0x00);
 
-				if (!core_stricmp(subitem_text, _("Auto")))
+				if (!core_stricmp(subitem_text, _LANGUAGE_CORE_TRANS_("Auto")))
 					fgcolor2 = rgb_t(0xff,0xff,0x00);
 
 				// draw the subitem right-justified

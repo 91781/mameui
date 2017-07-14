@@ -246,33 +246,33 @@ void menu_select_launch::custom_render(void *selectedref, float top, float botto
 		tempbuf[0] = make_software_description(*swinfo);
 
 		// next line is year, publisher
-		tempbuf[1] = string_format(_("%1$s, %2$-.100s"), swinfo->year, swinfo->publisher);
+		tempbuf[1] = string_format(_LANGUAGE_CORE_TRANS_("%1$s, %2$-.100s"), swinfo->year, swinfo->publisher);
 
 		// next line is parent/clone
 		if (!swinfo->parentname.empty())
-			tempbuf[2] = string_format(_("Software is clone of: %1$-.100s"), !swinfo->parentlongname.empty() ? swinfo->parentlongname : swinfo->parentname);
+			tempbuf[2] = string_format(_LANGUAGE_CORE_TRANS_("Software is clone of: %1$-.100s"), !swinfo->parentlongname.empty() ? swinfo->parentlongname : swinfo->parentname);
 		else
-			tempbuf[2] = _("Software is parent");
+			tempbuf[2] = _LANGUAGE_CORE_TRANS_("Software is parent");
 
 		// next line is supported status
 		if (swinfo->supported == SOFTWARE_SUPPORTED_NO)
 		{
-			tempbuf[3] = _("Supported: No");
+			tempbuf[3] = _LANGUAGE_CORE_TRANS_("Supported: No");
 			color = UI_RED_COLOR;
 		}
 		else if (swinfo->supported == SOFTWARE_SUPPORTED_PARTIAL)
 		{
-			tempbuf[3] = _("Supported: Partial");
+			tempbuf[3] = _LANGUAGE_CORE_TRANS_("Supported: Partial");
 			color = UI_YELLOW_COLOR;
 		}
 		else
 		{
-			tempbuf[3] = _("Supported: Yes");
+			tempbuf[3] = _LANGUAGE_CORE_TRANS_("Supported: Yes");
 			color = UI_GREEN_COLOR;
 		}
 
 		// last line is romset name
-		tempbuf[4] = string_format(_("romset: %1$-.100s"), swinfo->shortname);
+		tempbuf[4] = string_format(_LANGUAGE_CORE_TRANS_("romset: %1$-.100s"), swinfo->shortname);
 	}
 	else if (driver)
 	{
@@ -282,36 +282,36 @@ void menu_select_launch::custom_render(void *selectedref, float top, float botto
 		tempbuf[0] = make_driver_description(*driver);
 
 		// next line is year, manufacturer
-		tempbuf[1] = string_format(_("%1$s, %2$-.100s"), driver->year, driver->manufacturer);
+		tempbuf[1] = string_format(_LANGUAGE_CORE_TRANS_("%1$s, %2$-.100s"), driver->year, driver->manufacturer);
 
 		// next line is clone/parent status
 		int cloneof = driver_list::non_bios_clone(*driver);
 
 		if (cloneof != -1)
-			tempbuf[2] = string_format(_("Driver is clone of: %1$-.100s"), driver_list::driver(cloneof).description);
+			tempbuf[2] = string_format(_LANGUAGE_CORE_TRANS_("Driver is clone of: %1$-.100s"), driver_list::driver(cloneof).description);
 		else
-			tempbuf[2] = _("Driver is parent");
+			tempbuf[2] = _LANGUAGE_CORE_TRANS_("Driver is parent");
 
 		// next line is overall driver status
 		if (driver->flags & MACHINE_NOT_WORKING)
-			tempbuf[3] = _("Overall: NOT WORKING");
+			tempbuf[3] = _LANGUAGE_CORE_TRANS_("Overall: NOT WORKING");
 		else if (driver->flags & MACHINE_UNEMULATED_PROTECTION)
-			tempbuf[3] = _("Overall: Unemulated Protection");
+			tempbuf[3] = _LANGUAGE_CORE_TRANS_("Overall: Unemulated Protection");
 		else
-			tempbuf[3] = _("Overall: Working");
+			tempbuf[3] = _LANGUAGE_CORE_TRANS_("Overall: Working");
 
 		// next line is graphics, sound status
 		if (driver->flags & (MACHINE_IMPERFECT_GRAPHICS | MACHINE_WRONG_COLORS | MACHINE_IMPERFECT_COLORS))
-			tempbuf[4] = _("Graphics: Imperfect, ");
+			tempbuf[4] = _LANGUAGE_CORE_TRANS_("Graphics: Imperfect, ");
 		else
-			tempbuf[4] = _("Graphics: OK, ");
+			tempbuf[4] = _LANGUAGE_CORE_TRANS_("Graphics: OK, ");
 
 		if (driver->flags & MACHINE_NO_SOUND)
-			tempbuf[4].append(_("Sound: Unimplemented"));
+			tempbuf[4].append(_LANGUAGE_CORE_TRANS_("Sound: Unimplemented"));
 		else if (driver->flags & MACHINE_IMPERFECT_SOUND)
-			tempbuf[4].append(_("Sound: Imperfect"));
+			tempbuf[4].append(_LANGUAGE_CORE_TRANS_("Sound: Imperfect"));
 		else
-			tempbuf[4].append(_("Sound: OK"));
+			tempbuf[4].append(_LANGUAGE_CORE_TRANS_("Sound: OK"));
 
 		color = UI_GREEN_COLOR;
 
@@ -328,7 +328,7 @@ void menu_select_launch::custom_render(void *selectedref, float top, float botto
 		size_t found = copyright.find("\n");
 
 		tempbuf[0].clear();
-		tempbuf[1] = string_format(_("%1$s %2$s"), emulator_info::get_appname(), build_version);
+		tempbuf[1] = string_format(_LANGUAGE_CORE_TRANS_("%1$s %2$s"), emulator_info::get_appname(), build_version);
 		tempbuf[2] = copyright.substr(0, found);
 		tempbuf[3] = copyright.substr(found + 1);
 		tempbuf[4].clear();
@@ -553,7 +553,7 @@ void menu_select_launch::draw_toolbar(float x1, float y1, float x2, float y2)
 				hover = HOVER_B_FAV + z;
 				color = rgb_t::white();
 				float ypos = y2 + ui().get_line_height() + 2.0f * UI_BOX_TB_BORDER;
-				ui().draw_text_box(container(), _(hover_msg[z]), ui::text_layout::CENTER, 0.5f, ypos, UI_BACKGROUND_COLOR);
+				ui().draw_text_box(container(), _LANGUAGE_CORE_TRANS_(hover_msg[z]), ui::text_layout::CENTER, 0.5f, ypos, UI_BACKGROUND_COLOR);
 			}
 
 			container().add_quad(x1, y1, x2, y2, color, t_texture[z].get(), PRIMFLAG_BLENDMODE(BLENDMODE_ALPHA));
@@ -720,7 +720,7 @@ float menu_select_launch::draw_icon(int linenum, void *selectedref, float x0, fl
 void menu_select_launch::get_title_search(std::string &snaptext, std::string &searchstr)
 {
 	// get arts title text
-	snaptext.assign(_(arts_info[ui_globals::curimage_view].first));
+	snaptext.assign(_LANGUAGE_CORE_TRANS_(arts_info[ui_globals::curimage_view].first));
 
 	// get search path
 	std::string addpath;
@@ -1474,8 +1474,8 @@ float menu_select_launch::draw_right_box_title(float x1, float y1, float x2, flo
 	container().add_line(x1 + midl, y1, x1 + midl, y1 + line_height, UI_LINE_WIDTH, UI_BORDER_COLOR, PRIMFLAG_BLENDMODE(BLENDMODE_ALPHA));
 
 	std::string buffer[RP_LAST + 1];
-	buffer[RP_IMAGES] = _("Images");
-	buffer[RP_INFOS] = _("Infos");
+	buffer[RP_IMAGES] = _LANGUAGE_CORE_TRANS_("Images");
+	buffer[RP_INFOS] = _LANGUAGE_CORE_TRANS_("Infos");
 
 	// check size
 	float text_size = 1.0f;
@@ -1712,7 +1712,7 @@ std::string menu_select_launch::arts_render_common(float origx1, float origy1, f
 	{
 		float text_length;
 		ui().draw_text_full(container(),
-				_(arts_info[x].first), origx1, origy1, origx2 - origx1,
+			_LANGUAGE_CORE_TRANS_(arts_info[x].first), origx1, origy1, origx2 - origx1,
 				ui::text_layout::CENTER, ui::text_layout::TRUNCATE, mame_ui_manager::NONE, rgb_t::white(), rgb_t::black(),
 				&text_length, nullptr);
 		title_size = (std::max)(text_length + 0.01f, title_size);
@@ -1957,9 +1957,9 @@ void menu_select_launch::infos_render(float origx1, float origy1, float origx2, 
 
 	std::string snaptext;
 	if (m_info_view)
-		snaptext = _(m_items_list[m_info_view - 1].c_str());
+		snaptext = _LANGUAGE_CORE_TRANS_(m_items_list[m_info_view - 1].c_str());
 	else
-		snaptext = _(first);
+		snaptext = _LANGUAGE_CORE_TRANS_(first);
 
 	// apply title to right panel
 	float title_size = 0.0f;
@@ -1972,7 +1972,7 @@ void menu_select_launch::infos_render(float origx1, float origy1, float origx2, 
 			name = first;
 		else
 			name = m_items_list[x - 1].c_str();
-		ui().draw_text_full(container(), _(name), origx1, origy1, origx2 - origx1, ui::text_layout::CENTER,
+		ui().draw_text_full(container(), _LANGUAGE_CORE_TRANS_(name), origx1, origy1, origx2 - origx1, ui::text_layout::CENTER,
 				ui::text_layout::NEVER, mame_ui_manager::NONE, UI_TEXT_COLOR, UI_TEXT_BG_COLOR, &txt_length, nullptr);
 		txt_length += 0.01f;
 		title_size = (std::max)(txt_length, title_size);

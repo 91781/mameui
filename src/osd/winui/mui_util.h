@@ -23,7 +23,7 @@ extern LONG GetCommonControlVersion(void);
 extern char * MyStrStrI(const char* pFirst, const char* pSrch);
 extern char * ConvertToWindowsNewlines(const char *source);
 
-extern const char * GetDriverFilename(int nIndex);
+extern const WCHAR * GetDriverFilename(int nIndex);
 
 BOOL DriverIsClone(int driver_index);
 BOOL DriverIsBroken(int driver_index);

@@ -254,15 +254,15 @@ void menu_file_selector::append_entry_menu_item(const file_selector_entry *entry
 	switch(entry->type)
 	{
 		case SELECTOR_ENTRY_TYPE_EMPTY:
-			text = _("[empty slot]");
+			text = _LANGUAGE_CORE_TRANS_("[empty slot]");
 			break;
 
 		case SELECTOR_ENTRY_TYPE_CREATE:
-			text = _("[create]");
+			text = _LANGUAGE_CORE_TRANS_("[create]");
 			break;
 
 		case SELECTOR_ENTRY_TYPE_SOFTWARE_LIST:
-			text = _("[software list]");
+			text = _LANGUAGE_CORE_TRANS_("[software list]");
 			break;
 
 		case SELECTOR_ENTRY_TYPE_DRIVE:
@@ -522,12 +522,12 @@ menu_select_rw::~menu_select_rw()
 
 void menu_select_rw::populate(float &customtop, float &custombottom)
 {
-	item_append(_("Select access mode"), "", FLAG_DISABLE, nullptr);
-	item_append(_("Read-only"), "", 0, itemref_from_result(result::READONLY));
+	item_append(_LANGUAGE_CORE_TRANS_("Select access mode"), "", FLAG_DISABLE, nullptr);
+	item_append(_LANGUAGE_CORE_TRANS_("Read-only"), "", 0, itemref_from_result(result::READONLY));
 	if (m_can_in_place)
-		item_append(_("Read-write"), "", 0, itemref_from_result(result::READWRITE));
-	item_append(_("Read this image, write to another image"), "", 0, itemref_from_result(result::WRITE_OTHER));
-	item_append(_("Read this image, write to diff"), "", 0, itemref_from_result(result::WRITE_DIFF));
+		item_append(_LANGUAGE_CORE_TRANS_("Read-write"), "", 0, itemref_from_result(result::READWRITE));
+	item_append(_LANGUAGE_CORE_TRANS_("Read this image, write to another image"), "", 0, itemref_from_result(result::WRITE_OTHER));
+	item_append(_LANGUAGE_CORE_TRANS_("Read this image, write to diff"), "", 0, itemref_from_result(result::WRITE_DIFF));
 }
 
 

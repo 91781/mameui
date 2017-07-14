@@ -37,7 +37,7 @@
 
 typedef struct
 {
-	const char *m_lpTitle; // Folder Title
+	const WCHAR *m_lpTitle; // Folder Title
 	const char *short_name;  // for saving in the .ini
 	UINT        m_nFolderId; // ID
 	UINT        m_nIconId; // if >= 0, resource id of icon (IDI_xxx), otherwise index in image list
@@ -143,18 +143,21 @@ typedef enum
 
 typedef struct
 {
-    LPSTR m_lpTitle;              // String contains the folder name
-    LPTSTR m_lptTitle;            // String contains the folder name as TCHAR*
+    LPWSTR m_lpTitle;              // String contains the folder name
+//    LPTSTR m_lptTitle;            // String contains the folder name as TCHAR*
+	UINT        m_nCategoryID;    // category for translation
     UINT        m_nFolderId;      // Index / Folder ID number
     int         m_nParent;        // Parent folder index in treeFolders[]
     int         m_nIconId;        // negative icon index into the ImageList, or IDI_xxx resource id
     DWORD       m_dwFlags;        // Misc flags
     LPBITS      m_lpGameBits;     // Game bits, represent game indices
+	LPWSTR      m_lpOriginalTitle;// String contains the original folder name
+	LPSTR       m_lpPath;         // fullpath to use save/load settings
 } TREEFOLDER, *LPTREEFOLDER;
 
 typedef struct
 {
-    char        m_szTitle[64];  // Folder Title
+	WCHAR        m_szTitle[64];  // Folder Title
     UINT        m_nFolderId;    // ID
     int         m_nParent;      // Parent Folder index in treeFolders[]
     DWORD       m_dwFlags;      // Flags - Customizable and Filters
@@ -172,7 +175,7 @@ LPTREEFOLDER GetCurrentFolder(void);
 int GetNumFolders(void);
 LPTREEFOLDER GetFolder(UINT nFolder);
 LPTREEFOLDER GetFolderByID(UINT nID);
-LPTREEFOLDER GetFolderByName(int nParentId, const char *pszFolderName);
+LPTREEFOLDER GetFolderByName(int nParentId, const TCHAR *pszFolderName);
 
 void AddGame(LPTREEFOLDER lpFolder, UINT nGame);
 void RemoveGame(LPTREEFOLDER lpFolder, UINT nGame);
@@ -191,7 +194,7 @@ void SetTreeIconSize(HWND hWnd, BOOL bLarge);
 BOOL GetTreeIconSize(void);
 
 void GetFolders(TREEFOLDER ***folders,int *num_folders);
-BOOL TryRenameCustomFolder(LPTREEFOLDER lpFolder,const char *new_name);
+BOOL TryRenameCustomFolder(LPTREEFOLDER lpFolder,const TCHAR *new_name);
 void AddToCustomFolder(LPTREEFOLDER lpFolder,int driver_index);
 void RemoveFromCustomFolder(LPTREEFOLDER lpFolder,int driver_index);
 

@@ -2,7 +2,7 @@
 // copyright-holders:R. Belmont
 /***************************************************************************
 
- Tsukande Toru Chicchi (つかんでとるちっち)
+ Tsukande Toru Chicchi (�Ĥ���ǤȤ���ä�)
  (c) 1995 Konami
  Driver by R. Belmont
 

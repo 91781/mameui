@@ -836,11 +836,13 @@ static int load_driver_driverinfo(const game_driver *drv, char *buffer, int bufs
 
 	for (int i = 0; i < driver_list::total(); i++)
 	{
-		if (!strcmp(source_file, GetDriverFilename(i)) && !(DriverIsBios(i)))
+		char* stemp = ui_utf8_from_wstring(GetDriverFilename(i));
+		if (!strcmp(source_file, stemp) && !(DriverIsBios(i)))
 		{
 			strcat(buffer, driver_list::driver(i).description);
 			strcat(buffer,"\n");
 		}
+		free(stemp);
 	}
 
 	strcat(buffer, "\n\n");

@@ -21,5 +21,18 @@ int WINAPI wWinMain(HINSTANCE    hInstance,
                    LPWSTR       lpCmdLine,
                    int          nCmdShow)
 {
-	return MameUIMain(hInstance, lpCmdLine, nCmdShow);
+	int nRet = 0;
+//#ifdef _DEBUG
+	AllocConsole();
+	freopen("CONOUT$", "w", stdout);
+//#endif
+
+	printf("--------------------------Console created for log!!!--------------------------\n");
+	printf("osd_messui-->mui_main.cpp-->wWinMain\n");
+	nRet = MameUIMain(hInstance, lpCmdLine, nCmdShow);
+
+//#ifdef _DEBUG
+	FreeConsole();
+//#endif
+	return nRet;
 }

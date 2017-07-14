@@ -71,11 +71,11 @@ void menu_barcode_reader::populate(float &customtop, float &custombottom)
 			new_barcode = m_barcode_buffer.c_str();
 		}
 
-		item_append(_("New Barcode:"), new_barcode, 0, ITEMREF_NEW_BARCODE);
+		item_append(_LANGUAGE_CORE_TRANS_("New Barcode:"), new_barcode, 0, ITEMREF_NEW_BARCODE);
 
 		// finish up the menu
 		item_append(menu_item_type::SEPARATOR);
-		item_append(_("Enter Code"), "", 0, ITEMREF_ENTER_BARCODE);
+		item_append(_LANGUAGE_CORE_TRANS_("Enter Code"), "", 0, ITEMREF_ENTER_BARCODE);
 
 		customtop = ui().get_line_height() + 3.0f * UI_BOX_TB_BORDER;
 	}
@@ -116,7 +116,7 @@ void menu_barcode_reader::handle()
 				std::string tmp_file(m_barcode_buffer);
 				//printf("code %s\n", m_barcode_buffer);
 				if (!current_device()->is_valid(tmp_file.length()))
-					ui().popup_time(5, "%s", _("Barcode length invalid!"));
+					ui().popup_time(5, "%s", _LANGUAGE_CORE_TRANS_("Barcode length invalid!"));
 				else
 				{
 					current_device()->write_code(tmp_file.c_str(), tmp_file.length());

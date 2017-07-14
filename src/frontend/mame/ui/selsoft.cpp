@@ -113,7 +113,7 @@ bool has_multiple_bios(const game_driver *driver, s_bios &biosname)
 
 			if (bname == default_name)
 			{
-				name.append(_(" (default)"));
+				name.append(_LANGUAGE_CORE_TRANS_(" (default)"));
 				biosname.emplace(biosname.begin(), name, bios_flags - 1);
 			}
 			else
@@ -279,12 +279,12 @@ void menu_select_software::handle()
 				if (!mfav.isgame_favorite(*swinfo))
 				{
 					mfav.add_favorite_game(*swinfo);
-					machine().popmessage(_("%s\n added to favorites list."), swinfo->longname.c_str());
+					machine().popmessage(_LANGUAGE_CORE_TRANS_("%s\n added to favorites list."), swinfo->longname.c_str());
 				}
 
 				else
 				{
-					machine().popmessage(_("%s\n removed from favorites list."), swinfo->longname.c_str());
+					machine().popmessage(_LANGUAGE_CORE_TRANS_("%s\n removed from favorites list."), swinfo->longname.c_str());
 					mfav.remove_favorite_game();
 				}
 			}
@@ -376,7 +376,7 @@ void menu_select_software::handle()
 
 	// if we're in an error state, overlay an error message
 	if (m_ui_error)
-		ui().draw_text_box(container(), _("The selected software is missing one or more required files. "
+		ui().draw_text_box(container(), _LANGUAGE_CORE_TRANS_("The selected software is missing one or more required files. "
 									"Please select a different software.\n\nPress any key to continue."),
 									ui::text_layout::CENTER, 0.5f, 0.5f, UI_RED_COLOR);
 
@@ -1315,7 +1315,7 @@ void software_parts::handle()
 void software_parts::custom_render(void *selectedref, float top, float bottom, float origx1, float origy1, float origx2, float origy2)
 {
 	float width;
-	ui().draw_text_full(container(), _("Software part selection:"), 0.0f, 0.0f, 1.0f, ui::text_layout::CENTER, ui::text_layout::TRUNCATE,
+	ui().draw_text_full(container(), _LANGUAGE_CORE_TRANS_("Software part selection:"), 0.0f, 0.0f, 1.0f, ui::text_layout::CENTER, ui::text_layout::TRUNCATE,
 									mame_ui_manager::NONE, rgb_t::white(), rgb_t::black(), &width, nullptr);
 	width += 2 * UI_BOX_LR_BORDER;
 	float maxwidth = std::max(origx2 - origx1, width);
@@ -1335,7 +1335,7 @@ void software_parts::custom_render(void *selectedref, float top, float bottom, f
 	y1 += UI_BOX_TB_BORDER;
 
 	// draw the text within it
-	ui().draw_text_full(container(), _("Software part selection:"), x1, y1, x2 - x1, ui::text_layout::CENTER, ui::text_layout::TRUNCATE,
+	ui().draw_text_full(container(), _LANGUAGE_CORE_TRANS_("Software part selection:"), x1, y1, x2 - x1, ui::text_layout::CENTER, ui::text_layout::TRUNCATE,
 									mame_ui_manager::NORMAL, UI_TEXT_COLOR, UI_TEXT_BG_COLOR, nullptr, nullptr);
 }
 
@@ -1456,7 +1456,7 @@ void bios_selection::handle()
 void bios_selection::custom_render(void *selectedref, float top, float bottom, float origx1, float origy1, float origx2, float origy2)
 {
 	float width;
-	ui().draw_text_full(container(), _("Bios selection:"), 0.0f, 0.0f, 1.0f, ui::text_layout::CENTER, ui::text_layout::TRUNCATE,
+	ui().draw_text_full(container(), _LANGUAGE_CORE_TRANS_("Bios selection:"), 0.0f, 0.0f, 1.0f, ui::text_layout::CENTER, ui::text_layout::TRUNCATE,
 									mame_ui_manager::NONE, rgb_t::white(), rgb_t::black(), &width, nullptr);
 	width += 2 * UI_BOX_LR_BORDER;
 	float maxwidth = std::max(origx2 - origx1, width);
@@ -1476,7 +1476,7 @@ void bios_selection::custom_render(void *selectedref, float top, float bottom, f
 	y1 += UI_BOX_TB_BORDER;
 
 	// draw the text within it
-	ui().draw_text_full(container(), _("Bios selection:"), x1, y1, x2 - x1, ui::text_layout::CENTER, ui::text_layout::TRUNCATE,
+	ui().draw_text_full(container(), _LANGUAGE_CORE_TRANS_("Bios selection:"), x1, y1, x2 - x1, ui::text_layout::CENTER, ui::text_layout::TRUNCATE,
 									mame_ui_manager::NORMAL, UI_TEXT_COLOR, UI_TEXT_BG_COLOR, nullptr, nullptr);
 }
 
@@ -1496,36 +1496,36 @@ void menu_select_software::make_topbox_text(std::string &line0, std::string &lin
 {
 	// determine the text for the header
 	int vis_item = (m_search[0] != 0) ? visible_items : (m_has_empty_start ? visible_items - 1 : visible_items);
-	line0 = string_format(_("%1$s %2$s ( %3$d / %4$d software packages )"), emulator_info::get_appname(), bare_build_version, vis_item, m_swinfo.size() - 1);
-	line1 = string_format(_("Driver: \"%1$s\" software list "), m_driver->description);
+	line0 = string_format(_LANGUAGE_CORE_TRANS_("%1$s %2$s ( %3$d / %4$d software packages )"), emulator_info::get_appname(), bare_build_version, vis_item, m_swinfo.size() - 1);
+	line1 = string_format(_LANGUAGE_CORE_TRANS_("Driver: \"%1$s\" software list "), m_driver->description);
 
 	std::string filtered;
 	if (sw_filters::actual == UI_SW_REGION && m_filter.region.ui.size() != 0)
-		filtered = string_format(_("Region: %1$s -"), m_filter.region.ui[m_filter.region.actual]);
+		filtered = string_format(_LANGUAGE_CORE_TRANS_("Region: %1$s -"), m_filter.region.ui[m_filter.region.actual]);
 	else if (sw_filters::actual == UI_SW_PUBLISHERS)
-		filtered = string_format(_("Publisher: %1$s -"), m_filter.publisher.ui[m_filter.publisher.actual]);
+		filtered = string_format(_LANGUAGE_CORE_TRANS_("Publisher: %1$s -"), m_filter.publisher.ui[m_filter.publisher.actual]);
 	else if (sw_filters::actual == UI_SW_YEARS)
-		filtered = string_format(_("Year: %1$s -"), m_filter.year.ui[m_filter.year.actual]);
+		filtered = string_format(_LANGUAGE_CORE_TRANS_("Year: %1$s -"), m_filter.year.ui[m_filter.year.actual]);
 	else if (sw_filters::actual == UI_SW_LIST)
-		filtered = string_format(_("Software List: %1$s -"), m_filter.swlist.description[m_filter.swlist.actual]);
+		filtered = string_format(_LANGUAGE_CORE_TRANS_("Software List: %1$s -"), m_filter.swlist.description[m_filter.swlist.actual]);
 	else if (sw_filters::actual == UI_SW_TYPE)
-		filtered = string_format(_("Device type: %1$s -"), m_filter.type.ui[m_filter.type.actual]);
+		filtered = string_format(_LANGUAGE_CORE_TRANS_("Device type: %1$s -"), m_filter.type.ui[m_filter.type.actual]);
 
-	line2 = string_format(_("%s Search: %s_"), filtered, m_search);
+	line2 = string_format(_LANGUAGE_CORE_TRANS_("%s Search: %s_"), filtered, m_search);
 }
 
 
 std::string menu_select_software::make_driver_description(game_driver const &driver) const
 {
 	// first line is game description
-	return string_format(_("%1$-.100s"), driver.description);
+	return string_format(_LANGUAGE_CORE_TRANS_("%1$-.100s"), driver.description);
 }
 
 
 std::string menu_select_software::make_software_description(ui_software_info const &software) const
 {
 	// first line is long name
-	return string_format(_("%1$-.100s"), software.longname);
+	return string_format(_LANGUAGE_CORE_TRANS_("%1$-.100s"), software.longname);
 }
 
 } // namespace ui

@@ -37,6 +37,7 @@
 #include "emualloc.h"
 #include "corestr.h"
 #include "bitmap.h"
+#include "ui/lang.h"
 
 
 //**************************************************************************

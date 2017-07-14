@@ -101,7 +101,7 @@ void menu_directory::handle()
 void menu_directory::populate(float &customtop, float &custombottom)
 {
 	for (auto & elem : s_folders)
-		item_append(_(elem.name), "", 0, (void *)(uintptr_t)elem.action);
+		item_append(_LANGUAGE_CORE_TRANS_(elem.name), "", 0, (void *)(uintptr_t)elem.action);
 
 	item_append(menu_item_type::SEPARATOR);
 	customtop = ui().get_line_height() + 3.0f * UI_BOX_TB_BORDER;
@@ -116,7 +116,7 @@ void menu_directory::custom_render(void *selectedref, float top, float bottom, f
 	float width;
 
 	// get the size of the text
-	ui().draw_text_full(container(), _("Folders Setup"), 0.0f, 0.0f, 1.0f, ui::text_layout::CENTER, ui::text_layout::TRUNCATE,
+	ui().draw_text_full(container(), _LANGUAGE_CORE_TRANS_("Folders Setup"), 0.0f, 0.0f, 1.0f, ui::text_layout::CENTER, ui::text_layout::TRUNCATE,
 		mame_ui_manager::NONE, rgb_t::white(), rgb_t::black(), &width, nullptr);
 	width += (2.0f * UI_BOX_LR_BORDER) + 0.01f;
 	float maxwidth = std::max(width, origx2 - origx1);
@@ -136,7 +136,7 @@ void menu_directory::custom_render(void *selectedref, float top, float bottom, f
 	y1 += UI_BOX_TB_BORDER;
 
 	// draw the text within it
-	ui().draw_text_full(container(), _("Folders Setup"), x1, y1, x2 - x1, ui::text_layout::CENTER, ui::text_layout::TRUNCATE,
+	ui().draw_text_full(container(), _LANGUAGE_CORE_TRANS_("Folders Setup"), x1, y1, x2 - x1, ui::text_layout::CENTER, ui::text_layout::TRUNCATE,
 		mame_ui_manager::NORMAL, UI_TEXT_COLOR, UI_TEXT_BG_COLOR, nullptr, nullptr);
 }
 
@@ -183,7 +183,7 @@ void menu_display_actual::handle()
 
 void menu_display_actual::populate(float &customtop, float &custombottom)
 {
-	m_tempbuf = string_format(_("Current %1$s Folders"), _(s_folders[m_ref].name));
+	m_tempbuf = string_format(_LANGUAGE_CORE_TRANS_("Current %1$s Folders"), _LANGUAGE_CORE_TRANS_(s_folders[m_ref].name));
 	if (ui().options().exists(s_folders[m_ref].option))
 		m_searchpath.assign(ui().options().value(s_folders[m_ref].option));
 	else
@@ -195,10 +195,10 @@ void menu_display_actual::populate(float &customtop, float &custombottom)
 	while (path.next(curpath, nullptr))
 		m_folders.push_back(curpath);
 
-	item_append((s_folders[m_ref].action == CHANGE) ? _("Change Folder") : _("Add Folder"), "", 0, (void *)ADD_CHANGE);
+	item_append((s_folders[m_ref].action == CHANGE) ? _LANGUAGE_CORE_TRANS_("Change Folder") : _LANGUAGE_CORE_TRANS_("Add Folder"), "", 0, (void *)ADD_CHANGE);
 
 	if (m_folders.size() > 1)
-		item_append(_("Remove Folder"), "", 0, (void *)REMOVE);
+		item_append(_LANGUAGE_CORE_TRANS_("Remove Folder"), "", 0, (void *)REMOVE);
 
 	item_append(menu_item_type::SEPARATOR);
 	customtop = (m_folders.size() + 1) * ui().get_line_height() + 6.0f * UI_BOX_TB_BORDER;
@@ -482,9 +482,9 @@ void menu_add_change_folder::custom_render(void *selectedref, float top, float b
 	std::string tempbuf[2];
 	tempbuf[0] = string_format(
 			(m_change)
-				? _("Change %1$s Folder - Search: %2$s_")
-				: _("Add %1$s Folder - Search: %2$s_"),
-			_(s_folders[m_ref].name),
+				? _LANGUAGE_CORE_TRANS_("Change %1$s Folder - Search: %2$s_")
+				: _LANGUAGE_CORE_TRANS_("Add %1$s Folder - Search: %2$s_"),
+		_LANGUAGE_CORE_TRANS_(s_folders[m_ref].name),
 			m_search);
 	tempbuf[1] = m_current_path;
 
@@ -520,7 +520,7 @@ void menu_add_change_folder::custom_render(void *selectedref, float top, float b
 	}
 
 	// bottom text
-	tempbuf[0] = _("Press TAB to set");
+	tempbuf[0] = _LANGUAGE_CORE_TRANS_("Press TAB to set");
 
 	ui().draw_text_full(container(), tempbuf[0].c_str(), 0.0f, 0.0f, 1.0f, ui::text_layout::CENTER, ui::text_layout::TRUNCATE,
 		mame_ui_manager::NONE, rgb_t::white(), rgb_t::black(), &width, nullptr);
@@ -625,7 +625,7 @@ void menu_remove_folder::populate(float &customtop, float &custombottom)
 void menu_remove_folder::custom_render(void *selectedref, float top, float bottom, float origx1, float origy1, float origx2, float origy2)
 {
 	float width;
-	std::string tempbuf = string_format(_("Remove %1$s Folder"), _(s_folders[m_ref].name));
+	std::string tempbuf = string_format(_LANGUAGE_CORE_TRANS_("Remove %1$s Folder"), _LANGUAGE_CORE_TRANS_(s_folders[m_ref].name));
 
 	// get the size of the text
 	ui().draw_text_full(container(), tempbuf.c_str(), 0.0f, 0.0f, 1.0f, ui::text_layout::CENTER, ui::text_layout::NEVER, mame_ui_manager::NONE, rgb_t::white(), rgb_t::black(), &width, nullptr);

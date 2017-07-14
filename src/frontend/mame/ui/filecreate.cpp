@@ -76,10 +76,10 @@ menu_confirm_save_as::~menu_confirm_save_as()
 
 void menu_confirm_save_as::populate(float &customtop, float &custombottom)
 {
-	item_append(_("File Already Exists - Override?"), "", FLAG_DISABLE, nullptr);
+	item_append(_LANGUAGE_CORE_TRANS_("File Already Exists - Override?"), "", FLAG_DISABLE, nullptr);
 	item_append(menu_item_type::SEPARATOR);
-	item_append(_("No"), "", 0, ITEMREF_NO);
-	item_append(_("Yes"), "", 0, ITEMREF_YES);
+	item_append(_LANGUAGE_CORE_TRANS_("No"), "", 0, ITEMREF_NO);
+	item_append(_LANGUAGE_CORE_TRANS_("Yes"), "", 0, ITEMREF_YES);
 }
 
 //-------------------------------------------------
@@ -168,19 +168,19 @@ void menu_file_create::populate(float &customtop, float &custombottom)
 	{
 		new_image_name = &m_filename;
 	}
-	item_append(_("New Image Name:"), *new_image_name, 0, ITEMREF_NEW_IMAGE_NAME);
+	item_append(_LANGUAGE_CORE_TRANS_("New Image Name:"), *new_image_name, 0, ITEMREF_NEW_IMAGE_NAME);
 
 	// do we support multiple formats?
 	if (ENABLE_FORMATS) format = m_image->formatlist().front().get();
 	if (ENABLE_FORMATS && (format != nullptr))
 	{
-		item_append(_("Image Format:"), m_current_format->description(), 0, ITEMREF_FORMAT);
+		item_append(_LANGUAGE_CORE_TRANS_("Image Format:"), m_current_format->description(), 0, ITEMREF_FORMAT);
 		m_current_format = format;
 	}
 
 	// finish up the menu
 	item_append(menu_item_type::SEPARATOR);
-	item_append(_("Create"), "", 0, ITEMREF_CREATE);
+	item_append(_LANGUAGE_CORE_TRANS_("Create"), "", 0, ITEMREF_CREATE);
 
 	customtop = ui().get_line_height() + 3.0f * UI_BOX_TB_BORDER;
 }
@@ -211,7 +211,7 @@ void menu_file_create::handle()
 					stack_pop();
 				}
 				else
-					ui().popup_time(1, "%s", _("Please enter a file extension too"));
+					ui().popup_time(1, "%s", _LANGUAGE_CORE_TRANS_("Please enter a file extension too"));
 			}
 			break;
 
@@ -263,7 +263,7 @@ menu_select_format::~menu_select_format()
 
 void menu_select_format::populate(float &customtop, float &custombottom)
 {
-	item_append(_("Select image format"), "", FLAG_DISABLE, nullptr);
+	item_append(_LANGUAGE_CORE_TRANS_("Select image format"), "", FLAG_DISABLE, nullptr);
 	for (int i = 0; i < m_total_usable; i++)
 	{
 		const floppy_image_format_t *fmt = m_formats[i];

@@ -2416,7 +2416,7 @@ void debugger_commands::execute_dasm(int ref, const std::vector<std::string> &pa
 
 	/* determine the width of the bytes */
 	device_disasm_interface *dasmintf;
-	if (!space->device().interface(dasmintf))
+	if (!space->device().interface_my(dasmintf))
 	{
 		m_console.printf("No disassembler available for %s\n", space->device().name());
 		return;
@@ -2645,7 +2645,7 @@ void debugger_commands::execute_history(int ref, const std::vector<std::string> 
 
 	/* loop over lines */
 	device_disasm_interface *dasmintf;
-	if (!space->device().interface(dasmintf))
+	if (!space->device().interface_my(dasmintf))
 	{
 		m_console.printf("No disassembler available for %s\n", space->device().name());
 		return;

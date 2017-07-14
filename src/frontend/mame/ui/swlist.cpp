@@ -77,18 +77,18 @@ void menu_software_parts::populate(float &customtop, float &custombottom)
 		software_part_menu_entry *entry1 = (software_part_menu_entry *) m_pool_alloc(sizeof(*entry1));
 		entry1->type = result::EMPTY;
 		entry1->part = nullptr;
-		item_append(_("[empty slot]"), "", 0, entry1);
+		item_append(_LANGUAGE_CORE_TRANS_("[empty slot]"), "", 0, entry1);
 
 		software_part_menu_entry *entry2 = (software_part_menu_entry *) m_pool_alloc(sizeof(*entry2));
 		entry2->type = result::FMGR;
 		entry2->part = nullptr;
-		item_append(_("[file manager]"), "", 0, entry2);
+		item_append(_LANGUAGE_CORE_TRANS_("[file manager]"), "", 0, entry2);
 
 
 		software_part_menu_entry *entry3 = (software_part_menu_entry *) m_pool_alloc(sizeof(*entry3));
 		entry3->type = result::SWLIST;
 		entry3->part = nullptr;
-		item_append(_("[software list]"), "", 0, entry3);
+		item_append(_LANGUAGE_CORE_TRANS_("[software list]"), "", 0, entry3);
 	}
 
 	for (const software_part &swpart : m_info->parts())
@@ -219,7 +219,7 @@ void menu_software_list::populate(float &customtop, float &custombottom)
 		append_software_entry(swinfo);
 
 	// add an entry to change ordering
-	item_append(_("Switch Item Ordering"), "", 0, (void *)1);
+	item_append(_LANGUAGE_CORE_TRANS_("Switch Item Ordering"), "", 0, (void *)1);
 
 	// append all of the menu entries
 	for (auto &entry : m_entrylist)
@@ -250,7 +250,7 @@ void menu_software_list::handle()
 
 			// reload the menu with the new order
 			reset(reset_options::REMEMBER_REF);
-			machine().popmessage(_("Switched Order: entries now ordered by %s"), m_ordered_by_shortname ? _("shortname") : _("description"));
+			machine().popmessage(_LANGUAGE_CORE_TRANS_("Switched Order: entries now ordered by %s"), m_ordered_by_shortname ? _LANGUAGE_CORE_TRANS_("shortname") : _LANGUAGE_CORE_TRANS_("description"));
 		}
 		// handle selections
 		else if (event->iptkey == IPT_UI_SELECT)
@@ -380,7 +380,7 @@ void menu_software::populate(float &customtop, float &custombottom)
 				if (found)
 				{
 					if (!have_compatible)
-						item_append(_("[compatible lists]"), "", FLAG_DISABLE, nullptr);
+						item_append(_LANGUAGE_CORE_TRANS_("[compatible lists]"), "", FLAG_DISABLE, nullptr);
 					item_append(swlistdev.description(), "", 0, (void *)&swlistdev);
 				}
 				have_compatible = true;

@@ -30,7 +30,15 @@ void el2_3c503_device::device_start() {
 	char mac[7];
 	uint32_t num = rand();
 	memset(m_prom, 0x57, 16);
-	sprintf(mac, "\x02\x60\x8c%c%c%c", (num >> 16) & 0xff, (num >> 8) & 0xff, num & 0xff);
+//	sprintf(mac, "\x02\x60\x8c%c%c%c", (num >> 16) & 0xff, (num >> 8) & 0xff, num & 0xff);
+	char tmp1 = (num >> 16) & 0xff;
+	char tmp2 = (num >> 8) & 0xff;
+	char tmp3 = num & 0xff;
+	char tmp4 = '\x02';
+	char tmp5 = '\x60';
+	char tmp6 = '\x8c';
+	sprintf(mac, "%c%c%c%c%c%c", tmp4, tmp5, tmp6, tmp1, tmp2, tmp3);
+
 	memcpy(m_prom, mac, 6);
 	memset(m_rom, 0, 8*1024); // empty
 	m_dp8390->set_mac(mac);

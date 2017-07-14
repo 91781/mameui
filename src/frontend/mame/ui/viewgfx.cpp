@@ -383,7 +383,7 @@ static void palette_handler(mame_ui_manager &mui, render_container &container, u
 	std::ostringstream title_buf;
 	util::stream_format(title_buf, "'%s'", palette->tag());
 	if (palette->indirect_entries() > 0)
-		title_buf << (state.palette.which ? _(" COLORS") : _(" PENS"));
+		title_buf << (state.palette.which ? _LANGUAGE_CORE_TRANS_(" COLORS") : _LANGUAGE_CORE_TRANS_(" PENS"));
 
 	// if the mouse pointer is over one of our cells, add some info about the corresponding palette entry
 	int32_t mouse_target_x, mouse_target_y;

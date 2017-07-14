@@ -375,13 +375,13 @@ void menu_select_game::handle()
 					if (!mfav.isgame_favorite(driver))
 					{
 						mfav.add_favorite_game(driver);
-						machine().popmessage(_("%s\n added to favorites list."), driver->description);
+						machine().popmessage(_LANGUAGE_CORE_TRANS_("%s\n added to favorites list."), driver->description);
 					}
 
 					else
 					{
 						mfav.remove_favorite_game();
-						machine().popmessage(_("%s\n removed from favorites list."), driver->description);
+						machine().popmessage(_LANGUAGE_CORE_TRANS_("%s\n removed from favorites list."), driver->description);
 					}
 				}
 			}
@@ -390,7 +390,7 @@ void menu_select_game::handle()
 				ui_software_info *swinfo = (ui_software_info *)menu_event->itemref;
 				if ((uintptr_t)swinfo > skip_main_items)
 				{
-					machine().popmessage(_("%s\n removed from favorites list."), swinfo->longname.c_str());
+					machine().popmessage(_LANGUAGE_CORE_TRANS_("%s\n removed from favorites list."), swinfo->longname.c_str());
 					mame_machine_manager::instance()->favorite().remove_favorite_game(*swinfo);
 					reset(reset_options::SELECT_FIRST);
 				}
@@ -459,7 +459,7 @@ void menu_select_game::handle()
 
 	// if we're in an error state, overlay an error message
 	if (m_ui_error)
-		ui().draw_text_box(container(), _("The selected machine is missing one or more required ROM or CHD images. "
+		ui().draw_text_box(container(), _LANGUAGE_CORE_TRANS_("The selected machine is missing one or more required ROM or CHD images. "
 				"Please select a different machine.\n\nPress any key to continue."), ui::text_layout::CENTER, 0.5f, 0.5f, UI_RED_COLOR);
 
 	// handle filters selection from key shortcuts
@@ -592,12 +592,12 @@ void menu_select_game::populate(float &customtop, float &custombottom)
 	// add special items
 	if (stack_has_special_main_menu())
 	{
-		item_append(_("Configure Options"), "", flags_ui, (void *)(uintptr_t)CONF_OPTS);
-		item_append(_("Configure Machine"), "", flags_ui, (void *)(uintptr_t)CONF_MACHINE);
+		item_append(_LANGUAGE_CORE_TRANS_("Configure Options"), "", flags_ui, (void *)(uintptr_t)CONF_OPTS);
+		item_append(_LANGUAGE_CORE_TRANS_("Configure Machine"), "", flags_ui, (void *)(uintptr_t)CONF_MACHINE);
 		skip_main_items = 2;
 		if (machine().options().plugins())
 		{
-			item_append(_("Plugins"), "", flags_ui, (void *)(uintptr_t)CONF_PLUGINS);
+			item_append(_LANGUAGE_CORE_TRANS_("Plugins"), "", flags_ui, (void *)(uintptr_t)CONF_PLUGINS);
 			skip_main_items++;
 		}
 	}
@@ -1232,47 +1232,47 @@ void menu_select_game::general_info(const game_driver *driver, std::string &buff
 {
 	std::ostringstream str;
 
-	util::stream_format(str, _("Romset: %1$-.100s\n"), driver->name);
-	util::stream_format(str, _("Year: %1$s\n"), driver->year);
-	util::stream_format(str, _("Manufacturer: %1$-.100s\n"), driver->manufacturer);
+	util::stream_format(str, _LANGUAGE_CORE_TRANS_("Romset: %1$-.100s\n"), driver->name);
+	util::stream_format(str, _LANGUAGE_CORE_TRANS_("Year: %1$s\n"), driver->year);
+	util::stream_format(str, _LANGUAGE_CORE_TRANS_("Manufacturer: %1$-.100s\n"), driver->manufacturer);
 
 	int cloneof = driver_list::non_bios_clone(*driver);
 	if (cloneof != -1)
-		util::stream_format(str, _("Driver is Clone of: %1$-.100s\n"), driver_list::driver(cloneof).description);
+		util::stream_format(str, _LANGUAGE_CORE_TRANS_("Driver is Clone of: %1$-.100s\n"), driver_list::driver(cloneof).description);
 	else
-		str << _("Driver is Parent:\n");
+		str << _LANGUAGE_CORE_TRANS_("Driver is Parent:\n");
 
 	if (driver->flags & MACHINE_NOT_WORKING)
-		str << _("Overall: NOT WORKING\n");
+		str << _LANGUAGE_CORE_TRANS_("Overall: NOT WORKING\n");
 	else if (driver->flags & MACHINE_UNEMULATED_PROTECTION)
-		str << _("Overall: Unemulated Protection\n");
+		str << _LANGUAGE_CORE_TRANS_("Overall: Unemulated Protection\n");
 	else
-		str << _("Overall: Working\n");
+		str << _LANGUAGE_CORE_TRANS_("Overall: Working\n");
 
 	if (driver->flags & MACHINE_IMPERFECT_COLORS)
-		str << _("Graphics: Imperfect Colors\n");
+		str << _LANGUAGE_CORE_TRANS_("Graphics: Imperfect Colors\n");
 	else if (driver->flags & MACHINE_WRONG_COLORS)
 		str << ("Graphics: Wrong Colors\n");
 	else if (driver->flags & MACHINE_IMPERFECT_GRAPHICS)
-		str << _("Graphics: Imperfect\n");
+		str << _LANGUAGE_CORE_TRANS_("Graphics: Imperfect\n");
 	else
-		str << _("Graphics: OK\n");
+		str << _LANGUAGE_CORE_TRANS_("Graphics: OK\n");
 
 	if (driver->flags & MACHINE_NO_SOUND)
-		str << _("Sound: Unimplemented\n");
+		str << _LANGUAGE_CORE_TRANS_("Sound: Unimplemented\n");
 	else if (driver->flags & MACHINE_IMPERFECT_SOUND)
-		str << _("Sound: Imperfect\n");
+		str << _LANGUAGE_CORE_TRANS_("Sound: Imperfect\n");
 	else
-		str << _("Sound: OK\n");
+		str << _LANGUAGE_CORE_TRANS_("Sound: OK\n");
 
-	util::stream_format(str, _("Driver is Skeleton: %1$s\n"), ((driver->flags & MACHINE_IS_SKELETON) ? _("Yes") : _("No")));
-	util::stream_format(str, _("Game is Mechanical: %1$s\n"), ((driver->flags & MACHINE_MECHANICAL) ? _("Yes") : _("No")));
-	util::stream_format(str, _("Requires Artwork: %1$s\n"), ((driver->flags & MACHINE_REQUIRES_ARTWORK) ? _("Yes") : _("No")));
-	util::stream_format(str, _("Requires Clickable Artwork: %1$s\n"), ((driver->flags & MACHINE_CLICKABLE_ARTWORK) ? _("Yes") : _("No")));
-	util::stream_format(str, _("Support Cocktail: %1$s\n"), ((driver->flags & MACHINE_NO_COCKTAIL) ? _("Yes") : _("No")));
-	util::stream_format(str, _("Driver is Bios: %1$s\n"), ((driver->flags & MACHINE_IS_BIOS_ROOT) ? _("Yes") : _("No")));
-	util::stream_format(str, _("Support Save: %1$s\n"), ((driver->flags & MACHINE_SUPPORTS_SAVE) ? _("Yes") : _("No")));
-	util::stream_format(str, _("Screen Orientation: %1$s\n"), ((driver->flags & ORIENTATION_SWAP_XY) ? _("Vertical") : _("Horizontal")));
+	util::stream_format(str, _LANGUAGE_CORE_TRANS_("Driver is Skeleton: %1$s\n"), ((driver->flags & MACHINE_IS_SKELETON) ? _LANGUAGE_CORE_TRANS_("Yes") : _LANGUAGE_CORE_TRANS_("No")));
+	util::stream_format(str, _LANGUAGE_CORE_TRANS_("Game is Mechanical: %1$s\n"), ((driver->flags & MACHINE_MECHANICAL) ? _LANGUAGE_CORE_TRANS_("Yes") : _LANGUAGE_CORE_TRANS_("No")));
+	util::stream_format(str, _LANGUAGE_CORE_TRANS_("Requires Artwork: %1$s\n"), ((driver->flags & MACHINE_REQUIRES_ARTWORK) ? _LANGUAGE_CORE_TRANS_("Yes") : _LANGUAGE_CORE_TRANS_("No")));
+	util::stream_format(str, _LANGUAGE_CORE_TRANS_("Requires Clickable Artwork: %1$s\n"), ((driver->flags & MACHINE_CLICKABLE_ARTWORK) ? _LANGUAGE_CORE_TRANS_("Yes") : _LANGUAGE_CORE_TRANS_("No")));
+	util::stream_format(str, _LANGUAGE_CORE_TRANS_("Support Cocktail: %1$s\n"), ((driver->flags & MACHINE_NO_COCKTAIL) ? _LANGUAGE_CORE_TRANS_("Yes") : _LANGUAGE_CORE_TRANS_("No")));
+	util::stream_format(str, _LANGUAGE_CORE_TRANS_("Driver is Bios: %1$s\n"), ((driver->flags & MACHINE_IS_BIOS_ROOT) ? _LANGUAGE_CORE_TRANS_("Yes") : _LANGUAGE_CORE_TRANS_("No")));
+	util::stream_format(str, _LANGUAGE_CORE_TRANS_("Support Save: %1$s\n"), ((driver->flags & MACHINE_SUPPORTS_SAVE) ? _LANGUAGE_CORE_TRANS_("Yes") : _LANGUAGE_CORE_TRANS_("No")));
+	util::stream_format(str, _LANGUAGE_CORE_TRANS_("Screen Orientation: %1$s\n"), ((driver->flags & ORIENTATION_SWAP_XY) ? _LANGUAGE_CORE_TRANS_("Vertical") : _LANGUAGE_CORE_TRANS_("Horizontal")));
 	bool found = false;
 	auto entries = rom_build_entries(driver->rom);
 	for (const rom_entry &rom : entries)
@@ -1281,7 +1281,7 @@ void menu_select_game::general_info(const game_driver *driver, std::string &buff
 			found = true;
 			break;
 		}
-	util::stream_format(str, _("Requires CHD: %1$s\n"), found ? _("Yes") : _("No"));
+	util::stream_format(str, _LANGUAGE_CORE_TRANS_("Requires CHD: %1$s\n"), found ? _LANGUAGE_CORE_TRANS_("Yes") : _LANGUAGE_CORE_TRANS_("No"));
 
 	// audit the game first to see if we're going to work
 	if (ui().options().info_audit())
@@ -1294,19 +1294,19 @@ void menu_select_game::general_info(const game_driver *driver, std::string &buff
 
 		// if everything looks good, schedule the new driver
 		if (summary == media_auditor::CORRECT || summary == media_auditor::BEST_AVAILABLE || summary == media_auditor::NONE_NEEDED)
-			str << _("Roms Audit Pass: OK\n");
+			str << _LANGUAGE_CORE_TRANS_("Roms Audit Pass: OK\n");
 		else
-			str << _("Roms Audit Pass: BAD\n");
+			str << _LANGUAGE_CORE_TRANS_("Roms Audit Pass: BAD\n");
 
 		if (summary_samples == media_auditor::NONE_NEEDED)
-			str << _("Samples Audit Pass: None Needed\n");
+			str << _LANGUAGE_CORE_TRANS_("Samples Audit Pass: None Needed\n");
 		else if (summary_samples == media_auditor::CORRECT || summary_samples == media_auditor::BEST_AVAILABLE)
-			str << _("Samples Audit Pass: OK\n");
+			str << _LANGUAGE_CORE_TRANS_("Samples Audit Pass: OK\n");
 		else
-			str << _("Samples Audit Pass: BAD\n");
+			str << _LANGUAGE_CORE_TRANS_("Samples Audit Pass: BAD\n");
 	}
 	else
-		str << _("Roms Audit Pass: Disabled\nSamples Audit Pass: Disabled\n");
+		str << _LANGUAGE_CORE_TRANS_("Roms Audit Pass: Disabled\nSamples Audit Pass: Disabled\n");
 
 	std::istringstream istr(str.str());
 	std::string line;
@@ -1684,7 +1684,7 @@ void menu_select_game::make_topbox_text(std::string &line0, std::string &line1, 
 {
 	inifile_manager &inifile = mame_machine_manager::instance()->inifile();
 
-	line0 = string_format(_("%1$s %2$s ( %3$d / %4$d machines (%5$d BIOS) )"),
+	line0 = string_format(_LANGUAGE_CORE_TRANS_("%1$s %2$s ( %3$d / %4$d machines (%5$d BIOS) )"),
 			emulator_info::get_appname(),
 			bare_build_version,
 			visible_items,
@@ -1694,20 +1694,20 @@ void menu_select_game::make_topbox_text(std::string &line0, std::string &line1, 
 	std::string filtered;
 	if (main_filters::actual == FILTER_CATEGORY && inifile.total() > 0)
 	{
-		filtered = string_format(_("%1$s (%2$s - %3$s) - "),
+		filtered = string_format(_LANGUAGE_CORE_TRANS_("%1$s (%2$s - %3$s) - "),
 				main_filters::text[main_filters::actual],
 				inifile.get_file(),
 				inifile.get_category());
 	}
 	else if (main_filters::actual == FILTER_MANUFACTURER)
 	{
-		filtered = string_format(_("%1$s (%2$s) - "),
+		filtered = string_format(_LANGUAGE_CORE_TRANS_("%1$s (%2$s) - "),
 				main_filters::text[main_filters::actual],
 				c_mnfct::ui[c_mnfct::actual]);
 	}
 	else if (main_filters::actual == FILTER_YEAR)
 	{
-		filtered = string_format(_("%1$s (%2$s) - "),
+		filtered = string_format(_LANGUAGE_CORE_TRANS_("%1$s (%2$s) - "),
 				main_filters::text[main_filters::actual],
 				c_year::ui[c_year::actual]);
 	}
@@ -1716,7 +1716,7 @@ void menu_select_game::make_topbox_text(std::string &line0, std::string &line1, 
 	if (isfavorite())
 		line1.clear();
 	else
-		line1 = string_format(_("%1$s Search: %2$s_"), filtered, m_search);
+		line1 = string_format(_LANGUAGE_CORE_TRANS_("%1$s Search: %2$s_"), filtered, m_search);
 
 	line2.clear();
 }
@@ -1725,14 +1725,14 @@ void menu_select_game::make_topbox_text(std::string &line0, std::string &line1, 
 std::string menu_select_game::make_driver_description(game_driver const &driver) const
 {
 	// first line is game name
-	return string_format(_("Romset: %1$-.100s"), driver.name);
+	return string_format(_LANGUAGE_CORE_TRANS_("Romset: %1$-.100s"), driver.name);
 }
 
 
 std::string menu_select_game::make_software_description(ui_software_info const &software) const
 {
 	// first line is system
-	return string_format(_("System: %1$-.100s"), software.driver->description);
+	return string_format(_LANGUAGE_CORE_TRANS_("System: %1$-.100s"), software.driver->description);
 }
 
 } // namespace ui

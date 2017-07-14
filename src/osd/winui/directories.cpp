@@ -97,6 +97,8 @@ INT_PTR CALLBACK DirectoriesDialogProc(HWND hDlg, UINT Msg, WPARAM wParam, LPARA
 	switch (Msg)
 	{
 	case WM_INITDIALOG:
+		TranslateDialog(hDlg, lParam, FALSE);
+
 		return (BOOL)HANDLE_WM_INITDIALOG(hDlg, wParam, lParam, Directories_OnInitDialog);
 
 	case WM_COMMAND:
@@ -283,7 +285,7 @@ static BOOL Directories_OnInitDialog(HWND hDlg, HWND hwndFocus, LPARAM lParam)
 		t_s = ui_wstring_from_utf8(g_directoryInfo[i].lpName);
 		if( !t_s )
 			return FALSE;
-		(void)ComboBox_InsertString(GetDlgItem(hDlg, IDC_DIR_COMBO), 0, win_tstring_strdup(t_s));
+		(void)ComboBox_InsertString(GetDlgItem(hDlg, IDC_DIR_COMBO), 0, _UIW(win_tstring_strdup(t_s)));
 		free(t_s);
 		t_s = NULL;
 	}
@@ -597,7 +599,7 @@ static BOOL Directories_OnEndLabelEdit(HWND hDlg, NMHDR* pNMHDR)
 		}
 		else
 		{
-			if (MessageBox(NULL, TEXT("Directory does not exist, continue anyway?"), TEXT(MAMEUINAME), MB_OKCANCEL) == IDOK)
+			if (MessageBox(NULL, _UIW(TEXT("Directory does not exist, continue anyway?")), TEXT(MAMEUINAME), MB_OKCANCEL) == IDOK)
 				bResult = TRUE;
 		}
 	}
@@ -730,7 +732,7 @@ BOOL BrowseForDirectory(HWND hwnd, LPCTSTR pStartDir, TCHAR* pResult)
 	Info.hwndOwner = hwnd;
 	Info.pidlRoot = NULL;
 	Info.pszDisplayName = buf;
-	Info.lpszTitle = TEXT("Select a directory:");
+	Info.lpszTitle = _UIW(TEXT("Select a directory:"));
 	Info.ulFlags = BIF_RETURNONLYFSDIRS | BIF_USENEWUI;
 	Info.lpfn = BrowseCallbackProc;
 	Info.lParam = (LPARAM)pStartDir;

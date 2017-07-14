@@ -89,7 +89,7 @@ void menu_cheat::handle()
 				case IPT_UI_DOWN:
 					string = curcheat->comment();
 					if (string != nullptr && string[0] != 0)
-						machine().popmessage(_("Cheat Comment:\n%s"), string);
+						machine().popmessage(_LANGUAGE_CORE_TRANS_("Cheat Comment:\n%s"), string);
 					break;
 			}
 		}
@@ -102,7 +102,7 @@ void menu_cheat::handle()
 
 			/* display the reloaded cheats */
 			reset(reset_options::REMEMBER_REF);
-			machine().popmessage(_("All cheats reloaded"));
+			machine().popmessage(_LANGUAGE_CORE_TRANS_("All cheats reloaded"));
 		}
 
 		/* handle autofire menu */
@@ -133,7 +133,7 @@ void menu_cheat::populate(float &customtop, float &custombottom)
 	std::string subtext;
 
 	// add the autofire menu
-	item_append(_("Autofire Settings"), "", 0, (void *)ITEMREF_CHEATS_AUTOFIRE_SETTINGS);
+	item_append(_LANGUAGE_CORE_TRANS_("Autofire Settings"), "", 0, (void *)ITEMREF_CHEATS_AUTOFIRE_SETTINGS);
 
 	/* add a separator */
 	item_append(menu_item_type::SEPARATOR);
@@ -154,10 +154,10 @@ void menu_cheat::populate(float &customtop, float &custombottom)
 		item_append(menu_item_type::SEPARATOR);
 
 		/* add a reset all option */
-		item_append(_("Reset All"), "", 0, (void *)ITEMREF_CHEATS_RESET_ALL);
+		item_append(_LANGUAGE_CORE_TRANS_("Reset All"), "", 0, (void *)ITEMREF_CHEATS_RESET_ALL);
 
 		/* add a reload all cheats option */
-		item_append(_("Reload All"), "", 0, (void *)ITEMREF_CHEATS_RELOAD_ALL);
+		item_append(_LANGUAGE_CORE_TRANS_("Reload All"), "", 0, (void *)ITEMREF_CHEATS_RELOAD_ALL);
 	}
 }
 
@@ -270,7 +270,7 @@ void menu_autofire::populate(float &customtop, float &custombottom)
 
 	/* add autofire toggle item */
 	bool autofire_toggle = machine().ioport().get_autofire_toggle();
-	item_append(_("Autofire Status"), (autofire_toggle ? _("Disabled") : _("Enabled")),
+	item_append(_LANGUAGE_CORE_TRANS_("Autofire Status"), (autofire_toggle ? _LANGUAGE_CORE_TRANS_("Disabled") : _LANGUAGE_CORE_TRANS_("Enabled")),
 			(autofire_toggle ? FLAG_RIGHT_ARROW : FLAG_LEFT_ARROW), (void *)ITEMREF_AUTOFIRE_STATUS);
 
 	/* iterate over the input ports and add autofire toggle items */
@@ -296,13 +296,13 @@ void menu_autofire::populate(float &customtop, float &custombottom)
 				if (!autofire_toggle)
 				{
 					// item is enabled and can be switched to values on/off
-					item_append(field.name(), (settings.autofire ? _("On") : _("Off")),
+					item_append(field.name(), (settings.autofire ? _LANGUAGE_CORE_TRANS_("On") : _LANGUAGE_CORE_TRANS_("Off")),
 							(settings.autofire ? FLAG_LEFT_ARROW : FLAG_RIGHT_ARROW), (void *)&field);
 				}
 				else
 				{
 					// item is disabled
-					item_append(field.name(), (settings.autofire ? _("On") : _("Off")),
+					item_append(field.name(), (settings.autofire ? _LANGUAGE_CORE_TRANS_("On") : _LANGUAGE_CORE_TRANS_("Off")),
 							FLAG_DISABLE | FLAG_INVERT, nullptr);
 				}
 			}
@@ -313,7 +313,7 @@ void menu_autofire::populate(float &customtop, float &custombottom)
 	if (menu_items==0)
 	{
 		item_append(menu_item_type::SEPARATOR);
-		item_append(_("No buttons found on this machine!"), "", FLAG_DISABLE, nullptr);
+		item_append(_LANGUAGE_CORE_TRANS_("No buttons found on this machine!"), "", FLAG_DISABLE, nullptr);
 	}
 
 	/* add a separator */
@@ -324,11 +324,11 @@ void menu_autofire::populate(float &customtop, float &custombottom)
 	snprintf(temp_text, ARRAY_LENGTH(temp_text), "%d = %.2f Hz", value, (float)refresh/value);
 	if (!autofire_toggle)
 	{
-		item_append(_("Autofire Delay"), temp_text, FLAG_LEFT_ARROW | FLAG_RIGHT_ARROW, (void *)ITEMREF_AUTOFIRE_DELAY);
+		item_append(_LANGUAGE_CORE_TRANS_("Autofire Delay"), temp_text, FLAG_LEFT_ARROW | FLAG_RIGHT_ARROW, (void *)ITEMREF_AUTOFIRE_DELAY);
 	}
 	else
 	{
-		item_append(_("Autofire Delay"), temp_text, FLAG_DISABLE | FLAG_INVERT, nullptr);
+		item_append(_LANGUAGE_CORE_TRANS_("Autofire Delay"), temp_text, FLAG_DISABLE | FLAG_INVERT, nullptr);
 	}
 
 	/* add a separator */

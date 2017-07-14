@@ -113,7 +113,7 @@ void menu_control_device_image::test_create(bool &can_create, bool &need_confirm
 
 		case osd::directory::entry::entry_type::DIR:
 			// a directory exists here - we can't save over it
-			ui().popup_time(5, "%s", _("Cannot save over directory"));
+			ui().popup_time(5, "%s", _LANGUAGE_CORE_TRANS_("Cannot save over directory"));
 			can_create = false;
 			need_confirm = false;
 			break;
@@ -146,7 +146,7 @@ void menu_control_device_image::load_software_part()
 	}
 	else
 	{
-		machine().popmessage(_("The software selected is missing one or more required ROM or CHD images. Please select a different one."));
+		machine().popmessage(_LANGUAGE_CORE_TRANS_("The software selected is missing one or more required ROM or CHD images. Please select a different one."));
 		m_state = SELECT_SOFTLIST;
 	}
 }

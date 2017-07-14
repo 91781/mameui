@@ -570,7 +570,8 @@ static int is_null_or_empty(const char *s)
 // Places the specified image in the specified slot; nID = -1 means don't matter
 static void MessSpecifyImage(int drvindex, const device_image_interface *device, LPCSTR pszFilename)
 {
-	const char *s, *file_extension;
+	const char *s;// , *file_extension;
+	const char *file_extension = NULL;
 	windows_options o;
 	load_options(o, OPTIONS_GAME, drvindex);
 
@@ -1165,7 +1166,8 @@ static BOOL DevView_GetOpenItemName(HWND hwndDevView, const machine_config *conf
 
 	// This crappy code is typical of what you get with strings in c++
 	// All we want to do is get the Item name out of the full path
-	char t2[nFilenameLength];
+//	char t2[nFilenameLength];
+	char* t2 = new char[nFilenameLength];
 	wcstombs(t2, pszFilename, nFilenameLength-1); // convert wide string to a normal one
 	std::string t3 = t2; // then convert to a c++ string so we can manipulate it
 	t1 = t3.find(".zip"); // get rid of zip name and anything after
@@ -1185,6 +1187,8 @@ static BOOL DevView_GetOpenItemName(HWND hwndDevView, const machine_config *conf
 	strcpy(g_szSelectedDevice, opt_name.c_str()); // get media-device name (brief_instance_name is ok too)
 
 	free(t_s);
+	delete[] t2;
+	t2 = NULL;
 	return bResult;
 }
 

@@ -7,7 +7,7 @@
 /* Get title string to display in the top of the property page,
  * Called also in ui_audit.c
  */
-char* GameInfoTitle(OPTIONS_TYPE opt_type, UINT nIndex);
+LPWSTR GameInfoTitle(OPTIONS_TYPE opt_type, UINT nIndex);
 
 /* Called in winui.c to create the property page */
 void InitPropertyPage(HINSTANCE hInst, HWND hWnd, HICON hIcon, OPTIONS_TYPE opt_type, int folder_id, int game_num);
@@ -22,7 +22,7 @@ void InitDefaultPropertyPage(HINSTANCE hInst, HWND hWnd);
 DWORD_PTR GetHelpIDs(void);
 
 /* Get Game status text string */
-const char* GameInfoStatus(int driver_index, BOOL bRomStatus);
+LPWSTR GameInfoStatus(int driver_index, BOOL bRomStatus);
 
 /* Property sheet info for layout.c */
 typedef struct

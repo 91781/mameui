@@ -505,6 +505,25 @@ void SetSelectedSoftware(int driver_index, const machine_config *config, const d
 void SetCurrentSoftwareTab(const char *shortname);
 const char *GetCurrentSoftwareTab(void);
 
+/***************************************************************************
+MAME Plus! specific code
+***************************************************************************/
+#ifdef UNICODE
+WCHAR *options_get_wstring(winui_options &opts, const char *name);
+void options_set_wstring(winui_options &opts, const char *name, const WCHAR *value, int priority);
+WCHAR *options_get_wstring(windows_options &opts, const char *name);
+void options_set_wstring(windows_options &opts, const char *name, const WCHAR *value, int priority);
+#endif /* UNICODE */
+
+int GetLangcode(void);
+void SetLangcode(int langcode);
+
+BOOL UseLangList(void);
+void SetUseLangList(BOOL is_use);
+
+const WCHAR *GetLanguageDir(void);
+void SetLanguageDir(const WCHAR *path);
+
 
 #endif
 

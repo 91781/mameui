@@ -143,6 +143,9 @@ b) Exit the dialog.
  * Local function prototypes
  **************************************************************/
 
+ //mamep: translate dialog
+static int CALLBACK PropSheetCallbackProc(HWND hDlg, UINT Msg, LPARAM lParam);
+
 static void SetSamplesEnabled(HWND hWnd, int nIndex, BOOL bSoundEnabled);
 static void InitializeOptions(HWND hDlg);
 static void InitializeMisc(HWND hDlg);
@@ -163,8 +166,10 @@ static void UpdateProperties(HWND hDlg, datamap *map, windows_options &opts);
 static void PropToOptions(HWND hWnd, windows_options &o);
 static void OptionsToProp(HWND hWnd, windows_options &o);
 static void SetPropEnabledControls(HWND hWnd);
+#if 0 //mamep: use standard combobox
 static BOOL SelectEffect(HWND hWnd);
 static BOOL ResetEffect(HWND hWnd);
+#endif
 static BOOL SelectJoystickMap(HWND hWnd);
 static BOOL ResetJoystickMap(HWND hWnd);
 static BOOL SelectDebugscript(HWND hWnd);
@@ -450,9 +455,10 @@ void InitDefaultPropertyPage(HINSTANCE hInst, HWND hWnd)
 	/* Fill in the property sheet header */
 	pshead.hwndParent   = hWnd;
 	pshead.dwSize       = sizeof(PROPSHEETHEADER);
-	pshead.dwFlags      = PSH_PROPSHEETPAGE | PSH_USEICONID | PSH_PROPTITLE;
+	pshead.dwFlags      = PSH_PROPSHEETPAGE | PSH_USEICONID | PSH_PROPTITLE | PSH_USECALLBACK;
+	pshead.pfnCallback = PropSheetCallbackProc;
 	pshead.hInstance    = hInst;
-	pshead.pszCaption   = TEXT("Default Game");
+	pshead.pszCaption   = _UIW(TEXT("Default Game"));
 	pshead.nStartPage   = 0;
 	pshead.pszIcon      = MAKEINTRESOURCE(IDI_MAMEUI_ICON);
 	pshead.ppsp         = pspage;
@@ -460,10 +466,10 @@ void InitDefaultPropertyPage(HINSTANCE hInst, HWND hWnd)
 	/* Create the Property sheet and display it */
 	if (PropertySheet(&pshead) == -1)
 	{
-		char temp[100];
+		WCHAR temp[100];
 		DWORD dwError = GetLastError();
-		sprintf(temp, "Property Sheet Error %d %X", (int)dwError, (int)dwError);
-		win_message_box_utf8(0, temp, "Error", IDOK);
+		swprintf(temp, _UIW(TEXT("Propery Sheet Error %d %X")), (int)dwError, (int)dwError);
+		MessageBox(0, temp, _UIW(TEXT("Error")), IDOK);
 	}
 
 	free(pspage);
@@ -479,7 +485,7 @@ void InitPropertyPageToPage(HINSTANCE hInst, HWND hWnd, HICON hIcon, OPTIONS_TYP
 {
 	PROPSHEETHEADER pshead;
 	PROPSHEETPAGE   *pspage;
-	TCHAR*          t_description = 0;
+	WCHAR*          t_description = 0;
 ///	OPTIONS_TYPE    default_type = opt_type;
 
 	if (highlight_brush == NULL)
@@ -536,13 +542,13 @@ void InitPropertyPageToPage(HINSTANCE hInst, HWND hWnd, HICON hIcon, OPTIONS_TYP
 	switch( opt_type )
 	{
 	case OPTIONS_GAME:
-		t_description = ui_wstring_from_utf8(ModifyThe(driver_list::driver(g_nGame).description));
+		t_description = UseLangList() ? _LSTW(driversw[g_nGame]->description) : driversw[g_nGame]->modify_the;
 		break;
 	case OPTIONS_SOURCE:
-		t_description = ui_wstring_from_utf8(GetDriverFilename(g_nGame));
+		t_description = (WCHAR *)GetDriverFilename(g_nGame);
 		break;
 	case OPTIONS_GLOBAL:
-		t_description = ui_wstring_from_utf8("Default Settings");
+		t_description = _UIW(TEXT("Default Settings")); //ui_wstring_from_utf8("Default Settings");
 		break;
 	default:
 		return;
@@ -555,7 +561,8 @@ void InitPropertyPageToPage(HINSTANCE hInst, HWND hWnd, HICON hIcon, OPTIONS_TYP
 	pshead.pszCaption = t_description;
 	pshead.hwndParent = hWnd;
 	pshead.dwSize     = sizeof(PROPSHEETHEADER);
-	pshead.dwFlags    = PSH_PROPSHEETPAGE | PSH_USEICONID | PSH_PROPTITLE;
+	pshead.dwFlags    = PSH_PROPSHEETPAGE | PSH_USEICONID | PSH_PROPTITLE | PSH_USECALLBACK;
+	pshead.pfnCallback = PropSheetCallbackProc;
 	pshead.hInstance  = hInst;
 	pshead.nStartPage = start_page;
 	pshead.pszIcon    = MAKEINTRESOURCE(IDI_MAMEUI_ICON);
@@ -564,13 +571,13 @@ void InitPropertyPageToPage(HINSTANCE hInst, HWND hWnd, HICON hIcon, OPTIONS_TYP
 	/* Create the Property sheet and display it */
 	if (PropertySheet(&pshead) == -1)
 	{
-		char temp[100];
+		WCHAR temp[100];
 		DWORD dwError = GetLastError();
-		sprintf(temp, "Property Sheet Error %d %X", (int)dwError, (int)dwError);
-		win_message_box_utf8(0, temp, "Error", IDOK);
+		swprintf(temp, _UIW(TEXT("Propery Sheet Error %d %X")), (int)dwError, (int)dwError);
+		MessageBox(0, temp, _UIW(TEXT("Error")), IDOK);
 	}
 
-	free(t_description);
+	//free(t_description);
 	free(pspage);
 }
 
@@ -580,9 +587,9 @@ void InitPropertyPageToPage(HINSTANCE hInst, HWND hWnd, HICON hIcon, OPTIONS_TYP
  *********************************************************************/
 
 /* Build CPU info string */
-static char *GameInfoCPU(UINT nIndex)
+static LPCWSTR GameInfoCPU(UINT nIndex)
 {
-	static char buf[1024];
+	static WCHAR buf[1024];
 	machine_config config(driver_list::driver(nIndex),pCurrentOpts);
 	ZeroMemory(buf, sizeof(buf));
 
@@ -590,29 +597,29 @@ static char *GameInfoCPU(UINT nIndex)
 	{
 		if (cpu.device().clock() >= 1000000)
 		{
-			sprintf(&buf[strlen(buf)], "%s %d.%06d MHz",
-				cpu.device().name(),
+			swprintf(&buf[wcslen(buf)], TEXT("%s %d.%06d MHz"),
+				_Unicode(cpu.device().name()),
 				cpu.device().clock() / 1000000,
 				cpu.device().clock() % 1000000);
 		}
 		else
 		{
-			sprintf(&buf[strlen(buf)], "%s %d.%03d kHz",
-				cpu.device().name(),
+			swprintf(&buf[wcslen(buf)], TEXT("%s %d.%03d kHz"),
+				_Unicode(cpu.device().name()),
 				cpu.device().clock() / 1000,
 				cpu.device().clock() % 1000);
 		}
 
-		strcat(buf, "\n");
+		wcscat(buf, TEXT("\n"));
 	}
 
 	return buf;
 }
 
 /* Build Sound system info string */
-static char *GameInfoSound(UINT nIndex)
+static LPCWSTR GameInfoSound(UINT nIndex)
 {
-	static char buf[1024];
+	static WCHAR buf[1024];
 
 	buf[0] = 0;
 
@@ -627,66 +634,92 @@ static char *GameInfoSound(UINT nIndex)
 
 		int clock = sound.device().clock();
 
-		sprintf(&buf[strlen(buf)],"%s",tmpname);
+		swprintf(&buf[wcslen(buf)],TEXT("%s"),tmpname);
 
 		if (clock)
 		{
 			if (clock >= 1000000)
 			{
-				sprintf(&buf[strlen(buf)]," %d.%06d MHz",
+				swprintf(&buf[wcslen(buf)], TEXT(" %d.%06d MHz"),
 					clock / 1000000,
 					clock % 1000000);
 			}
 			else
 			{
-				sprintf(&buf[strlen(buf)]," %d.%03d kHz",
-						clock / 1000,
-						clock % 1000);
+				swprintf(&buf[wcslen(buf)], TEXT(" %d.%03d kHz"),
+					clock / 1000,
+					clock % 1000);
 			}
 		}
 
-		strcat(buf,"\n");
+		wcscat(buf, TEXT("\n"));
 	}
 	return buf;
 }
 
+//mamep: display more info
 /* Build Display info string */
-static char *GameInfoScreen(UINT nIndex)
+static LPCWSTR GameInfoScreen(UINT nIndex)
 {
-	static char buf[1024];
+	static WCHAR buf[1024];
 	machine_config config(driver_list::driver(nIndex),pCurrentOpts);
+	screen_device_iterator iter(config.root_device());
 	memset(buf, '\0', 1024);
 
 	if (isDriverVector(&config))
-		strcpy(buf, "Vector Game");
+	{
+		const screen_device *screen = iter.first();
+		if (driver_list::driver(nIndex).flags & ORIENTATION_SWAP_XY)
+		{
+			//swprintf(buf, _UIW(TEXT("Vector (V) %f Hz (%d colors)")),
+			//		screen->refresh_attoseconds(), config.m_total_colors);
+			swprintf(buf, _UIW(TEXT("Vector (V) %f Hz")),
+				screen->refresh_attoseconds());
+		}
+		else
+		{
+			//swprintf(buf, _UIW(TEXT("Vector (H) %f Hz (%d colors)")),
+			//		screen->refresh_attoseconds(), config.m_total_colors);
+			swprintf(buf, _UIW(TEXT("Vector (H) %f Hz")),
+				screen->refresh_attoseconds());
+		}
+	}
 	else
 	{
-		screen_device_iterator iter(config.root_device());
+		//screen_device_iterator iter(config.root_device());
 		const screen_device *screen = iter.first();
 		if (screen == NULL)
-			strcpy(buf, "Screenless Game");
+			wcscpy(buf, _UIW(TEXT("Screenless Game")));
 		else
 		{
 		for (screen_device &screen : screen_device_iterator(config.root_device()))
 			{
-				char tmpbuf[256];
+				WCHAR tmpbuf[256];
 				const rectangle &visarea = screen.visible_area();
 
 				if (driver_list::driver(nIndex).flags & ORIENTATION_SWAP_XY)
 				{
-					sprintf(tmpbuf,"%d x %d (V) %f Hz\n",
-							visarea.max_y - visarea.min_y + 1,
-							visarea.max_x - visarea.min_x + 1,
-							ATTOSECONDS_TO_HZ(screen.refresh_attoseconds()));
+					//swprintf(tmpbuf, _UIW(TEXT("%d x %d (V) %f Hz (%d colors)\n")),
+					//		visarea.max_y - visarea.min_y + 1,
+					//		visarea.max_x - visarea.min_x + 1,
+					//		ATTOSECONDS_TO_HZ(screen->refresh_attoseconds()), config.m_total_colors);
+					swprintf(tmpbuf, _UIW(TEXT("%d x %d (V) %f Hz\n")),
+						visarea.max_y - visarea.min_y + 1,
+						visarea.max_x - visarea.min_x + 1,
+						ATTOSECONDS_TO_HZ(screen.refresh_attoseconds()));
 				}
 				else
 				{
-					sprintf(tmpbuf,"%d x %d (H) %f Hz\n",
-							visarea.max_x - visarea.min_x + 1,
-							visarea.max_y - visarea.min_y + 1,
-							ATTOSECONDS_TO_HZ(screen.refresh_attoseconds()));
+					//swprintf(tmpbuf, _UIW(TEXT("%d x %d (H) %f Hz (%d colors)\n")),
+					//		visarea.max_x - visarea.min_x + 1,
+					//		visarea.max_y - visarea.min_y + 1,
+					//		ATTOSECONDS_TO_HZ(screen->refresh_attoseconds()), config.m_total_colors);
+					swprintf(tmpbuf, _UIW(TEXT("%d x %d (H) %f Hz\n")),
+						visarea.max_x - visarea.min_x + 1,
+						visarea.max_y - visarea.min_y + 1,
+						ATTOSECONDS_TO_HZ(screen.refresh_attoseconds()));
 				}
-				strcat(buf, tmpbuf);
+				wcscat(buf, tmpbuf);
 			}
 		}
 	}
@@ -695,128 +728,128 @@ static char *GameInfoScreen(UINT nIndex)
 
 
 /* Build game status string */
-const char *GameInfoStatus(int driver_index, BOOL bRomStatus)
+LPWSTR GameInfoStatus(int driver_index, BOOL bRomStatus)
 {
-	static char buffer[1024];
+	static WCHAR buffer[1024];
 	int audit_result = GetRomAuditResults(driver_index);
 	memset(buffer,0,sizeof(char)*1024);
 	if ( bRomStatus )
 	{
 		if (IsAuditResultKnown(audit_result) == FALSE)
-			strcpy(buffer, "Unknown");
+			wcscpy(buffer, _UIW(TEXT("Unknown")));
 		else if (IsAuditResultYes(audit_result))
 		{
 			if (DriverIsBroken(driver_index))
 			{
-				strcpy(buffer, "Not working");
+				wcscpy(buffer, _UIW(TEXT("Not working")));
 
 				if (driver_list::driver(driver_index).flags & MACHINE_UNEMULATED_PROTECTION)
 				{
 					if (*buffer != '\0')
-						strcat(buffer, "\r\n");
-					strcat(buffer, "Game protection isn't fully emulated");
+						wcscat(buffer, TEXT("\r\n"));
+					wcscat(buffer, _UIW(TEXT("Game protection isn't fully emulated")));
 				}
 				if (driver_list::driver(driver_index).flags & MACHINE_WRONG_COLORS)
 				{
 					if (*buffer != '\0')
-						strcat(buffer, "\r\n");
-					strcat(buffer, "Colors are completely wrong");
+						wcscat(buffer, TEXT("\r\n"));
+					wcscat(buffer, _UIW(TEXT("Colors are completely wrong")));
 				}
 				if (driver_list::driver(driver_index).flags & MACHINE_IMPERFECT_COLORS)
 				{
 					if (*buffer != '\0')
-						strcat(buffer, "\r\n");
-					strcat(buffer, "Colors aren't 100% accurate");
+						wcscat(buffer, TEXT("\r\n"));
+					wcscat(buffer, _UIW(TEXT("Colors aren't 100% accurate")));
 				}
 				if (driver_list::driver(driver_index).flags & MACHINE_IMPERFECT_GRAPHICS)
 				{
 					if (*buffer != '\0')
-						strcat(buffer, "\r\n");
-					strcat(buffer, "Video emulation isn't 100% accurate");
+						wcscat(buffer, TEXT("\r\n"));
+					wcscat(buffer, _UIW(TEXT("Video emulation isn't 100% accurate")));
 				}
 				if (driver_list::driver(driver_index).flags & MACHINE_NO_SOUND)
 				{
 					if (*buffer != '\0')
-						strcat(buffer, "\r\n");
-					strcat(buffer, "Game lacks sound");
+						wcscat(buffer, TEXT("\r\n"));
+					wcscat(buffer, _UIW(TEXT("Game lacks sound")));
 				}
 				if (driver_list::driver(driver_index).flags & MACHINE_IMPERFECT_SOUND)
 				{
 					if (*buffer != '\0')
-						strcat(buffer, "\r\n");
-					strcat(buffer, "Sound emulation isn't 100% accurate");
+						wcscat(buffer, TEXT("\r\n"));
+					wcscat(buffer, _UIW(TEXT("Sound emulation isn't 100% accurate")));
 				}
 				if (driver_list::driver(driver_index).flags & MACHINE_NO_COCKTAIL)
 				{
 					if (*buffer != '\0')
-						strcat(buffer, "\r\n");
-					strcat(buffer, "Screen flipping is not supported");
+						wcscat(buffer, TEXT("\r\n"));
+					wcscat(buffer, _UIW(TEXT("Screen flipping is not supported")));
 				}
 				if (driver_list::driver(driver_index).flags & MACHINE_REQUIRES_ARTWORK)
 				{
 					if (*buffer != '\0')
-						strcat(buffer, "\r\n");
-					strcat(buffer, "Game requires artwork");
+						wcscat(buffer, TEXT("\r\n"));
+					wcscat(buffer, _UIW(TEXT("Game requires external artwork files")));
 				}
 			}
 			else
 			{
-				strcpy(buffer, "Working");
+				wcscpy(buffer, _UIW(TEXT("Working")));
 
 				if (driver_list::driver(driver_index).flags & MACHINE_UNEMULATED_PROTECTION)
 				{
 					if (*buffer != '\0')
-						strcat(buffer, "\r\n");
-					strcat(buffer, "Game protection isn't fully emulated");
+						wcscat(buffer, TEXT("\r\n"));
+					wcscat(buffer, _UIW(TEXT("Game protection isn't fully emulated")));
 				}
 				if (driver_list::driver(driver_index).flags & MACHINE_WRONG_COLORS)
 				{
 					if (*buffer != '\0')
-						strcat(buffer, "\r\n");
-					strcat(buffer, "Colors are completely wrong");
+						wcscat(buffer, TEXT("\r\n"));
+					wcscat(buffer, _UIW(TEXT("Colors are completely wrong")));
 				}
 				if (driver_list::driver(driver_index).flags & MACHINE_IMPERFECT_COLORS)
 				{
 					if (*buffer != '\0')
-						strcat(buffer, "\r\n");
-					strcat(buffer, "Colors aren't 100% accurate");
+						wcscat(buffer, TEXT("\r\n"));
+					wcscat(buffer, _UIW(TEXT("Colors aren't 100% accurate")));
 				}
 				if (driver_list::driver(driver_index).flags & MACHINE_IMPERFECT_GRAPHICS)
 				{
 					if (*buffer != '\0')
-						strcat(buffer, "\r\n");
-					strcat(buffer, "Video emulation isn't 100% accurate");
+						wcscat(buffer, TEXT("\r\n"));
+					wcscat(buffer, _UIW(TEXT("Video emulation isn't 100% accurate")));
 				}
 				if (driver_list::driver(driver_index).flags & MACHINE_NO_SOUND)
 				{
 					if (*buffer != '\0')
-						strcat(buffer, "\r\n");
-					strcat(buffer, "Game lacks sound");
+						wcscat(buffer, TEXT("\r\n"));
+					wcscat(buffer, _UIW(TEXT("Game lacks sound")));
 				}
 				if (driver_list::driver(driver_index).flags & MACHINE_IMPERFECT_SOUND)
 				{
 					if (*buffer != '\0')
-						strcat(buffer, "\r\n");
-					strcat(buffer, "Sound emulation isn't 100% accurate");
+						wcscat(buffer, TEXT("\r\n"));
+					wcscat(buffer, _UIW(TEXT("Sound emulation isn't 100% accurate")));
 				}
 				if (driver_list::driver(driver_index).flags & MACHINE_NO_COCKTAIL)
 				{
 					if (*buffer != '\0')
-						strcat(buffer, "\r\n");
-					strcat(buffer, "Screen flipping is not supported");
+						wcscat(buffer, TEXT("\r\n"));
+					wcscat(buffer, _UIW(TEXT("Screen flipping is not supported")));
 				}
 				if (driver_list::driver(driver_index).flags & MACHINE_REQUIRES_ARTWORK)
 				{
 					if (*buffer != '\0')
-						strcat(buffer, "\r\n");
-					strcat(buffer, "Game requires artwork");
+						wcscat(buffer, TEXT("\r\n"));
+					wcscat(buffer, _UIW(TEXT("Game requires external artwork files")));
 				}
 			}
 		}
 		else
 		{
 			// audit result is no
-			strcpy(buffer, "BIOS missing");
+			wcscpy(buffer, _UIW(TEXT("BIOS missing")));
 		}
 	}
 	else
@@ -824,96 +857,115 @@ const char *GameInfoStatus(int driver_index, BOOL bRomStatus)
 		//Just show the emulation flags
 		if (DriverIsBroken(driver_index))
 		{
-			strcpy(buffer, "Not working");
+			wcscpy(buffer, _UIW(TEXT("Not working")));
 		}
 		else
 		{
-			strcpy(buffer, "Working");
+			wcscpy(buffer, _UIW(TEXT("Working")));
 		}
 		if (driver_list::driver(driver_index).flags & MACHINE_UNEMULATED_PROTECTION)
 		{
 			if (*buffer != '\0')
-				strcat(buffer, "\r\n");
-			strcat(buffer, "Game protection isn't fully emulated");
+				wcscat(buffer, TEXT("\r\n"));
+			wcscat(buffer, _UIW(TEXT("Game protection isn't fully emulated")));
 		}
 		if (driver_list::driver(driver_index).flags & MACHINE_WRONG_COLORS)
 		{
 		if (*buffer != '\0')
-				strcat(buffer, "\r\n");
-			strcat(buffer, "Colors are completely wrong");
+				wcscat(buffer, TEXT("\r\n"));
+			wcscat(buffer, _UIW(TEXT("Colors are completely wrong")));
 		}
 		if (driver_list::driver(driver_index).flags & MACHINE_IMPERFECT_COLORS)
 		{
 			if (*buffer != '\0')
-				strcat(buffer, "\r\n");
-			strcat(buffer, "Colors aren't 100% accurate");
+				wcscat(buffer, TEXT("\r\n"));
+			wcscat(buffer, _UIW(TEXT("Colors aren't 100% accurate")));
 		}
 		if (driver_list::driver(driver_index).flags & MACHINE_IMPERFECT_GRAPHICS)
 		{
 			if (*buffer != '\0')
-				strcat(buffer, "\r\n");
-			strcat(buffer, "Video emulation isn't 100% accurate");
+				wcscat(buffer, TEXT("\r\n"));
+			wcscat(buffer, _UIW(TEXT("Video emulation isn't 100% accurate")));
 		}
 		if (driver_list::driver(driver_index).flags & MACHINE_NO_SOUND)
 		{
 			if (*buffer != '\0')
-				strcat(buffer, "\r\n");
-			strcat(buffer, "Game lacks sound");
+				wcscat(buffer, TEXT("\r\n"));
+			wcscat(buffer, _UIW(TEXT("Game lacks sound")));
 		}
 		if (driver_list::driver(driver_index).flags & MACHINE_IMPERFECT_SOUND)
 		{
 			if (*buffer != '\0')
-				strcat(buffer, "\r\n");
-			strcat(buffer, "Sound emulation isn't 100% accurate");
+				wcscat(buffer, TEXT("\r\n"));
+			wcscat(buffer, _UIW(TEXT("Sound emulation isn't 100% accurate")));
 		}
 		if (driver_list::driver(driver_index).flags & MACHINE_NO_COCKTAIL)
 		{
 			if (*buffer != '\0')
-				strcat(buffer, "\r\n");
-			strcat(buffer, "Screen flipping is not supported");
+				wcscat(buffer, TEXT("\r\n"));
+			wcscat(buffer, _UIW(TEXT("Screen flipping is not supported")));
 		}
 		if (driver_list::driver(driver_index).flags & MACHINE_REQUIRES_ARTWORK)
 		{
 			if (*buffer != '\0')
-				strcat(buffer, "\r\n");
-			strcat(buffer, "Game requires artwork");
+				wcscat(buffer, TEXT("\r\n"));
+			wcscat(buffer, _UIW(TEXT("Game requires external artwork files")));
 		}
 	}
 	return buffer;
 }
 
 /* Build game manufacturer string */
-static char *GameInfoManufactured(UINT nIndex)
+static LPCWSTR GameInfoManufactured(UINT nIndex)
 {
-	static char buffer[1024];
+	static WCHAR buffer[1024];
 
-	snprintf(buffer,sizeof(buffer),"%s %s",driver_list::driver(nIndex).year,driver_list::driver(nIndex).manufacturer);
+	snwprintf(buffer,sizeof(buffer), TEXT("%s %s"), driversw[nIndex]->year, UseLangList() ? _MANUFACTW(driversw[nIndex]->manufacturer) : driversw[nIndex]->manufacturer);
 	return buffer;
 }
 
+//mamep: display more info
 /* Build Game title string */
-char *GameInfoTitle(OPTIONS_TYPE opt_type, UINT nIndex)
+LPWSTR GameInfoTitle(OPTIONS_TYPE opt_type, UINT nIndex)
 {
-	static char buf[1024];
+	static WCHAR info[1024];
+	static WCHAR desc[1024];
 
 	if (OPTIONS_GLOBAL == opt_type)
-		strcpy(buf, "Global game options\nDefault options used by all games");
-	else
-	if (OPTIONS_SOURCE == opt_type)
-		strcpy(buf, "Options used by all games in the source");
-	else
+		return _UIW(TEXT("Global game options\nDefault options used by all games"));
+	
 	if (OPTIONS_VECTOR == opt_type)
-		strcpy(buf, "Global vector options");
-	else
-	if (OPTIONS_GAME == opt_type)
-		sprintf(buf, "%s\n\"%s\"", ModifyThe(driver_list::driver(nIndex).description), driver_list::driver(nIndex).name);
-	return buf;
+		return _UIW(TEXT("Vector options\nCustom options used by all games in the Vector"));
+
+	if (OPTIONS_VERTICAL == opt_type)
+		return _UIW(TEXT("Vertical options\nCustom options used by all games in the Vertical"));
+
+	if (OPTIONS_HORIZONTAL == opt_type)
+		return _UIW(TEXT("Horizontal options\nCustom options used by all games in the Horizontal"));
+
+	if (OPTIONS_SOURCE == opt_type)
+	{
+		//LPTREEFOLDER folder = GetFolderByID(g_nFolder);
+
+		//swprintf(info, _UIW(TEXT("Driver options\nCustom options used by all games in the %s")), folder->m_lpTitle);
+		//return info;
+		return _UIW(TEXT("Global game options\nDefault options used by all games"));
+	}
+
+	swprintf(desc, TEXT("%s [%s]"),
+		UseLangList() ? _LSTW(driversw[nIndex]->description) : driversw[nIndex]->modify_the, driversw[nIndex]->name);
+
+	if (!DriverIsBios(nIndex))
+		return desc;
+
+	swprintf(info, _UIW(TEXT("BIOS options\nCustom options used by all games in the %s")), desc);
+	return info;
 }
 
 /* Build game clone information string */
-static char *GameInfoCloneOf(UINT nIndex)
+static LPCWSTR GameInfoCloneOf(UINT nIndex)
 {
-	static char buf[1024];
+	static WCHAR buf[1024];
 	int nParentIndex= -1;
 
 	buf[0] = '\0';
@@ -921,17 +973,28 @@ static char *GameInfoCloneOf(UINT nIndex)
 	if (DriverIsClone(nIndex))
 	{
 		nParentIndex = GetParentIndex(&driver_list::driver(nIndex));
-		sprintf(buf, "%s - \"%s\"",
-			ConvertAmpersandString(ModifyThe(driver_list::driver(nParentIndex).description)),
-			driver_list::driver(nParentIndex).name);
+		swprintf(buf, TEXT("%s"),
+			driversw[nParentIndex]->name);
 	}
 
 	return buf;
 }
 
-static const char * GameInfoSource(UINT nIndex)
+static LPCWSTR GameInfoSource(UINT nIndex)
 {
 	return GetDriverFilename(nIndex);
+}
+
+//mamep: translate dialog
+static int CALLBACK PropSheetCallbackProc(HWND hDlg, UINT Msg, LPARAM lParam)
+{
+	switch (Msg)
+	{
+	case PSCB_INITIALIZED:
+		TranslateDialog(hDlg, lParam, FALSE);
+		break;
+	}
+	return 0;
 }
 
 /* Handle the information property page */
@@ -943,6 +1006,14 @@ HWND hWnd;
 	case WM_INITDIALOG:
 		if (g_hIcon)
 			SendDlgItemMessage(hDlg, IDC_GAME_ICON, STM_SETICON, (WPARAM) g_hIcon, 0);
+
+		TranslateDialog(hDlg, lParam, TRUE);
+
+#ifdef TREE_SHEET
+		if (GetShowTreeSheet())
+			ModifyPropertySheetForTreeSheet(hDlg);
+#endif /* TREE_SHEET */
+
 #if defined(USE_SINGLELINE_TABCONTROL)
 		{
 			HWND hWnd = PropSheet_GetTabControl(GetParent(hDlg));
@@ -951,14 +1022,14 @@ HWND hWnd;
 		}
 #endif
 
-		win_set_window_text_utf8(GetDlgItem(hDlg, IDC_PROP_TITLE), GameInfoTitle(g_nPropertyMode, g_nGame));
-		win_set_window_text_utf8(GetDlgItem(hDlg, IDC_PROP_MANUFACTURED),  GameInfoManufactured(g_nGame));
-		win_set_window_text_utf8(GetDlgItem(hDlg, IDC_PROP_STATUS),        GameInfoStatus(g_nGame, FALSE));
-		win_set_window_text_utf8(GetDlgItem(hDlg, IDC_PROP_CPU),           GameInfoCPU(g_nGame));
-		win_set_window_text_utf8(GetDlgItem(hDlg, IDC_PROP_SOUND),         GameInfoSound(g_nGame));
-		win_set_window_text_utf8(GetDlgItem(hDlg, IDC_PROP_SCREEN),        GameInfoScreen(g_nGame));
-		win_set_window_text_utf8(GetDlgItem(hDlg, IDC_PROP_CLONEOF),       GameInfoCloneOf(g_nGame));
-		win_set_window_text_utf8(GetDlgItem(hDlg, IDC_PROP_SOURCE),        GameInfoSource(g_nGame));
+		Static_SetText(GetDlgItem(hDlg, IDC_PROP_TITLE), GameInfoTitle(g_nPropertyMode, g_nGame));
+		Static_SetText(GetDlgItem(hDlg, IDC_PROP_MANUFACTURED),  GameInfoManufactured(g_nGame));
+		Static_SetText(GetDlgItem(hDlg, IDC_PROP_STATUS),        GameInfoStatus(g_nGame, FALSE));
+		Static_SetText(GetDlgItem(hDlg, IDC_PROP_CPU),           GameInfoCPU(g_nGame));
+		Static_SetText(GetDlgItem(hDlg, IDC_PROP_SOUND),         GameInfoSound(g_nGame));
+		Static_SetText(GetDlgItem(hDlg, IDC_PROP_SCREEN),        GameInfoScreen(g_nGame));
+		Static_SetText(GetDlgItem(hDlg, IDC_PROP_CLONEOF),       GameInfoCloneOf(g_nGame));
+		Static_SetText(GetDlgItem(hDlg, IDC_PROP_SOURCE),        GameInfoSource(g_nGame));
 
 		if (DriverIsClone(g_nGame))
 			ShowWindow(GetDlgItem(hDlg, IDC_PROP_CLONEOF_TEXT), SW_SHOW);
@@ -984,8 +1055,15 @@ INT_PTR CALLBACK GameOptionsProc(HWND hDlg, UINT Msg, WPARAM wParam, LPARAM lPar
 	switch (Msg)
 	{
 	case WM_INITDIALOG:
+		TranslateDialog(hDlg, lParam, TRUE);
+
+#ifdef TREE_SHEET
+		if (GetShowTreeSheet())
+			ModifyPropertySheetForTreeSheet(hDlg);
+#endif /* TREE_SHEET */
+
 		/* Fill in the Game info at the top of the sheet */
-		win_set_window_text_utf8(GetDlgItem(hDlg, IDC_PROP_TITLE), GameInfoTitle(g_nPropertyMode, g_nGame));
+		Static_SetText(GetDlgItem(hDlg, IDC_PROP_TITLE), GameInfoTitle(g_nPropertyMode, g_nGame));
 		InitializeOptions(hDlg);
 		InitializeMisc(hDlg);
 
@@ -1059,6 +1137,7 @@ INT_PTR CALLBACK GameOptionsProc(HWND hDlg, UINT Msg, WPARAM wParam, LPARAM lPar
 				}
 				break;
 
+#if 0 //mamep: use standard combobox
 			case IDC_SELECT_EFFECT:
 				changed = SelectEffect(hDlg);
 				break;
@@ -1066,6 +1145,7 @@ INT_PTR CALLBACK GameOptionsProc(HWND hDlg, UINT Msg, WPARAM wParam, LPARAM lPar
 			case IDC_RESET_EFFECT:
 				changed = ResetEffect(hDlg);
 				break;
+#endif
 
 			case IDC_SELECT_JOYSTICKMAP:
 				changed = SelectJoystickMap(hDlg);
@@ -1776,7 +1856,7 @@ static BOOL ScreenPopulateControl(datamap *map, HWND dialog, HWND control, windo
 
 	/* Remove all items in the list. */
 	res = ComboBox_ResetContent(control);
-	res = ComboBox_InsertString(control, 0, TEXT("Auto"));
+	res = ComboBox_InsertString(control, 0, _UIW(TEXT("Auto")));
 	res = ComboBox_SetItemData(control, 0, (void*)ui_wstring_from_utf8("auto"));
 
 	//Dynamically populate it, by enumerating the Monitors
@@ -1828,7 +1908,7 @@ static BOOL ViewPopulateControl(datamap *map, HWND dialog, HWND control, windows
 	res = ComboBox_ResetContent(control);
 	for (i = 0; i < NUMVIEW; i++)
 	{
-		res = ComboBox_InsertString(control, i, g_ComboBoxView[i].m_pText);
+		res = ComboBox_InsertString(control, i, _UIW(g_ComboBoxView[i].m_pText));
 		res = ComboBox_SetItemData(control, i, g_ComboBoxView[i].m_pData);
 
 		if (strcmp(view, g_ComboBoxView[i].m_pData)==0)
@@ -1851,7 +1931,7 @@ static BOOL SnapViewPopulateControl(datamap *map, HWND dialog, HWND control, win
 	res = ComboBox_ResetContent(control);
 	for (i = 0; i < NUMSNAPVIEW; i++)
 	{
-		res = ComboBox_InsertString(control, i, g_ComboBoxSnapView[i].m_pText);
+		res = ComboBox_InsertString(control, i, _UIW(g_ComboBoxSnapView[i].m_pText));
 		res = ComboBox_SetItemData(control, i, g_ComboBoxSnapView[i].m_pData);
 
 		if (strcmp(snapview, g_ComboBoxSnapView[i].m_pData)==0)
@@ -1907,7 +1987,7 @@ static BOOL DefaultInputPopulateControl(datamap *map, HWND dialog, HWND control,
 
 	// reset the controllers dropdown
 	res = ComboBox_ResetContent(control);
-	res = ComboBox_InsertString(control, index, TEXT("Default"));
+	res = ComboBox_InsertString(control, index, _UIW(TEXT("None")));
 	res = ComboBox_SetItemData(control, index, "");
 	index++;
 
@@ -2035,13 +2115,13 @@ static BOOL ResolutionPopulateControl(datamap *map, HWND dialog, HWND control_, 
 
 		// reset sizes control
 		res = ComboBox_ResetContent(sizes_control);
-		res = ComboBox_InsertString(sizes_control, sizes_index, TEXT("Auto"));
+		res = ComboBox_InsertString(sizes_control, sizes_index, _UIW(TEXT("Auto")));
 		res = ComboBox_SetItemData(sizes_control, sizes_index, 0);
 		sizes_index++;
 
 		// reset refresh control
 		res = ComboBox_ResetContent(refresh_control);
-		res = ComboBox_InsertString(refresh_control, refresh_index, TEXT("Auto"));
+		res = ComboBox_InsertString(refresh_control, refresh_index, _UIW(TEXT("Auto")));;
 		res = ComboBox_SetItemData(refresh_control, refresh_index, 0);
 		refresh_index++;
 
@@ -2448,27 +2528,27 @@ static void InitializeSkippingUI(HWND hwnd)
 
 	if (hCtrl)
 	{
-		res = ComboBox_AddString(hCtrl, TEXT("Draw every frame"));
+		res = ComboBox_AddString(hCtrl, _UIW(TEXT("Draw every frame")));
 		res = ComboBox_SetItemData(hCtrl, i++, 0);
-		res = ComboBox_AddString(hCtrl, TEXT("Skip 1 frame"));
+		res = ComboBox_AddString(hCtrl, _UIW(TEXT("Skip 1 frame")));
 		res = ComboBox_SetItemData(hCtrl, i++, 1);
-		res = ComboBox_AddString(hCtrl, TEXT("Skip 2 frames"));
+		res = ComboBox_AddString(hCtrl, _UIW(TEXT("Skip 2 frames")));
 		res = ComboBox_SetItemData(hCtrl, i++, 2);
-		res = ComboBox_AddString(hCtrl, TEXT("Skip 3 frames"));
+		res = ComboBox_AddString(hCtrl, _UIW(TEXT("Skip 3 frames")));
 		res = ComboBox_SetItemData(hCtrl, i++, 3);
-		res = ComboBox_AddString(hCtrl, TEXT("Skip 4 frames"));
+		res = ComboBox_AddString(hCtrl, _UIW(TEXT("Skip 4 frames")));
 		res = ComboBox_SetItemData(hCtrl, i++, 4);
-		res = ComboBox_AddString(hCtrl, TEXT("Skip 5 frames"));
+		res = ComboBox_AddString(hCtrl, _UIW(TEXT("Skip 5 frames")));
 		res = ComboBox_SetItemData(hCtrl, i++, 5);
-		res = ComboBox_AddString(hCtrl, TEXT("Skip 6 frames"));
+		res = ComboBox_AddString(hCtrl, _UIW(TEXT("Skip 6 frames")));
 		res = ComboBox_SetItemData(hCtrl, i++, 6);
-		res = ComboBox_AddString(hCtrl, TEXT("Skip 7 frames"));
+		res = ComboBox_AddString(hCtrl, _UIW(TEXT("Skip 7 frames")));
 		res = ComboBox_SetItemData(hCtrl, i++, 7);
-		res = ComboBox_AddString(hCtrl, TEXT("Skip 8 frames"));
+		res = ComboBox_AddString(hCtrl, _UIW(TEXT("Skip 8 frames")));
 		res = ComboBox_SetItemData(hCtrl, i++, 8);
-		res = ComboBox_AddString(hCtrl, TEXT("Skip 9 frames"));
+		res = ComboBox_AddString(hCtrl, _UIW(TEXT("Skip 9 frames")));
 		res = ComboBox_SetItemData(hCtrl, i++, 9);
-		res = ComboBox_AddString(hCtrl, TEXT("Skip 10 frames"));
+		res = ComboBox_AddString(hCtrl, _UIW(TEXT("Skip 10 frames")));
 		res = ComboBox_SetItemData(hCtrl, i++, 10);
 	}
 	res++;
@@ -2482,12 +2562,12 @@ static void InitializeRotateUI(HWND hwnd)
 
 	if (hCtrl)
 	{
-		res = ComboBox_AddString(hCtrl, TEXT("Default"));             // 0
-		res = ComboBox_AddString(hCtrl, TEXT("Clockwise"));           // 1
-		res = ComboBox_AddString(hCtrl, TEXT("Anti-clockwise"));      // 2
-		res = ComboBox_AddString(hCtrl, TEXT("None"));                // 3
-		res = ComboBox_AddString(hCtrl, TEXT("Auto clockwise"));      // 4
-		res = ComboBox_AddString(hCtrl, TEXT("Auto anti-clockwise")); // 5
+		res = ComboBox_AddString(hCtrl, _UIW(TEXT("Default")));             // 0
+		res = ComboBox_AddString(hCtrl, _UIW(TEXT("Clockwise")));           // 1
+		res = ComboBox_AddString(hCtrl, _UIW(TEXT("Anti-clockwise")));      // 2
+		res = ComboBox_AddString(hCtrl, _UIW(TEXT("None")));                // 3
+		res = ComboBox_AddString(hCtrl, _UIW(TEXT("Auto clockwise")));      // 4
+		res = ComboBox_AddString(hCtrl, _UIW(TEXT("Auto anti-clockwise"))); // 5
 	}
 	res++;
 }
@@ -2504,7 +2584,7 @@ static void InitializeVideoUI(HWND hwnd)
 		int i;
 		for (i = 0; i < NUMVIDEO; i++)
 		{
-			res = ComboBox_InsertString(hCtrl, i, g_ComboBoxVideo[i].m_pText);
+			res = ComboBox_InsertString(hCtrl, i, _UIW(g_ComboBoxVideo[i].m_pText));
 			res = ComboBox_SetItemData( hCtrl, i, g_ComboBoxVideo[i].m_pData);
 		}
 	}
@@ -2539,7 +2619,7 @@ static void UpdateSelectScreenUI(HWND hwnd)
 		res = ComboBox_ResetContent(hCtrl);
 		for (i = 0; i < NUMSELECTSCREEN && i < pCurrentOpts.int_value(OSDOPTION_NUMSCREENS) ; i++)
 		{
-			res = ComboBox_InsertString(hCtrl, i, g_ComboBoxSelectScreen[i].m_pText);
+			res = ComboBox_InsertString(hCtrl, i, _UIW(g_ComboBoxSelectScreen[i].m_pText));
 			res = ComboBox_SetItemData( hCtrl, i, g_ComboBoxSelectScreen[i].m_pData);
 		}
 		// Smaller Amount of screens was selected, so use 0
@@ -2573,49 +2653,49 @@ static void InitializeControllerMappingUI(HWND hwnd)
 	{
 		if (hCtrl)
 		{
-			res = ComboBox_InsertString(hCtrl, i, g_ComboBoxDevice[i].m_pText);
+			res = ComboBox_InsertString(hCtrl, i, _UIW(g_ComboBoxDevice[i].m_pText));
 			res = ComboBox_SetItemData( hCtrl, i, g_ComboBoxDevice[i].m_pData);
 		}
 
 		if (hCtrl1)
 		{
-			res = ComboBox_InsertString(hCtrl1, i, g_ComboBoxDevice[i].m_pText);
+			res = ComboBox_InsertString(hCtrl1, i, _UIW(g_ComboBoxDevice[i].m_pText));
 			res = ComboBox_SetItemData( hCtrl1, i, g_ComboBoxDevice[i].m_pData);
 		}
 
 		if (hCtrl2)
 		{
-			res = ComboBox_InsertString(hCtrl2, i, g_ComboBoxDevice[i].m_pText);
+			res = ComboBox_InsertString(hCtrl2, i, _UIW(g_ComboBoxDevice[i].m_pText));
 			res = ComboBox_SetItemData( hCtrl2, i, g_ComboBoxDevice[i].m_pData);
 		}
 
 		if (hCtrl3)
 		{
-			res = ComboBox_InsertString(hCtrl3, i, g_ComboBoxDevice[i].m_pText);
+			res = ComboBox_InsertString(hCtrl3, i, _UIW(g_ComboBoxDevice[i].m_pText));
 			res = ComboBox_SetItemData( hCtrl3, i, g_ComboBoxDevice[i].m_pData);
 		}
 
 		if (hCtrl4)
 		{
-			res = ComboBox_InsertString(hCtrl4, i, g_ComboBoxDevice[i].m_pText);
+			res = ComboBox_InsertString(hCtrl4, i, _UIW(g_ComboBoxDevice[i].m_pText));
 			res = ComboBox_SetItemData( hCtrl4, i, g_ComboBoxDevice[i].m_pData);
 		}
 
 		if (hCtrl5)
 		{
-			res = ComboBox_InsertString(hCtrl5, i, g_ComboBoxDevice[i].m_pText);
+			res = ComboBox_InsertString(hCtrl5, i, _UIW(g_ComboBoxDevice[i].m_pText));
 			res = ComboBox_SetItemData( hCtrl5, i, g_ComboBoxDevice[i].m_pData);
 		}
 
 		if (hCtrl6)
 		{
-			res = ComboBox_InsertString(hCtrl6, i, g_ComboBoxDevice[i].m_pText);
+			res = ComboBox_InsertString(hCtrl6, i, _UIW(g_ComboBoxDevice[i].m_pText));
 			res = ComboBox_SetItemData( hCtrl6, i, g_ComboBoxDevice[i].m_pData);
 		}
 
 		if (hCtrl7)
 		{
-			res = ComboBox_InsertString(hCtrl7, i, g_ComboBoxDevice[i].m_pText);
+			res = ComboBox_InsertString(hCtrl7, i, _UIW(g_ComboBoxDevice[i].m_pText));
 			res = ComboBox_SetItemData( hCtrl7, i, g_ComboBoxDevice[i].m_pData);
 		}
 	}
@@ -2635,7 +2715,7 @@ static void InitializeBIOSUI(HWND hwnd)
 
 		if (g_nGame == GLOBAL_OPTIONS)
 		{
-			res = ComboBox_InsertString(hCtrl, i, TEXT("None"));
+			res = ComboBox_InsertString(hCtrl, i, _UIW(TEXT("None")));
 			res = ComboBox_SetItemData( hCtrl, i++, "");
 			return;
 		}
@@ -2644,11 +2724,11 @@ static void InitializeBIOSUI(HWND hwnd)
 			gamedrv = &driver_list::driver(g_nFolderGame);
 			if (DriverHasOptionalBIOS(g_nFolderGame) == FALSE)
 			{
-				res = ComboBox_InsertString(hCtrl, i, TEXT("None"));
+				res = ComboBox_InsertString(hCtrl, i, _UIW(TEXT("None")));
 				res = ComboBox_SetItemData( hCtrl, i++, "");
 				return;
 			}
-			res = ComboBox_InsertString(hCtrl, i, TEXT("Default"));
+			res = ComboBox_InsertString(hCtrl, i, _UIW(TEXT("Default")));
 			res = ComboBox_SetItemData( hCtrl, i++, "");
 
 			if (gamedrv->rom)
@@ -2674,11 +2754,11 @@ static void InitializeBIOSUI(HWND hwnd)
 
 		if (DriverHasOptionalBIOS(g_nGame) == FALSE)
 		{
-			res = ComboBox_InsertString(hCtrl, i, TEXT("None"));
+			res = ComboBox_InsertString(hCtrl, i, _UIW(TEXT("None")));
 			res = ComboBox_SetItemData( hCtrl, i++, "");
 			return;
 		}
-		res = ComboBox_InsertString(hCtrl, i, TEXT("Default"));
+		res = ComboBox_InsertString(hCtrl, i, _UIW(TEXT("Default")));
 		res = ComboBox_SetItemData( hCtrl, i++, "");
 
 		if (gamedrv->rom)
@@ -2703,6 +2783,7 @@ static void InitializeBIOSUI(HWND hwnd)
 	res++;
 }
 
+#if 0 //mamep: use standard combobox
 static BOOL SelectEffect(HWND hWnd)
 {
 	char filename[MAX_PATH];
@@ -2756,6 +2837,7 @@ static BOOL ResetEffect(HWND hWnd)
 	}
 	return changed;
 }
+#endif //mamep: use standard combobox
 
 static BOOL SelectJoystickMap(HWND hWnd)
 {
@@ -2763,7 +2845,7 @@ static BOOL SelectJoystickMap(HWND hWnd)
 	BOOL changed = FALSE;
 
 	*filename = 0;
-	if (CommonFileDialog(GetOpenFileName, filename, FILETYPE_JOYMAP_FILES))
+	if (CommonFileDialog(GetOpenFileName, ui_wstring_from_utf8(filename), FILETYPE_JOYMAP_FILES))
 	{
 		if (strcmp(filename, pCurrentOpts.value(OPTION_JOYSTICK_MAP))!=0)
 		{
@@ -2799,7 +2881,7 @@ static BOOL SelectDebugscript(HWND hWnd)
 	BOOL changed = FALSE;
 
 	*filename = 0;
-	if (CommonFileDialog(GetOpenFileName, filename, FILETYPE_DEBUGSCRIPT_FILES))
+	if (CommonFileDialog(GetOpenFileName, ui_wstring_from_utf8(filename), FILETYPE_DEBUGSCRIPT_FILES))
 	{
 		if (strcmp(filename, pCurrentOpts.value(OPTION_DEBUGSCRIPT))!=0)
 		{

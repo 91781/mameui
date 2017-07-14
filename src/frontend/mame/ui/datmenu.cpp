@@ -54,7 +54,7 @@ menu_dats_view::menu_dats_view(mame_ui_manager &mui, render_container &container
 		{
 			std::string version;
 			mame_machine_manager::instance()->lua()->call_plugin("data_version", count, version);
-			m_items_list.emplace_back(_(item.c_str()), count, std::move(version));
+			m_items_list.emplace_back(_LANGUAGE_CORE_TRANS_(item.c_str()), count, std::move(version));
 			count++;
 		}
 	}
@@ -77,7 +77,7 @@ menu_dats_view::menu_dats_view(mame_ui_manager &mui, render_container &container
 
 {
 	if (swinfo != nullptr && !swinfo->usage.empty())
-		m_items_list.emplace_back(_("Software Usage"), 0, "");
+		m_items_list.emplace_back(_LANGUAGE_CORE_TRANS_("Software Usage"), 0, "");
 	std::vector<std::string> lua_list;
 	if(mame_machine_manager::instance()->lua()->call_plugin("data_list", std::string(m_short).append(1, ',').append(m_list).c_str(), lua_list))
 	{
@@ -86,7 +86,7 @@ menu_dats_view::menu_dats_view(mame_ui_manager &mui, render_container &container
 		{
 			std::string version;
 			mame_machine_manager::instance()->lua()->call_plugin("data_version", count - 1, version);
-			m_items_list.emplace_back(_(item.c_str()), count, std::move(version));
+			m_items_list.emplace_back(_LANGUAGE_CORE_TRANS_(item.c_str()), count, std::move(version));
 			count++;
 		}
 	}
@@ -353,7 +353,7 @@ void menu_dats_view::custom_render(void *selectedref, float top, float bottom, f
 
 	// bottom
 	std::string revision;
-	revision.assign(_("Revision: ")).append(m_items_list[m_actual].revision);
+	revision.assign(_LANGUAGE_CORE_TRANS_("Revision: ")).append(m_items_list[m_actual].revision);
 	ui().draw_text_full(container(), revision.c_str(), 0.0f, 0.0f, 1.0f, ui::text_layout::CENTER, ui::text_layout::TRUNCATE, mame_ui_manager::NONE, rgb_t::white(), rgb_t::black(), &width, nullptr);
 	width += 2 * UI_BOX_LR_BORDER;
 	maxwidth = std::max(origx2 - origx1, width);

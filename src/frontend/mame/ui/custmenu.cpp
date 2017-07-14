@@ -156,7 +156,7 @@ void menu_custom_filter::populate(float &customtop, float &custombottom)
 {
 	// add main filter
 	uint32_t arrow_flags = get_arrow_flags<uint16_t>(FILTER_ALL, FILTER_UNAVAILABLE, custfltr::main);
-	item_append(_("Main filter"), main_filters::text[custfltr::main], arrow_flags, (void *)(uintptr_t)MAIN_FILTER);
+	item_append(_LANGUAGE_CORE_TRANS_("Main filter"), main_filters::text[custfltr::main], arrow_flags, (void *)(uintptr_t)MAIN_FILTER);
 
 	// add other filters
 	for (int x = 1; x <= custfltr::numother; x++)
@@ -165,7 +165,7 @@ void menu_custom_filter::populate(float &customtop, float &custombottom)
 
 		// add filter items
 		arrow_flags = get_arrow_flags<uint16_t>(FILTER_UNAVAILABLE + 1, FILTER_LAST - 1, custfltr::other[x]);
-		item_append(_("Other filter"), main_filters::text[custfltr::other[x]], arrow_flags, (void *)(uintptr_t)(OTHER_FILTER + x));
+		item_append(_LANGUAGE_CORE_TRANS_("Other filter"), main_filters::text[custfltr::other[x]], arrow_flags, (void *)(uintptr_t)(OTHER_FILTER + x));
 
 		if (m_added)
 			selected = item.size() - 2;
@@ -174,7 +174,7 @@ void menu_custom_filter::populate(float &customtop, float &custombottom)
 		if (custfltr::other[x] == FILTER_MANUFACTURER && c_mnfct::ui.size() > 0)
 		{
 			arrow_flags = get_arrow_flags<uint16_t>(0, c_mnfct::ui.size() - 1, custfltr::mnfct[x]);
-			std::string fbuff(_("^!Manufacturer"));
+			std::string fbuff(_LANGUAGE_CORE_TRANS_("^!Manufacturer"));
 			convert_command_glyph(fbuff);
 			item_append(fbuff, c_mnfct::ui[custfltr::mnfct[x]], arrow_flags, (void *)(uintptr_t)(MNFCT_FILTER + x));
 		}
@@ -183,7 +183,7 @@ void menu_custom_filter::populate(float &customtop, float &custombottom)
 		else if (custfltr::other[x] == FILTER_YEAR && c_year::ui.size() > 0)
 		{
 			arrow_flags = get_arrow_flags<uint16_t>(0, c_year::ui.size() - 1, custfltr::year[x]);
-			std::string fbuff(_("^!Year"));
+			std::string fbuff(_LANGUAGE_CORE_TRANS_("^!Year"));
 			convert_command_glyph(fbuff);
 			item_append(fbuff, c_year::ui[custfltr::year[x]], arrow_flags, (void *)(uintptr_t)(YEAR_FILTER + x));
 		}
@@ -192,10 +192,10 @@ void menu_custom_filter::populate(float &customtop, float &custombottom)
 	item_append(menu_item_type::SEPARATOR);
 
 	if (custfltr::numother > 0)
-		item_append(_("Remove last filter"), "", 0, (void *)(uintptr_t)REMOVE_FILTER);
+		item_append(_LANGUAGE_CORE_TRANS_("Remove last filter"), "", 0, (void *)(uintptr_t)REMOVE_FILTER);
 
 	if (custfltr::numother < MAX_CUST_FILTER - 2)
-		item_append(_("Add filter"), "", 0, (void *)(uintptr_t)ADD_FILTER);
+		item_append(_LANGUAGE_CORE_TRANS_("Add filter"), "", 0, (void *)(uintptr_t)ADD_FILTER);
 
 	item_append(menu_item_type::SEPARATOR);
 	customtop = ui().get_line_height() + 3.0f * UI_BOX_TB_BORDER;
@@ -209,7 +209,7 @@ void menu_custom_filter::custom_render(void *selectedref, float top, float botto
 	float width;
 
 	// get the size of the text
-	ui().draw_text_full(container(), _("Select custom filters:"), 0.0f, 0.0f, 1.0f, ui::text_layout::CENTER, ui::text_layout::NEVER,
+	ui().draw_text_full(container(), _LANGUAGE_CORE_TRANS_("Select custom filters:"), 0.0f, 0.0f, 1.0f, ui::text_layout::CENTER, ui::text_layout::NEVER,
 		mame_ui_manager::NONE, rgb_t::white(), rgb_t::black(), &width, nullptr);
 	width += (2.0f * UI_BOX_LR_BORDER) + 0.01f;
 	float maxwidth = std::max(width, origx2 - origx1);
@@ -229,7 +229,7 @@ void menu_custom_filter::custom_render(void *selectedref, float top, float botto
 	y1 += UI_BOX_TB_BORDER;
 
 	// draw the text within it
-	ui().draw_text_full(container(), _("Select custom filters:"), x1, y1, x2 - x1, ui::text_layout::CENTER, ui::text_layout::NEVER,
+	ui().draw_text_full(container(), _LANGUAGE_CORE_TRANS_("Select custom filters:"), x1, y1, x2 - x1, ui::text_layout::CENTER, ui::text_layout::NEVER,
 		mame_ui_manager::NORMAL, UI_TEXT_COLOR, UI_TEXT_BG_COLOR, nullptr, nullptr);
 }
 
@@ -443,7 +443,7 @@ void menu_swcustom_filter::populate(float &customtop, float &custombottom)
 {
 	// add main filter
 	uint32_t arrow_flags = get_arrow_flags<uint16_t>(UI_SW_ALL, UI_SW_UNAVAILABLE, sw_custfltr::main);
-	item_append(_("Main filter"), sw_filters::text[sw_custfltr::main], arrow_flags, (void *)(uintptr_t)MAIN_FILTER);
+	item_append(_LANGUAGE_CORE_TRANS_("Main filter"), sw_filters::text[sw_custfltr::main], arrow_flags, (void *)(uintptr_t)MAIN_FILTER);
 
 	// add other filters
 	for (int x = 1; x <= sw_custfltr::numother; x++)
@@ -452,7 +452,7 @@ void menu_swcustom_filter::populate(float &customtop, float &custombottom)
 
 		// add filter items
 		arrow_flags = get_arrow_flags<uint16_t>(UI_SW_UNAVAILABLE + 1, UI_SW_LAST - 1, sw_custfltr::other[x]);
-		item_append(_("Other filter"), sw_filters::text[sw_custfltr::other[x]], arrow_flags, (void *)(uintptr_t)(OTHER_FILTER + x));
+		item_append(_LANGUAGE_CORE_TRANS_("Other filter"), sw_filters::text[sw_custfltr::other[x]], arrow_flags, (void *)(uintptr_t)(OTHER_FILTER + x));
 
 		if (m_added)
 			selected = item.size() - 2;
@@ -461,7 +461,7 @@ void menu_swcustom_filter::populate(float &customtop, float &custombottom)
 		if (sw_custfltr::other[x] == UI_SW_PUBLISHERS && m_filter.publisher.ui.size() > 0)
 		{
 			arrow_flags = get_arrow_flags<uint16_t>(0, m_filter.publisher.ui.size() - 1, sw_custfltr::mnfct[x]);
-			std::string fbuff(_("^!Publisher"));
+			std::string fbuff(_LANGUAGE_CORE_TRANS_("^!Publisher"));
 			convert_command_glyph(fbuff);
 			item_append(fbuff, m_filter.publisher.ui[sw_custfltr::mnfct[x]], arrow_flags, (void *)(uintptr_t)(MNFCT_FILTER + x));
 		}
@@ -470,7 +470,7 @@ void menu_swcustom_filter::populate(float &customtop, float &custombottom)
 		else if (sw_custfltr::other[x] == UI_SW_YEARS && m_filter.year.ui.size() > 0)
 		{
 			arrow_flags = get_arrow_flags<uint16_t>(0, m_filter.year.ui.size() - 1, sw_custfltr::year[x]);
-			std::string fbuff(_("^!Year"));
+			std::string fbuff(_LANGUAGE_CORE_TRANS_("^!Year"));
 			convert_command_glyph(fbuff);
 			item_append(fbuff, m_filter.year.ui[sw_custfltr::year[x]], arrow_flags, (void *)(uintptr_t)(YEAR_FILTER + x));
 		}
@@ -479,7 +479,7 @@ void menu_swcustom_filter::populate(float &customtop, float &custombottom)
 		else if (sw_custfltr::other[x] == UI_SW_LIST && m_filter.swlist.name.size() > 0)
 		{
 			arrow_flags = get_arrow_flags<uint16_t>(0, m_filter.swlist.name.size() - 1, sw_custfltr::list[x]);
-			std::string fbuff(_("^!Software List"));
+			std::string fbuff(_LANGUAGE_CORE_TRANS_("^!Software List"));
 			convert_command_glyph(fbuff);
 			item_append(fbuff, m_filter.swlist.description[sw_custfltr::list[x]], arrow_flags, (void *)(uintptr_t)(LIST_FILTER + x));
 		}
@@ -488,7 +488,7 @@ void menu_swcustom_filter::populate(float &customtop, float &custombottom)
 		else if (sw_custfltr::other[x] == UI_SW_TYPE && m_filter.type.ui.size() > 0)
 		{
 			arrow_flags = get_arrow_flags<uint16_t>(0, m_filter.type.ui.size() - 1, sw_custfltr::type[x]);
-			std::string fbuff(_("^!Device type"));
+			std::string fbuff(_LANGUAGE_CORE_TRANS_("^!Device type"));
 			convert_command_glyph(fbuff);
 			item_append(fbuff, m_filter.type.ui[sw_custfltr::type[x]], arrow_flags, (void *)(uintptr_t)(TYPE_FILTER + x));
 		}
@@ -497,7 +497,7 @@ void menu_swcustom_filter::populate(float &customtop, float &custombottom)
 		else if (sw_custfltr::other[x] == UI_SW_REGION && m_filter.region.ui.size() > 0)
 		{
 			arrow_flags = get_arrow_flags<uint16_t>(0, m_filter.region.ui.size() - 1, sw_custfltr::region[x]);
-			std::string fbuff(_("^!Region"));
+			std::string fbuff(_LANGUAGE_CORE_TRANS_("^!Region"));
 			convert_command_glyph(fbuff);
 			item_append(fbuff, m_filter.region.ui[sw_custfltr::region[x]], arrow_flags, (void *)(uintptr_t)(REGION_FILTER + x));
 		}
@@ -506,10 +506,10 @@ void menu_swcustom_filter::populate(float &customtop, float &custombottom)
 	item_append(menu_item_type::SEPARATOR);
 
 	if (sw_custfltr::numother > 0)
-		item_append(_("Remove last filter"), "", 0, (void *)(uintptr_t)REMOVE_FILTER);
+		item_append(_LANGUAGE_CORE_TRANS_("Remove last filter"), "", 0, (void *)(uintptr_t)REMOVE_FILTER);
 
 	if (sw_custfltr::numother < MAX_CUST_FILTER - 2)
-		item_append(_("Add filter"), "", 0, (void *)(uintptr_t)ADD_FILTER);
+		item_append(_LANGUAGE_CORE_TRANS_("Add filter"), "", 0, (void *)(uintptr_t)ADD_FILTER);
 
 	item_append(menu_item_type::SEPARATOR);
 
@@ -524,7 +524,7 @@ void menu_swcustom_filter::custom_render(void *selectedref, float top, float bot
 	float width;
 
 	// get the size of the text
-	ui().draw_text_full(container(), _("Select custom filters:"), 0.0f, 0.0f, 1.0f, ui::text_layout::CENTER, ui::text_layout::NEVER,
+	ui().draw_text_full(container(), _LANGUAGE_CORE_TRANS_("Select custom filters:"), 0.0f, 0.0f, 1.0f, ui::text_layout::CENTER, ui::text_layout::NEVER,
 		mame_ui_manager::NONE, rgb_t::white(), rgb_t::black(), &width, nullptr);
 	width += (2.0f * UI_BOX_LR_BORDER) + 0.01f;
 	float maxwidth = std::max(width, origx2 - origx1);
@@ -544,7 +544,7 @@ void menu_swcustom_filter::custom_render(void *selectedref, float top, float bot
 	y1 += UI_BOX_TB_BORDER;
 
 	// draw the text within it
-	ui().draw_text_full(container(), _("Select custom filters:"), x1, y1, x2 - x1, ui::text_layout::CENTER, ui::text_layout::NEVER,
+	ui().draw_text_full(container(), _LANGUAGE_CORE_TRANS_("Select custom filters:"), x1, y1, x2 - x1, ui::text_layout::CENTER, ui::text_layout::NEVER,
 		mame_ui_manager::NORMAL, UI_TEXT_COLOR, UI_TEXT_BG_COLOR, nullptr, nullptr);
 }
 

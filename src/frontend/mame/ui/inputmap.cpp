@@ -50,13 +50,13 @@ void menu_input_groups::populate(float &customtop, float &custombottom)
 	int player;
 
 	/* build up the menu */
-	item_append(_("User Interface"), "", 0, (void *)(IPG_UI + 1));
+	item_append(_LANGUAGE_CORE_TRANS_("User Interface"), "", 0, (void *)(IPG_UI + 1));
 	for (player = 0; player < MAX_PLAYERS; player++)
 	{
 		auto s = string_format("Player %d Controls", player + 1);
 		item_append(s, "", 0, (void *)(uintptr_t)(IPG_PLAYER1 + player + 1));
 	}
-	item_append(_("Other Controls"), "", 0, (void *)(uintptr_t)(IPG_OTHER + 1));
+	item_append(_LANGUAGE_CORE_TRANS_("Other Controls"), "", 0, (void *)(uintptr_t)(IPG_OTHER + 1));
 }
 
 menu_input_groups::~menu_input_groups()
@@ -622,7 +622,7 @@ void menu_settings::populate(float &customtop, float &custombottom)
 		custombottom = dipcount ? dipcount * (DIP_SWITCH_HEIGHT + DIP_SWITCH_SPACING) + DIP_SWITCH_SPACING : 0;
 
 	item_append(menu_item_type::SEPARATOR);
-	item_append(_("Reset"), "", 0, (void *)1);
+	item_append(_LANGUAGE_CORE_TRANS_("Reset"), "", 0, (void *)1);
 }
 
 menu_settings::~menu_settings()

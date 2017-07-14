@@ -130,9 +130,9 @@ void menu_sound_options::populate(float &customtop, float &custombottom)
 	m_sample_rate = m_sound_rate[m_cur_rates];
 
 	// add options items
-	item_append(_("Sound"), m_sound ? _("On") : _("Off"), m_sound ? FLAG_RIGHT_ARROW : FLAG_LEFT_ARROW, (void *)(uintptr_t)ENABLE_SOUND);
-	item_append(_("Sample Rate"), string_format("%d", m_sample_rate), arrow_flags, (void *)(uintptr_t)SAMPLE_RATE);
-	item_append(_("Use External Samples"), m_samples ? _("On") : _("Off"), m_samples ? FLAG_RIGHT_ARROW : FLAG_LEFT_ARROW, (void *)(uintptr_t)ENABLE_SAMPLES);
+	item_append(_LANGUAGE_CORE_TRANS_("Sound"), m_sound ? _LANGUAGE_CORE_TRANS_("On") : _LANGUAGE_CORE_TRANS_("Off"), m_sound ? FLAG_RIGHT_ARROW : FLAG_LEFT_ARROW, (void *)(uintptr_t)ENABLE_SOUND);
+	item_append(_LANGUAGE_CORE_TRANS_("Sample Rate"), string_format("%d", m_sample_rate), arrow_flags, (void *)(uintptr_t)SAMPLE_RATE);
+	item_append(_LANGUAGE_CORE_TRANS_("Use External Samples"), m_samples ? _LANGUAGE_CORE_TRANS_("On") : _LANGUAGE_CORE_TRANS_("Off"), m_samples ? FLAG_RIGHT_ARROW : FLAG_LEFT_ARROW, (void *)(uintptr_t)ENABLE_SAMPLES);
 	item_append(menu_item_type::SEPARATOR);
 
 	customtop = ui().get_line_height() + (3.0f * UI_BOX_TB_BORDER);
@@ -145,7 +145,7 @@ void menu_sound_options::populate(float &customtop, float &custombottom)
 void menu_sound_options::custom_render(void *selectedref, float top, float bottom, float origx1, float origy1, float origx2, float origy2)
 {
 	float width;
-	ui().draw_text_full(container(), _("Sound Options"), 0.0f, 0.0f, 1.0f, ui::text_layout::CENTER, ui::text_layout::TRUNCATE,
+	ui().draw_text_full(container(), _LANGUAGE_CORE_TRANS_("Sound Options"), 0.0f, 0.0f, 1.0f, ui::text_layout::CENTER, ui::text_layout::TRUNCATE,
 									mame_ui_manager::NONE, rgb_t::white(), rgb_t::black(), &width, nullptr);
 	width += 2 * UI_BOX_LR_BORDER;
 	float maxwidth = std::max(origx2 - origx1, width);
@@ -165,7 +165,7 @@ void menu_sound_options::custom_render(void *selectedref, float top, float botto
 	y1 += UI_BOX_TB_BORDER;
 
 	// draw the text within it
-	ui().draw_text_full(container(), _("Sound Options"), x1, y1, x2 - x1, ui::text_layout::CENTER, ui::text_layout::TRUNCATE,
+	ui().draw_text_full(container(), _LANGUAGE_CORE_TRANS_("Sound Options"), x1, y1, x2 - x1, ui::text_layout::CENTER, ui::text_layout::TRUNCATE,
 									mame_ui_manager::NORMAL, UI_TEXT_COLOR, UI_TEXT_BG_COLOR, nullptr, nullptr);
 }
 

@@ -20,7 +20,7 @@
 //  LOCALIZATION SUPPORT
 //**************************************************************************
 
-#define _(param)    lang_translate(param)
+#define _LANGUAGE_CORE_TRANS_(param)    lang_translate(param)
 // Fake one to make possible using it in static text definitions, on those
 // lang_translate must be called afterwards
 #define __(param)   param

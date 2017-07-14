@@ -44,7 +44,7 @@ static INT_PTR CALLBACK AuditWindowProc(HWND hDlg, UINT Msg, WPARAM wParam, LPAR
 static void ProcessNextRom(void);
 static void ProcessNextSample(void);
 static void CLIB_DECL DetailsPrintf(const char *fmt, ...) ATTR_PRINTF(1,2);
-static const char * StatusString(int iStatus);
+static const WCHAR * StatusString(int iStatus);
 
 /***************************************************************************
     Internal variables
@@ -97,7 +97,7 @@ void AuditDialog(HWND hParent, int choice)
 	}
 	else
 	{
-		MessageBox(GetMainWindow(),TEXT("Unable to Load Riched32.dll"),TEXT("Error"), MB_OK | MB_ICONERROR);
+		MessageBox(GetMainWindow(), _UIW(TEXT("Unable to Load Riched32.dll")),TEXT("Error"), MB_OK | MB_ICONERROR);
 	}
 }
 
@@ -210,7 +210,7 @@ int MameUIVerifySampleSet(int game)
 
 static DWORD WINAPI AuditThreadProc(LPVOID hDlg)
 {
-	char buffer[200];
+	WCHAR buffer[200];
 
 	while (!bCancel)
 	{
@@ -218,22 +218,22 @@ static DWORD WINAPI AuditThreadProc(LPVOID hDlg)
 		{
 			if (rom_index != -1)
 			{
-				sprintf(buffer, "Checking Set %s - %s",
-					driver_list::driver(rom_index).name, driver_list::driver(rom_index).description);
-				win_set_window_text_utf8((HWND)hDlg, buffer);
+				WCHAR *descw = driversw[rom_index]->description; swprintf(buffer, _UIW(TEXT("Checking Game %s - %s")),
+					driversw[rom_index]->name, UseLangList() ? _LSTW(descw) : descw);
+				SetWindowText((HWND)hDlg, buffer);
 				ProcessNextRom();
 			}
 			else
 			if (sample_index != -1)
 			{
-				sprintf(buffer, "Checking Set %s - %s",
-					driver_list::driver(sample_index).name, driver_list::driver(sample_index).description);
-				win_set_window_text_utf8((HWND)hDlg, buffer);
+				WCHAR *descw = driversw[sample_index]->description; swprintf(buffer, _UIW(TEXT("Checking Game %s - %s")),
+					driversw[sample_index]->name, UseLangList() ? _LSTW(descw) : descw);
+				SetWindowText((HWND)hDlg, buffer);
 				ProcessNextSample();
 			}
 			else
 			{
-				win_set_window_text_utf8((HWND)hDlg, "File Audit");
+				SetWindowText((HWND)hDlg, _UIW(TEXT("File Audit")));
 				EnableWindow(GetDlgItem((HWND)hDlg, IDPAUSE), FALSE);
 				ExitThread(1);
 			}
@@ -252,6 +252,8 @@ static INT_PTR CALLBACK AuditWindowProc(HWND hDlg, UINT Msg, WPARAM wParam, LPAR
 	switch (Msg)
 	{
 	case WM_INITDIALOG:
+		TranslateDialog(hDlg, lParam, TRUE);
+
 		hAudit = hDlg;
 		//RS 20030613 Set Bkg of RichEdit Ctrl
 		hEdit = GetDlgItem(hAudit, IDC_AUDIT_DETAILS);
@@ -291,12 +293,12 @@ static INT_PTR CALLBACK AuditWindowProc(HWND hDlg, UINT Msg, WPARAM wParam, LPAR
 		case IDPAUSE:
 			if (bPaused)
 			{
-				SendDlgItemMessage(hAudit, IDPAUSE, WM_SETTEXT, 0, (LPARAM)TEXT("Pause"));
+				SendDlgItemMessage(hAudit, IDPAUSE, WM_SETTEXT, 0, (LPARAM)(LPCTSTR)_UIW(TEXT("&Pause")));
 				bPaused = FALSE;
 			}
 			else
 			{
-				SendDlgItemMessage(hAudit, IDPAUSE, WM_SETTEXT, 0, (LPARAM)TEXT("Continue"));
+				SendDlgItemMessage(hAudit, IDPAUSE, WM_SETTEXT, 0, (LPARAM)(LPCTSTR)(_UIW(TEXT("&Continue"))));
 				bPaused = TRUE;
 			}
 			break;
@@ -305,16 +307,25 @@ static INT_PTR CALLBACK AuditWindowProc(HWND hDlg, UINT Msg, WPARAM wParam, LPAR
 	}
 	return 0;
 }
-
+#include "translate.h"
 /* Callback for the Audit property sheet */
 INT_PTR CALLBACK GameAuditDialogProc(HWND hDlg,UINT Msg,WPARAM wParam,LPARAM lParam)
 {
 	switch (Msg)
 	{
 	case WM_INITDIALOG:
+		TranslateDialog(hDlg, lParam, TRUE);
+
+#ifdef TREE_SHEET
+		if (GetShowTreeSheet())
+		{
+			ModifyPropertySheetForTreeSheet(hDlg);
+		}
+#endif /* TREE_SHEET */
+
 		FlushFileCaches();
 		hAudit = hDlg;
-		win_set_window_text_utf8(GetDlgItem(hDlg, IDC_PROP_TITLE), GameInfoTitle(OPTIONS_GAME, rom_index));
+		Static_SetText(GetDlgItem(hDlg, IDC_PROP_TITLE), GameInfoTitle(OPTIONS_GAME, rom_index));
 		SetTimer(hDlg, 0, 1, NULL);
 		return 1;
 
@@ -322,11 +333,11 @@ INT_PTR CALLBACK GameAuditDialogProc(HWND hDlg,UINT Msg,WPARAM wParam,LPARAM lPa
 		KillTimer(hDlg, 0);
 		{
 			int iStatus;
-			LPCSTR lpStatus;
+			LPCWSTR lpStatus;
 
 			iStatus = MameUIVerifyRomSet(rom_index, 0);
-			lpStatus = DriverUsesRoms(rom_index) ? StatusString(iStatus) : "None required";
-			win_set_window_text_utf8(GetDlgItem(hDlg, IDC_PROP_ROMS), lpStatus);
+			lpStatus = DriverUsesRoms(rom_index) ? StatusString(iStatus) : _UIW(TEXT("None required"));
+			SetWindowText(GetDlgItem(hDlg, IDC_PROP_ROMS), lpStatus);
 
 			if (DriverUsesSamples(rom_index))
 			{
@@ -335,10 +346,10 @@ INT_PTR CALLBACK GameAuditDialogProc(HWND hDlg,UINT Msg,WPARAM wParam,LPARAM lPa
 			}
 			else
 			{
-				lpStatus = "None Required";
+				lpStatus = DriverUsesSamples(rom_index) ? StatusString(iStatus) : _UIW(TEXT("None required"));
 			}
 
-			win_set_window_text_utf8(GetDlgItem(hDlg, IDC_PROP_SAMPLES), lpStatus);
+			SetWindowText(GetDlgItem(hDlg, IDC_PROP_SAMPLES), lpStatus);
 		}
 		ShowWindow(hDlg, SW_SHOW);
 		break;
@@ -422,7 +433,7 @@ static void ProcessNextSample()
 	if (sample_index == driver_list::total())
 	{
 		DetailsPrintf("Audit complete.\n");
-		SendDlgItemMessage(hAudit, IDCANCEL, WM_SETTEXT, 0, (LPARAM)TEXT("Close"));
+		SendDlgItemMessage(hAudit, IDCANCEL, WM_SETTEXT, 0, (LPARAM)(LPCTSTR)_UIW(TEXT("&Close")));
 		sample_index = -1;
 	}
 }
@@ -464,32 +475,32 @@ static void CLIB_DECL DetailsPrintf(const char *fmt, ...)
 	free(t_s);
 }
 
-static const char * StatusString(int iStatus)
+static const WCHAR * StatusString(int iStatus)
 {
-	static const char *ptr;
+	static const WCHAR *ptr;
 
-	ptr = "Unknown";
+	ptr = w_lang_message(UI_MSG_OSD1, TEXT("Unknown"));
 
 	switch (iStatus)
 	{
 	case media_auditor::CORRECT:
-		ptr = "Passed";
+		ptr = w_lang_message(UI_MSG_OSD1, TEXT("Passed"));
 		break;
 
 	case media_auditor::BEST_AVAILABLE:
-		ptr = "Best available";
+		ptr = w_lang_message(UI_MSG_OSD1, TEXT("Best available"));
 		break;
 
 	case media_auditor::NONE_NEEDED:
-		ptr = "None Required";
+		ptr = w_lang_message(UI_MSG_OSD1, TEXT("None Required"));
 		break;
 
 	case media_auditor::NOTFOUND:
-		ptr = "Not found";
+		ptr = w_lang_message(UI_MSG_OSD1, TEXT("Not found"));
 		break;
 
 	case media_auditor::INCORRECT:
-		ptr = "Failed";
+		ptr = w_lang_message(UI_MSG_OSD1, TEXT("Failed"));
 		break;
 	}
 

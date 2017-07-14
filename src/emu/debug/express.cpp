@@ -883,6 +883,9 @@ void parsed_expression::parse_symbol_or_number(parse_token &token, const char *&
 			return;
 		} catch(const expression_error &e) {
 			// Try some other operator instead
+//#ifndef MY_VS2015_COMPILE
+			printf("≤∂ªÒµΩint“Ï≥££∫%d\n", e.code());
+//#endif
 		}
 	}
 

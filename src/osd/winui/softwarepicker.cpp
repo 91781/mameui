@@ -320,7 +320,9 @@ static BOOL SoftwarePicker_CalculateHash(HWND hwndPicker, int nIndex)
 }
 
 */
+#ifndef MY_VS2015_COMPILE
 #pragma GCC diagnostic ignored "-Wunused-but-set-variable"
+#endif
 static void SoftwarePicker_RealizeHash(HWND hwndPicker, int nIndex)
 {
 	software_picker_info *pPickerInfo;
@@ -359,7 +361,9 @@ static void SoftwarePicker_RealizeHash(HWND hwndPicker, int nIndex)
 	}
 */
 }
+#ifndef MY_VS2015_COMPILE
 #pragma GCC diagnostic error "-Wunused-but-set-variable"
+#endif
 
 
 static BOOL SoftwarePicker_AddFileEntry(HWND hwndPicker, LPCSTR pszFilename,

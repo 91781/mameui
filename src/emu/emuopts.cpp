@@ -41,6 +41,7 @@ const options_entry emu_options::s_option_entries[] =
 	{ OPTION_PLUGINSPATH,                                "plugins",   OPTION_STRING,     "path to plugin files" },
 	{ OPTION_LANGUAGEPATH,                               "language",  OPTION_STRING,     "path to language files" },
 	{ OPTION_SWPATH,                                     "software",  OPTION_STRING,     "path to loose software" },
+	{ OPTION_LANGPATH,                                   "lang",      OPTION_STRING,     "path to localized languages and datafiles" },
 
 	// output directory options
 	{ nullptr,                                           nullptr,     OPTION_HEADER,     "CORE OUTPUT DIRECTORY OPTIONS" },
@@ -205,6 +206,12 @@ const options_entry emu_options::s_option_entries[] =
 	{ OPTION_HTTP,                                       "0",         OPTION_BOOLEAN,    "HTTP server enable" },
 	{ OPTION_HTTP_PORT,                                  "8080",      OPTION_INTEGER,    "HTTP server port" },
 	{ OPTION_HTTP_ROOT,                                  "web",       OPTION_STRING,     "HTTP server document root" },
+
+	// language options
+	{ nullptr,                                          nullptr,      OPTION_HEADER,     "CORE LANGUAGE OPTIONS" },
+	{ OPTION_LANGUAGE ";lang",                          "auto",       OPTION_STRING,     "select translation language" },
+	{ OPTION_USE_LANG_LIST,                             "1",          OPTION_BOOLEAN,    "enable/disable local language game list" },
+
 
 	{ nullptr }
 };

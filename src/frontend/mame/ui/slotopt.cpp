@@ -166,7 +166,7 @@ void menu_slot_devices::populate(float &customtop, float &custombottom)
 		{
 			opt_name = has_selectable_options
 				? option->name()
-				: string_format(_("%s [internal]"), option->name());
+				: string_format(_LANGUAGE_CORE_TRANS_("%s [internal]"), option->name());
 		}
 
 		// choose item flags
@@ -177,7 +177,7 @@ void menu_slot_devices::populate(float &customtop, float &custombottom)
 		item_append(slot.device().tag() + 1, opt_name, item_flags, (void *)&slot);
 	}
 	item_append(menu_item_type::SEPARATOR);
-	item_append(_("Reset"), "", 0, (void *)1);
+	item_append(_LANGUAGE_CORE_TRANS_("Reset"), "", 0, (void *)1);
 }
 
 menu_slot_devices::~menu_slot_devices()

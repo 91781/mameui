@@ -19,10 +19,12 @@
 #include <assert.h>
 
 // MAME/MAMEUI headers
-#include <stdlib.h>
+//#include <stdlib.h>
 #include "resource.h"
-#include "mui_opts.h"
 #include "winui.h"
+#include "mui_opts.h"
+//#include "winui.h"
+#include "translate.h"
 
 #ifdef __GNUC__
 #pragma GCC diagnostic ignored "-Wunused-but-set-variable"
@@ -39,7 +41,7 @@ static int DoExchangeItem(HWND hFrom, HWND hTo, int nMinItem)
 	if (lvi.iItem < nMinItem)
 	{
 		if (lvi.iItem != -1) // Can't remove the first column
-			MessageBox(0, TEXT("Cannot Move Selected Item"), TEXT("Move Item"), IDOK);
+			MessageBox(0, w_lang_message(UI_MSG_OSD1, TEXT("Cannot Move Selected Item")), w_lang_message(UI_MSG_OSD1, TEXT("Move Item")), IDOK);
 		SetFocus(hFrom);
 		return FALSE;
 	}
@@ -121,6 +123,8 @@ INT_PTR InternalColumnDialogProc(HWND hDlg, UINT Msg, WPARAM wParam, LPARAM lPar
 	switch (Msg)
 	{
 	case WM_INITDIALOG:
+		TranslateDialog(hDlg, lParam, TRUE);
+
 		hShown = GetDlgItem(hDlg, IDC_LISTSHOWCOLUMNS);
 		hAvailable = GetDlgItem(hDlg, IDC_LISTAVAILABLECOLUMNS);
 		/*Change Style to Always Show Selection */
@@ -150,7 +154,7 @@ INT_PTR InternalColumnDialogProc(HWND hDlg, UINT Msg, WPARAM wParam, LPARAM lPar
 
 		for (i = 0 ; i < nColumnMax; i++)
 		{
-			lvi.pszText = (TCHAR *) names[order[i]];
+			lvi.pszText = w_lang_message(UI_MSG_OSD1, (TCHAR *)names[order[i]]); //(TCHAR *)names[order[i]]; //_UIW(names[order[i]);// (TCHAR *)names[order[i]];
 			lvi.lParam = order[i];
 
 			if (shown[order[i]])
@@ -228,7 +232,8 @@ INT_PTR InternalColumnDialogProc(HWND hDlg, UINT Msg, WPARAM wParam, LPARAM lPar
 							LVIS_FOCUSED | LVIS_SELECTED, LVIS_FOCUSED | LVIS_SELECTED);
 						if (showMsg)
 						{
-							MessageBox(0, TEXT("Changing this item is not permitted"), TEXT("Select Item"), IDOK);
+							//MessageBox(0, TEXT("Changing this item is not permitted"), TEXT("Select Item"), IDOK);
+							MessageBox(0, w_lang_message(UI_MSG_OSD1, TEXT("Changing this item is not permitted")), w_lang_message(UI_MSG_OSD1, TEXT("Select Item")), IDOK);
 							showMsg = FALSE;
 						}
 						EnableWindow(GetDlgItem(hDlg, IDC_BUTTONREMOVE),   FALSE);

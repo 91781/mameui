@@ -342,7 +342,7 @@ void mame_ui_manager::display_startup_screens(bool first_time)
 				if (!messagebox_text.empty())
 				{
 					std::string warning;
-					warning.assign(_("This driver requires images to be loaded in the following device(s): ")).append(messagebox_text.substr(0, messagebox_text.length() - 2));
+					warning.assign(_LANGUAGE_CORE_TRANS_("This driver requires images to be loaded in the following device(s): ")).append(messagebox_text.substr(0, messagebox_text.length() - 2));
 					ui::menu_file_manager::force_file_manager(*this, machine().render().ui_container(), warning.c_str());
 				}
 				break;
@@ -1092,22 +1092,22 @@ uint32_t mame_ui_manager::handler_ingame(render_container &container)
 			if (machine().ui_active())
 			{
 				popup_time(2, "%s\n%s\n%s\n%s\n%s\n%s\n",
-					_("Keyboard Emulation Status"),
+					_LANGUAGE_CORE_TRANS_("Keyboard Emulation Status"),
 					"-------------------------",
-					_("Mode: PARTIAL Emulation"),
-					_("UI:   Enabled"),
+					_LANGUAGE_CORE_TRANS_("Mode: PARTIAL Emulation"),
+					_LANGUAGE_CORE_TRANS_("UI:   Enabled"),
 					"-------------------------",
-					_("**Use ScrLock to toggle**"));
+					_LANGUAGE_CORE_TRANS_("**Use ScrLock to toggle**"));
 			}
 			else
 			{
 				popup_time(2, "%s\n%s\n%s\n%s\n%s\n%s\n",
-					_("Keyboard Emulation Status"),
+					_LANGUAGE_CORE_TRANS_("Keyboard Emulation Status"),
 					"-------------------------",
-					_("Mode: FULL Emulation"),
-					_("UI:   Disabled"),
+					_LANGUAGE_CORE_TRANS_("Mode: FULL Emulation"),
+					_LANGUAGE_CORE_TRANS_("UI:   Disabled"),
 					"-------------------------",
-					_("**Use ScrLock to toggle**"));
+					_LANGUAGE_CORE_TRANS_("**Use ScrLock to toggle**"));
 			}
 		}
 	}
@@ -1248,13 +1248,13 @@ uint32_t mame_ui_manager::handler_ingame(render_container &container)
 	{
 		if (!machine().options().cheat())
 		{
-			machine().popmessage(_("Autofire can't be enabled"));
+			machine().popmessage(_LANGUAGE_CORE_TRANS_("Autofire can't be enabled"));
 		}
 		else
 		{
 			bool autofire_toggle = machine().ioport().get_autofire_toggle();
 			machine().ioport().set_autofire_toggle(!autofire_toggle);
-			machine().popmessage("Autofire %s", autofire_toggle ? _("Enabled") : _("Disabled"));
+			machine().popmessage("Autofire %s", autofire_toggle ? _LANGUAGE_CORE_TRANS_("Enabled") : _LANGUAGE_CORE_TRANS_("Disabled"));
 		}
 	}
 
@@ -1287,9 +1287,9 @@ uint32_t mame_ui_manager::handler_load_save(render_container &container, uint32_
 
 	// okay, we're waiting for a key to select a slot; display a message
 	if (state == LOADSAVE_SAVE)
-		draw_message_window(container, _("Select position to save to"));
+		draw_message_window(container, _LANGUAGE_CORE_TRANS_("Select position to save to"));
 	else
-		draw_message_window(container, _("Select position to load from"));
+		draw_message_window(container, _LANGUAGE_CORE_TRANS_("Select position to load from"));
 
 	// if load/save state sequence is still being pressed, do not read the filename yet
 	if (m_load_save_hold) {
@@ -1313,9 +1313,9 @@ uint32_t mame_ui_manager::handler_load_save(render_container &container, uint32_
 	{
 		// display a popup indicating things were cancelled
 		if (state == LOADSAVE_SAVE)
-			machine().popmessage(_("Save cancelled"));
+			machine().popmessage(_LANGUAGE_CORE_TRANS_("Save cancelled"));
 		else
-			machine().popmessage(_("Load cancelled"));
+			machine().popmessage(_LANGUAGE_CORE_TRANS_("Load cancelled"));
 
 		// reset the state
 		machine().resume();
@@ -1358,12 +1358,12 @@ uint32_t mame_ui_manager::handler_load_save(render_container &container, uint32_
 	// display a popup indicating that the save will proceed
 	if (state == LOADSAVE_SAVE)
 	{
-		machine().popmessage(_("Save to position %s"), filename);
+		machine().popmessage(_LANGUAGE_CORE_TRANS_("Save to position %s"), filename);
 		machine().schedule_save(filename);
 	}
 	else
 	{
-		machine().popmessage(_("Load from position %s"), filename);
+		machine().popmessage(_LANGUAGE_CORE_TRANS_("Load from position %s"), filename);
 		machine().schedule_load(filename);
 	}
 
@@ -1406,7 +1406,7 @@ uint32_t mame_ui_manager::handler_confirm_quit(render_container &container)
 	std::string ui_cancel_text = machine().input().seq_name(machine().ioport().type_seq(IPT_UI_CANCEL, 0, SEQ_TYPE_STANDARD));
 
 	// assemble the quit message
-	std::string quit_message = string_format(_("Are you sure you want to quit?\n\n"
+	std::string quit_message = string_format(_LANGUAGE_CORE_TRANS_("Are you sure you want to quit?\n\n"
 			"Press ''%1$s'' to quit,\n"
 			"Press ''%2$s'' to return to emulation."),
 			ui_select_text,
@@ -1479,7 +1479,7 @@ std::vector<ui::menu_item> mame_ui_manager::slider_init(running_machine &machine
 	std::vector<slider_state *> sliders;
 
 	// add overall volume
-	sliders.push_back(slider_alloc(machine, SLIDER_ID_VOLUME, _("Master Volume"), -32, 0, 0, 1, nullptr));
+	sliders.push_back(slider_alloc(machine, SLIDER_ID_VOLUME, _LANGUAGE_CORE_TRANS_("Master Volume"), -32, 0, 0, 1, nullptr));
 
 	// add per-channel volume
 	mixer_input info;
@@ -1488,7 +1488,7 @@ std::vector<ui::menu_item> mame_ui_manager::slider_init(running_machine &machine
 		int32_t maxval = 2000;
 		int32_t defval = 1000;
 
-		std::string str = string_format(_("%1$s Volume"), info.stream->input_name(info.inputnum));
+		std::string str = string_format(_LANGUAGE_CORE_TRANS_("%1$s Volume"), info.stream->input_name(info.inputnum));
 		sliders.push_back(slider_alloc(machine, SLIDER_ID_MIXERVOL + item, str.c_str(), 0, defval, maxval, 20, (void *)(uintptr_t)item));
 	}
 
@@ -1512,7 +1512,7 @@ std::vector<ui::menu_item> mame_ui_manager::slider_init(running_machine &machine
 		for (device_execute_interface &exec : execute_interface_iterator(machine.root_device()))
 		{
 			void *param = (void *)&exec.device();
-			std::string str = string_format(_("Overclock CPU %1$s"), exec.device().tag());
+			std::string str = string_format(_LANGUAGE_CORE_TRANS_("Overclock CPU %1$s"), exec.device().tag());
 			sliders.push_back(slider_alloc(machine, SLIDER_ID_OVERCLOCK + slider_index++, str.c_str(), 10, 1000, 2000, 1, param));
 		}
 	}
@@ -1532,26 +1532,26 @@ std::vector<ui::menu_item> mame_ui_manager::slider_init(running_machine &machine
 		// add refresh rate tweaker
 		if (machine.options().cheat())
 		{
-			std::string str = string_format(_("%1$s Refresh Rate"), screen_desc);
+			std::string str = string_format(_LANGUAGE_CORE_TRANS_("%1$s Refresh Rate"), screen_desc);
 			sliders.push_back(slider_alloc(machine, SLIDER_ID_REFRESH + slider_index, str.c_str(), -10000, 0, 10000, 1000, param));
 		}
 
 		// add standard brightness/contrast/gamma controls per-screen
-		std::string str = string_format(_("%1$s Brightness"), screen_desc);
+		std::string str = string_format(_LANGUAGE_CORE_TRANS_("%1$s Brightness"), screen_desc);
 		sliders.push_back(slider_alloc(machine, SLIDER_ID_BRIGHTNESS + slider_index, str.c_str(), 100, 1000, 2000, 10, param));
-		str = string_format(_("%1$s Contrast"), screen_desc);
+		str = string_format(_LANGUAGE_CORE_TRANS_("%1$s Contrast"), screen_desc);
 		sliders.push_back(slider_alloc(machine, SLIDER_ID_CONTRAST + slider_index, str.c_str(), 100, 1000, 2000, 50, param));
-		str = string_format(_("%1$s Gamma"), screen_desc);
+		str = string_format(_LANGUAGE_CORE_TRANS_("%1$s Gamma"), screen_desc);
 		sliders.push_back(slider_alloc(machine, SLIDER_ID_GAMMA + slider_index, str.c_str(), 100, 1000, 3000, 50, param));
 
 		// add scale and offset controls per-screen
-		str = string_format(_("%1$s Horiz Stretch"), screen_desc);
+		str = string_format(_LANGUAGE_CORE_TRANS_("%1$s Horiz Stretch"), screen_desc);
 		sliders.push_back(slider_alloc(machine, SLIDER_ID_XSCALE + slider_index, str.c_str(), 500, defxscale, 1500, 2, param));
-		str = string_format(_("%1$s Horiz Position"), screen_desc);
+		str = string_format(_LANGUAGE_CORE_TRANS_("%1$s Horiz Position"), screen_desc);
 		sliders.push_back(slider_alloc(machine, SLIDER_ID_XOFFSET + slider_index, str.c_str(), -500, defxoffset, 500, 2, param));
-		str = string_format(_("%1$s Vert Stretch"), screen_desc);
+		str = string_format(_LANGUAGE_CORE_TRANS_("%1$s Vert Stretch"), screen_desc);
 		sliders.push_back(slider_alloc(machine, SLIDER_ID_YSCALE + slider_index, str.c_str(), 500, defyscale, 1500, 2, param));
-		str = string_format(_("%1$s Vert Position"), screen_desc);
+		str = string_format(_LANGUAGE_CORE_TRANS_("%1$s Vert Position"), screen_desc);
 		sliders.push_back(slider_alloc(machine, SLIDER_ID_YOFFSET + slider_index, str.c_str(), -500, defyoffset, 500, 2, param));
 		slider_index++;
 	}
@@ -1570,13 +1570,13 @@ std::vector<ui::menu_item> mame_ui_manager::slider_init(running_machine &machine
 			void *param = (void *)&laserdisc;
 
 			// add scale and offset controls per-overlay
-			std::string str = string_format(_("Laserdisc '%1$s' Horiz Stretch"), laserdisc.tag());
+			std::string str = string_format(_LANGUAGE_CORE_TRANS_("Laserdisc '%1$s' Horiz Stretch"), laserdisc.tag());
 			sliders.push_back(slider_alloc(machine, SLIDER_ID_OVERLAY_XSCALE + slider_index, str.c_str(), 500, (defxscale == 0) ? 1000 : defxscale, 1500, 2, param));
-			str = string_format(_("Laserdisc '%1$s' Horiz Position"), laserdisc.tag());
+			str = string_format(_LANGUAGE_CORE_TRANS_("Laserdisc '%1$s' Horiz Position"), laserdisc.tag());
 			sliders.push_back(slider_alloc(machine, SLIDER_ID_OVERLAY_YSCALE + slider_index, str.c_str(), -500, defxoffset, 500, 2, param));
-			str = string_format(_("Laserdisc '%1$s' Vert Stretch"), laserdisc.tag());
+			str = string_format(_LANGUAGE_CORE_TRANS_("Laserdisc '%1$s' Vert Stretch"), laserdisc.tag());
 			sliders.push_back(slider_alloc(machine, SLIDER_ID_OVERLAY_XOFFSET + slider_index, str.c_str(), 500, (defyscale == 0) ? 1000 : defyscale, 1500, 2, param));
-			str = string_format(_("Laserdisc '%1$s' Vert Position"), laserdisc.tag());
+			str = string_format(_LANGUAGE_CORE_TRANS_("Laserdisc '%1$s' Vert Position"), laserdisc.tag());
 			sliders.push_back(slider_alloc(machine, SLIDER_ID_OVERLAY_YOFFSET + slider_index, str.c_str(), -500, defyoffset, 500, 2, param));
 			slider_index++;
 		}
@@ -1588,10 +1588,10 @@ std::vector<ui::menu_item> mame_ui_manager::slider_init(running_machine &machine
 		if (screen.screen_type() == SCREEN_TYPE_VECTOR)
 		{
 			// add vector control
-			sliders.push_back(slider_alloc(machine, SLIDER_ID_FLICKER + slider_index, _("Vector Flicker"), 0, 0, 1000, 10, nullptr));
-			sliders.push_back(slider_alloc(machine, SLIDER_ID_BEAM_WIDTH_MIN + slider_index, _("Beam Width Minimum"), 100, 100, 1000, 1, nullptr));
-			sliders.push_back(slider_alloc(machine, SLIDER_ID_BEAM_WIDTH_MAX + slider_index, _("Beam Width Maximum"), 100, 100, 1000, 1, nullptr));
-			sliders.push_back(slider_alloc(machine, SLIDER_ID_BEAM_INTENSITY + slider_index, _("Beam Intensity Weight"), -1000, 0, 1000, 10, nullptr));
+			sliders.push_back(slider_alloc(machine, SLIDER_ID_FLICKER + slider_index, _LANGUAGE_CORE_TRANS_("Vector Flicker"), 0, 0, 1000, 10, nullptr));
+			sliders.push_back(slider_alloc(machine, SLIDER_ID_BEAM_WIDTH_MIN + slider_index, _LANGUAGE_CORE_TRANS_("Beam Width Minimum"), 100, 100, 1000, 1, nullptr));
+			sliders.push_back(slider_alloc(machine, SLIDER_ID_BEAM_WIDTH_MAX + slider_index, _LANGUAGE_CORE_TRANS_("Beam Width Maximum"), 100, 100, 1000, 1, nullptr));
+			sliders.push_back(slider_alloc(machine, SLIDER_ID_BEAM_INTENSITY + slider_index, _LANGUAGE_CORE_TRANS_("Beam Intensity Weight"), -1000, 0, 1000, 10, nullptr));
 			slider_index++;
 			break;
 		}
@@ -1606,9 +1606,9 @@ std::vector<ui::menu_item> mame_ui_manager::slider_init(running_machine &machine
 		{
 			if (field.crosshair_axis() != CROSSHAIR_AXIS_NONE && field.player() == 0)
 			{
-				std::string str = string_format(_("Crosshair Scale %1$s"), (field.crosshair_axis() == CROSSHAIR_AXIS_X) ? _("X") : _("Y"));
+				std::string str = string_format(_LANGUAGE_CORE_TRANS_("Crosshair Scale %1$s"), (field.crosshair_axis() == CROSSHAIR_AXIS_X) ? _LANGUAGE_CORE_TRANS_("X") : _LANGUAGE_CORE_TRANS_("Y"));
 				sliders.push_back(slider_alloc(machine, SLIDER_ID_CROSSHAIR_SCALE + slider_index, str.c_str(), -3000, 1000, 3000, 100, (void *)&field));
-				str = string_format(_("Crosshair Offset %1$s"), (field.crosshair_axis() == CROSSHAIR_AXIS_X) ? _("X") : _("Y"));
+				str = string_format(_LANGUAGE_CORE_TRANS_("Crosshair Offset %1$s"), (field.crosshair_axis() == CROSSHAIR_AXIS_X) ? _LANGUAGE_CORE_TRANS_("X") : _LANGUAGE_CORE_TRANS_("Y"));
 				sliders.push_back(slider_alloc(machine, SLIDER_ID_CROSSHAIR_OFFSET + slider_index, str.c_str(), -3000, 0, 3000, 100, (void *)&field));
 			}
 		}
@@ -1696,7 +1696,7 @@ int32_t mame_ui_manager::slider_volume(running_machine &machine, void *arg, int 
 	if (newval != SLIDER_NOCHANGE)
 		machine.sound().set_attenuation(newval);
 	if (str)
-		*str = string_format(_("%1$3ddB"), machine.sound().attenuation());
+		*str = string_format(_LANGUAGE_CORE_TRANS_("%1$3ddB"), machine.sound().attenuation());
 	return machine.sound().attenuation();
 }
 
@@ -1740,7 +1740,7 @@ int32_t mame_ui_manager::slider_adjuster(running_machine &machine, void *arg, in
 		field->set_user_settings(settings);
 	}
 	if (str)
-		*str = string_format(_("%1$d%%"), settings.value);
+		*str = string_format(_LANGUAGE_CORE_TRANS_("%1$d%%"), settings.value);
 	return settings.value;
 }
 
@@ -1756,7 +1756,7 @@ int32_t mame_ui_manager::slider_overclock(running_machine &machine, void *arg, i
 	if (newval != SLIDER_NOCHANGE)
 		cpu->set_clock_scale((float)newval * 0.001f);
 	if (str)
-		*str = string_format(_("%1$3.0f%%"), floor(cpu->clock_scale() * 100.0 + 0.5));
+		*str = string_format(_LANGUAGE_CORE_TRANS_("%1$3.0f%%"), floor(cpu->clock_scale() * 100.0 + 0.5));
 	return floor(cpu->clock_scale() * 1000.0 + 0.5);
 }
 
@@ -1779,7 +1779,7 @@ int32_t mame_ui_manager::slider_refresh(running_machine &machine, void *arg, int
 		screen->configure(width, height, visarea, HZ_TO_ATTOSECONDS(defrefresh + (double)newval * 0.001));
 	}
 	if (str)
-		*str = string_format(_("%1$.3ffps"), ATTOSECONDS_TO_HZ(machine.first_screen()->frame_period().attoseconds()));
+		*str = string_format(_LANGUAGE_CORE_TRANS_("%1$.3ffps"), ATTOSECONDS_TO_HZ(machine.first_screen()->frame_period().attoseconds()));
 	refresh = ATTOSECONDS_TO_HZ(machine.first_screen()->frame_period().attoseconds());
 	return floor((refresh - defrefresh) * 1000.0 + 0.5);
 }
@@ -1802,7 +1802,7 @@ int32_t mame_ui_manager::slider_brightness(running_machine &machine, void *arg, 
 		screen->container().set_user_settings(settings);
 	}
 	if (str)
-		*str = string_format(_("%1$.3f"), settings.m_brightness);
+		*str = string_format(_LANGUAGE_CORE_TRANS_("%1$.3f"), settings.m_brightness);
 	return floor(settings.m_brightness * 1000.0f + 0.5f);
 }
 
@@ -1824,7 +1824,7 @@ int32_t mame_ui_manager::slider_contrast(running_machine &machine, void *arg, in
 		screen->container().set_user_settings(settings);
 	}
 	if (str)
-		*str = string_format(_("%1$.3f"), settings.m_contrast);
+		*str = string_format(_LANGUAGE_CORE_TRANS_("%1$.3f"), settings.m_contrast);
 	return floor(settings.m_contrast * 1000.0f + 0.5f);
 }
 
@@ -1845,7 +1845,7 @@ int32_t mame_ui_manager::slider_gamma(running_machine &machine, void *arg, int i
 		screen->container().set_user_settings(settings);
 	}
 	if (str)
-		*str = string_format(_("%1$.3f"), settings.m_gamma);
+		*str = string_format(_LANGUAGE_CORE_TRANS_("%1$.3f"), settings.m_gamma);
 	return floor(settings.m_gamma * 1000.0f + 0.5f);
 }
 
@@ -1867,7 +1867,7 @@ int32_t mame_ui_manager::slider_xscale(running_machine &machine, void *arg, int 
 		screen->container().set_user_settings(settings);
 	}
 	if (str)
-		*str = string_format(_("%1$.3f"), settings.m_xscale);
+		*str = string_format(_LANGUAGE_CORE_TRANS_("%1$.3f"), settings.m_xscale);
 	return floor(settings.m_xscale * 1000.0f + 0.5f);
 }
 
@@ -1889,7 +1889,7 @@ int32_t mame_ui_manager::slider_yscale(running_machine &machine, void *arg, int 
 		screen->container().set_user_settings(settings);
 	}
 	if (str)
-		*str = string_format(_("%1$.3f"), settings.m_yscale);
+		*str = string_format(_LANGUAGE_CORE_TRANS_("%1$.3f"), settings.m_yscale);
 	return floor(settings.m_yscale * 1000.0f + 0.5f);
 }
 
@@ -1911,7 +1911,7 @@ int32_t mame_ui_manager::slider_xoffset(running_machine &machine, void *arg, int
 		screen->container().set_user_settings(settings);
 	}
 	if (str)
-		*str = string_format(_("%1$.3f"), settings.m_xoffset);
+		*str = string_format(_LANGUAGE_CORE_TRANS_("%1$.3f"), settings.m_xoffset);
 	return floor(settings.m_xoffset * 1000.0f + 0.5f);
 }
 
@@ -1933,7 +1933,7 @@ int32_t mame_ui_manager::slider_yoffset(running_machine &machine, void *arg, int
 		screen->container().set_user_settings(settings);
 	}
 	if (str)
-		*str = string_format(_("%1$.3f"), settings.m_yoffset);
+		*str = string_format(_LANGUAGE_CORE_TRANS_("%1$.3f"), settings.m_yoffset);
 	return floor(settings.m_yoffset * 1000.0f + 0.5f);
 }
 
@@ -1955,7 +1955,7 @@ int32_t mame_ui_manager::slider_overxscale(running_machine &machine, void *arg, 
 		laserdisc->set_overlay_config(settings);
 	}
 	if (str)
-		*str = string_format(_("%1$.3f"), settings.m_overscalex);
+		*str = string_format(_LANGUAGE_CORE_TRANS_("%1$.3f"), settings.m_overscalex);
 	return floor(settings.m_overscalex * 1000.0f + 0.5f);
 }
 
@@ -1977,7 +1977,7 @@ int32_t mame_ui_manager::slider_overyscale(running_machine &machine, void *arg, 
 		laserdisc->set_overlay_config(settings);
 	}
 	if (str)
-		*str = string_format(_("%1$.3f"), settings.m_overscaley);
+		*str = string_format(_LANGUAGE_CORE_TRANS_("%1$.3f"), settings.m_overscaley);
 	return floor(settings.m_overscaley * 1000.0f + 0.5f);
 }
 
@@ -1999,7 +1999,7 @@ int32_t mame_ui_manager::slider_overxoffset(running_machine &machine, void *arg,
 		laserdisc->set_overlay_config(settings);
 	}
 	if (str)
-		*str = string_format(_("%1$.3f"), settings.m_overposx);
+		*str = string_format(_LANGUAGE_CORE_TRANS_("%1$.3f"), settings.m_overposx);
 	return floor(settings.m_overposx * 1000.0f + 0.5f);
 }
 
@@ -2021,7 +2021,7 @@ int32_t mame_ui_manager::slider_overyoffset(running_machine &machine, void *arg,
 		laserdisc->set_overlay_config(settings);
 	}
 	if (str)
-		*str = string_format(_("%1$.3f"), settings.m_overposy);
+		*str = string_format(_LANGUAGE_CORE_TRANS_("%1$.3f"), settings.m_overposy);
 	return floor(settings.m_overposy * 1000.0f + 0.5f);
 }
 
@@ -2036,7 +2036,7 @@ int32_t mame_ui_manager::slider_flicker(running_machine &machine, void *arg, int
 	if (newval != SLIDER_NOCHANGE)
 		vector_options::s_flicker = (float)newval * 0.001f;
 	if (str)
-		*str = string_format(_("%1$1.2f"), vector_options::s_flicker);
+		*str = string_format(_LANGUAGE_CORE_TRANS_("%1$1.2f"), vector_options::s_flicker);
 	return floor(vector_options::s_flicker * 1000.0f + 0.5f);
 }
 
@@ -2051,7 +2051,7 @@ int32_t mame_ui_manager::slider_beam_width_min(running_machine &machine, void *a
 	if (newval != SLIDER_NOCHANGE)
 		vector_options::s_beam_width_min = std::min((float)newval * 0.01f, vector_options::s_beam_width_max);
 	if (str != nullptr)
-		*str = string_format(_("%1$1.2f"), vector_options::s_beam_width_min);
+		*str = string_format(_LANGUAGE_CORE_TRANS_("%1$1.2f"), vector_options::s_beam_width_min);
 	return floor(vector_options::s_beam_width_min * 100.0f + 0.5f);
 }
 
@@ -2066,7 +2066,7 @@ int32_t mame_ui_manager::slider_beam_width_max(running_machine &machine, void *a
 	if (newval != SLIDER_NOCHANGE)
 		vector_options::s_beam_width_max = std::max((float)newval * 0.01f, vector_options::s_beam_width_min);
 	if (str != nullptr)
-		*str = string_format(_("%1$1.2f"), vector_options::s_beam_width_max);
+		*str = string_format(_LANGUAGE_CORE_TRANS_("%1$1.2f"), vector_options::s_beam_width_max);
 	return floor(vector_options::s_beam_width_max * 100.0f + 0.5f);
 }
 
@@ -2081,7 +2081,7 @@ int32_t mame_ui_manager::slider_beam_intensity_weight(running_machine &machine, 
 	if (newval != SLIDER_NOCHANGE)
 		vector_options::s_beam_intensity_weight = (float)newval * 0.001f;
 	if (str != nullptr)
-		*str = string_format(_("%1$1.2f"), vector_options::s_beam_intensity_weight);
+		*str = string_format(_LANGUAGE_CORE_TRANS_("%1$1.2f"), vector_options::s_beam_intensity_weight);
 	return floor(vector_options::s_beam_intensity_weight * 1000.0f + 0.5f);
 }
 
@@ -2099,7 +2099,7 @@ int32_t mame_ui_manager::slider_crossscale(running_machine &machine, void *arg, 
 	if (newval != SLIDER_NOCHANGE)
 		field->set_crosshair_scale(float(newval) * 0.001);
 	if (str)
-		*str = string_format((field->crosshair_axis() == CROSSHAIR_AXIS_X) ? _("Crosshair Scale X %1$1.3f") :  _("Crosshair Scale Y %1$1.3f"), float(newval) * 0.001f);
+		*str = string_format((field->crosshair_axis() == CROSSHAIR_AXIS_X) ? _LANGUAGE_CORE_TRANS_("Crosshair Scale X %1$1.3f") : _LANGUAGE_CORE_TRANS_("Crosshair Scale Y %1$1.3f"), float(newval) * 0.001f);
 	return floor(field->crosshair_scale() * 1000.0f + 0.5f);
 }
 #endif
@@ -2118,7 +2118,7 @@ int32_t mame_ui_manager::slider_crossoffset(running_machine &machine, void *arg,
 	if (newval != SLIDER_NOCHANGE)
 		field->set_crosshair_offset(float(newval) * 0.001f);
 	if (str)
-		*str = string_format((field->crosshair_axis() == CROSSHAIR_AXIS_X) ? _("Crosshair Offset X %1$1.3f") :  _("Crosshair Offset Y %1$1.3f"), float(newval) * 0.001f);
+		*str = string_format((field->crosshair_axis() == CROSSHAIR_AXIS_X) ? _LANGUAGE_CORE_TRANS_("Crosshair Offset X %1$1.3f") : _LANGUAGE_CORE_TRANS_("Crosshair Offset Y %1$1.3f"), float(newval) * 0.001f);
 	return field->crosshair_offset();
 }
 #endif
@@ -2257,7 +2257,7 @@ void mame_ui_manager::save_ui_options()
 		file.close();
 	}
 	else
-		machine().popmessage(_("**Error saving ui.ini**"));
+		machine().popmessage(_LANGUAGE_CORE_TRANS_("**Error saving ui.ini**"));
 }
 
 //-------------------------------------------------
@@ -2304,11 +2304,11 @@ void mame_ui_manager::save_main_option()
 			file.close();
 		}
 		else {
-			machine().popmessage(_("**Error saving %s.ini**"), emulator_info::get_configname());
+			machine().popmessage(_LANGUAGE_CORE_TRANS_("**Error saving %s.ini**"), emulator_info::get_configname());
 			return;
 		}
 	}
-	popup_time(3, "%s", _("\n    Configuration saved    \n\n"));
+	popup_time(3, "%s", _LANGUAGE_CORE_TRANS_("\n    Configuration saved    \n\n"));
 }
 
 void mame_ui_manager::menu_reset()

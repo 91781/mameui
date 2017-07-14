@@ -76,7 +76,7 @@ std::string machine_info::warnings_string()
 	// add a warning if any ROMs were loaded with warnings
 	if (m_machine.rom_load().warnings() > 0)
 	{
-		buf << _("One or more ROMs/CHDs for this machine are incorrect. The machine may not run correctly.\n");
+		buf << _LANGUAGE_CORE_TRANS_("One or more ROMs/CHDs for this machine are incorrect. The machine may not run correctly.\n");
 		if (m_machine.system().flags & warning_flags)
 			buf << "\n";
 	}
@@ -89,57 +89,57 @@ std::string machine_info::warnings_string()
 	// if we have at least one warning flag, print the general header
 	if ((m_machine.system().flags & warning_flags) || m_machine.rom_load().knownbad() > 0)
 	{
-		buf << _("There are known problems with this machine\n\n");
+		buf << _LANGUAGE_CORE_TRANS_("There are known problems with this machine\n\n");
 
 		// add a warning if any ROMs are flagged BAD_DUMP/NO_DUMP
 		if (m_machine.rom_load().knownbad() > 0) {
-			buf << _("One or more ROMs/CHDs for this machine have not been correctly dumped.\n");
+			buf << _LANGUAGE_CORE_TRANS_("One or more ROMs/CHDs for this machine have not been correctly dumped.\n");
 		}
 		// add one line per warning flag
 		if (m_machine.system().flags & MACHINE_IMPERFECT_KEYBOARD)
-			buf << _("The keyboard emulation may not be 100% accurate.\n");
+			buf << _LANGUAGE_CORE_TRANS_("The keyboard emulation may not be 100% accurate.\n");
 		if (m_machine.system().flags & MACHINE_IMPERFECT_COLORS)
-			buf << _("The colors aren't 100% accurate.\n");
+			buf << _LANGUAGE_CORE_TRANS_("The colors aren't 100% accurate.\n");
 		if (m_machine.system().flags & MACHINE_WRONG_COLORS)
-			buf << _("The colors are completely wrong.\n");
+			buf << _LANGUAGE_CORE_TRANS_("The colors are completely wrong.\n");
 		if (m_machine.system().flags & MACHINE_IMPERFECT_GRAPHICS)
-			buf << _("The video emulation isn't 100% accurate.\n");
+			buf << _LANGUAGE_CORE_TRANS_("The video emulation isn't 100% accurate.\n");
 		if (m_machine.system().flags & MACHINE_IMPERFECT_SOUND)
-			buf << _("The sound emulation isn't 100% accurate.\n");
+			buf << _LANGUAGE_CORE_TRANS_("The sound emulation isn't 100% accurate.\n");
 		if (m_machine.system().flags & MACHINE_NO_SOUND) {
-			buf << _("The machine lacks sound.\n");
+			buf << _LANGUAGE_CORE_TRANS_("The machine lacks sound.\n");
 		}
 		if (m_machine.system().flags & MACHINE_NO_COCKTAIL)
-			buf << _("Screen flipping in cocktail mode is not supported.\n");
+			buf << _LANGUAGE_CORE_TRANS_("Screen flipping in cocktail mode is not supported.\n");
 
 		// check if external artwork is present before displaying this warning?
 		if (m_machine.system().flags & MACHINE_REQUIRES_ARTWORK) {
-			buf << _("The machine requires external artwork files.\n");
+			buf << _LANGUAGE_CORE_TRANS_("The machine requires external artwork files.\n");
 		}
 
 		if (m_machine.system().flags & MACHINE_IS_INCOMPLETE )
 		{
-			buf << _("This machine was never completed. It may exhibit strange behavior or missing elements that are not bugs in the emulation.\n");
+			buf << _LANGUAGE_CORE_TRANS_("This machine was never completed. It may exhibit strange behavior or missing elements that are not bugs in the emulation.\n");
 		}
 
 		if (m_machine.system().flags & MACHINE_NODEVICE_MICROPHONE )
-			buf << _("This machine has unemulated microphone device.\n");
+			buf << _LANGUAGE_CORE_TRANS_("This machine has unemulated microphone device.\n");
 
 		if (m_machine.system().flags & MACHINE_NODEVICE_CAMERA )
-			buf << _("This machine has unemulated camera device.\n");
+			buf << _LANGUAGE_CORE_TRANS_("This machine has unemulated camera device.\n");
 
 		if (m_machine.system().flags & MACHINE_NODEVICE_PRINTER )
-			buf << _("This machine has unemulated printer device.\n");
+			buf << _LANGUAGE_CORE_TRANS_("This machine has unemulated printer device.\n");
 
 		if (m_machine.system().flags & MACHINE_NODEVICE_LAN )
-			buf << _("This machine has unemulated linking capabilities.\n");
+			buf << _LANGUAGE_CORE_TRANS_("This machine has unemulated linking capabilities.\n");
 
 		if (m_machine.system().flags & MACHINE_NODEVICE_WAN )
-			buf << _("This machine has unemulated networking capabilities.\n");
+			buf << _LANGUAGE_CORE_TRANS_("This machine has unemulated networking capabilities.\n");
 
 		if (m_machine.system().flags & MACHINE_NO_SOUND_HW )
 		{
-			buf << _("This machine has no sound hardware, MAME will produce no sounds, this is expected behaviour.\n");
+			buf << _LANGUAGE_CORE_TRANS_("This machine has no sound hardware, MAME will produce no sounds, this is expected behaviour.\n");
 		}
 
 
@@ -148,14 +148,14 @@ std::string machine_info::warnings_string()
 		{
 			// add the strings for these warnings
 			if (m_machine.system().flags & MACHINE_UNEMULATED_PROTECTION) {
-				buf << _("The machine has protection which isn't fully emulated.\n");
+				buf << _LANGUAGE_CORE_TRANS_("The machine has protection which isn't fully emulated.\n");
 			}
 			if (m_machine.system().flags & MACHINE_NOT_WORKING) {
-				buf << _("\nTHIS MACHINE DOESN'T WORK. The emulation for this machine is not yet complete. "
+				buf << _LANGUAGE_CORE_TRANS_("\nTHIS MACHINE DOESN'T WORK. The emulation for this machine is not yet complete. "
 						"There is nothing you can do to fix this problem except wait for the developers to improve the emulation.\n");
 			}
 			if (m_machine.system().flags & MACHINE_MECHANICAL) {
-				buf << _("\nCertain elements of this machine cannot be emulated as it requires actual physical interaction or consists of mechanical devices. "
+				buf << _LANGUAGE_CORE_TRANS_("\nCertain elements of this machine cannot be emulated as it requires actual physical interaction or consists of mechanical devices. "
 						"It is not possible to fully play this machine.\n");
 			}
 
@@ -174,7 +174,7 @@ std::string machine_info::warnings_string()
 					{
 						// this one works, add a header and display the name of the clone
 						if (!foundworking) {
-							buf << _("\n\nThere are working clones of this machine: ");
+							buf << _LANGUAGE_CORE_TRANS_("\n\nThere are working clones of this machine: ");
 						}
 						else
 							buf << ", ";
@@ -188,7 +188,7 @@ std::string machine_info::warnings_string()
 	}
 
 	// add the 'press OK' string
-	buf << _("\n\nPress any key to continue");
+	buf << _LANGUAGE_CORE_TRANS_("\n\nPress any key to continue");
 	return buf.str();
 }
 
@@ -202,7 +202,7 @@ std::string machine_info::game_info_string()
 	std::ostringstream buf;
 
 	// print description, manufacturer, and CPU:
-	util::stream_format(buf, _("%1$s\n%2$s %3$s\nDriver: %4$s\n\nCPU:\n"),
+	util::stream_format(buf, _LANGUAGE_CORE_TRANS_("%1$s\n%2$s %3$s\nDriver: %4$s\n\nCPU:\n"),
 			m_machine.system().description,
 			m_machine.system().year,
 			m_machine.system().manufacturer,
@@ -237,7 +237,7 @@ std::string machine_info::game_info_string()
 				(clock >= 1000000) ? (clock / 1000000) : (clock / 1000),
 				(clock >= 1000000) ? (clock % 1000000) : (clock % 1000),
 				(clock >= 1000000) ? 6 : 3,
-				(clock >= 1000000) ? _("MHz") : _("kHz"));
+				(clock >= 1000000) ? _LANGUAGE_CORE_TRANS_("MHz") : _LANGUAGE_CORE_TRANS_("kHz"));
 	}
 
 	// loop over all sound chips
@@ -251,7 +251,7 @@ std::string machine_info::game_info_string()
 
 		// append the Sound: string
 		if (!found_sound)
-			buf << _("\nSound:\n");
+			buf << _LANGUAGE_CORE_TRANS_("\nSound:\n");
 		found_sound = true;
 
 		// count how many identical sound chips we have
@@ -275,22 +275,22 @@ std::string machine_info::game_info_string()
 				(clock >= 1000000) ? (clock / 1000000) : (clock / 1000),
 				(clock >= 1000000) ? (clock % 1000000) : (clock % 1000),
 				(clock >= 1000000) ? 6 : 3,
-				(clock >= 1000000) ? _("MHz") : _("kHz"));
+				(clock >= 1000000) ? _LANGUAGE_CORE_TRANS_("MHz") : _LANGUAGE_CORE_TRANS_("kHz"));
 	}
 
 	// display screen information
-	buf << _("\nVideo:\n");
+	buf << _LANGUAGE_CORE_TRANS_("\nVideo:\n");
 	screen_device_iterator scriter(m_machine.root_device());
 	int scrcount = scriter.count();
 	if (scrcount == 0)
-		buf << _("None\n");
+		buf << _LANGUAGE_CORE_TRANS_("None\n");
 	else
 	{
 		for (screen_device &screen : scriter)
 		{
 			std::string detail;
 			if (screen.screen_type() == SCREEN_TYPE_VECTOR)
-				detail = _("Vector");
+				detail = _LANGUAGE_CORE_TRANS_("Vector");
 			else
 			{
 				const rectangle &visarea = screen.visible_area();
@@ -301,7 +301,7 @@ std::string machine_info::game_info_string()
 			}
 
 			util::stream_format(buf,
-					(scrcount > 1) ? _("%1$s: %2$s\n") : _("%2$s\n"),
+					(scrcount > 1) ? _LANGUAGE_CORE_TRANS_("%1$s: %2$s\n") : _LANGUAGE_CORE_TRANS_("%2$s\n"),
 					get_screen_desc(screen), detail);
 		}
 	}
@@ -337,9 +337,9 @@ std::string machine_info::mandatory_images()
 std::string machine_info::get_screen_desc(screen_device &screen)
 {
 	if (screen_device_iterator(m_machine.root_device()).count() > 1)
-		return string_format(_("Screen '%1$s'"), screen.tag());
+		return string_format(_LANGUAGE_CORE_TRANS_("Screen '%1$s'"), screen.tag());
 	else
-		return _("Screen");
+		return _LANGUAGE_CORE_TRANS_("Screen");
 }
 
 
@@ -423,10 +423,10 @@ void menu_image_info::image_info(device_image_interface *image)
 			switch (image->supported())
 			{
 				case SOFTWARE_SUPPORTED_NO:
-					item_append(_("Not supported"), "", FLAG_DISABLE, nullptr);
+					item_append(_LANGUAGE_CORE_TRANS_("Not supported"), "", FLAG_DISABLE, nullptr);
 					break;
 				case SOFTWARE_SUPPORTED_PARTIAL:
-					item_append(_("Partially supported"), "", FLAG_DISABLE, nullptr);
+					item_append(_LANGUAGE_CORE_TRANS_("Partially supported"), "", FLAG_DISABLE, nullptr);
 					break;
 				default:
 					break;
@@ -434,7 +434,7 @@ void menu_image_info::image_info(device_image_interface *image)
 		}
 	}
 	else
-		item_append(image->brief_instance_name(), _("[empty]"), 0, nullptr);
+		item_append(image->brief_instance_name(), _LANGUAGE_CORE_TRANS_("[empty]"), 0, nullptr);
 	item_append("", "", FLAG_DISABLE, nullptr);
 }
 

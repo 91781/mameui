@@ -29,6 +29,8 @@
 #include <tchar.h>
 
 // MAME/MAMEUI headers
+#include "emu.h"
+#include "emuopts.h"
 #include "bitmask.h"
 #include "winui.h"
 #include "mui_util.h"
@@ -38,6 +40,8 @@
 #include "winutf8.h"
 #include "strconv.h"
 #include "drivenum.h"
+#include "clifront.h"
+#include "translate.h"
 #include "game_opts.h"
 
 #ifdef _MSC_VER
@@ -460,6 +464,8 @@ void ResetGUI(void)
 	settings.revert(OPTION_PRIORITY_NORMAL);
 	// Save the new MAMEui.ini
 	SaveOptions();
+	SetLangcode(GetLangcode());
+	SetUseLangList(UseLangList());
 }
 
 const char * GetImageTabLongName(int tab_index)
@@ -1930,6 +1936,51 @@ void SetRunFullScreen(BOOL fullScreen)
 	settings.set_value(MUIOPTION_FULL_SCREEN, fullScreen, OPTION_PRIORITY_CMDLINE,error_string);
 }
 
+int GetLangcode(void)
+{
+	return lang_get_langcode();
+}
+
+void SetLangcode(int langcode)
+{
+	/* apply to emulator core for datafile.c */
+	lang_set_langcode(global, langcode);
+	langcode = GetLangcode();
+
+	std::string error_string;
+	global.set_value(OPTION_LANGUAGE, ui_lang_info[langcode].name, OPTION_PRIORITY_CMDLINE, error_string);
+
+	/* apply for osd core functions */
+//	set_osdcore_acp(ui_lang_info[langcode].codepage);ÉèÖÃºËÐÄµÄÓïÑÔ??
+
+	InitTranslator(langcode);
+}
+
+BOOL UseLangList(void)
+{
+	return global.bool_value(OPTION_USE_LANG_LIST);
+}
+
+void SetUseLangList(BOOL is_use)
+{
+	std::string error_string;
+	global.set_value(OPTION_USE_LANG_LIST, is_use, OPTION_PRIORITY_CMDLINE, error_string);
+
+	/* apply to emulator core for datafile.c */
+	lang_message_enable(UI_MSG_LIST, is_use);
+	lang_message_enable(UI_MSG_MANUFACTURE, is_use);
+}
+
+const WCHAR* GetLanguageDir(void)
+{
+	return options_get_wstring(global, OPTION_LANGPATH);
+}
+
+void SetLanguageDir(const WCHAR* path)
+{
+	options_set_wstring(global, OPTION_LANGPATH, path, OPTION_PRIORITY_CMDLINE);
+}
+
 /***************************************************************************
     Internal functions
  ***************************************************************************/
@@ -2253,7 +2304,6 @@ static void SaveSettingsFile(windows_options &opts, const char *filename)
 }
 
 
-
 /* Register access functions below */
 static void LoadOptionsAndSettings(void)
 {
@@ -2268,6 +2318,16 @@ static void LoadOptionsAndSettings(void)
 
 	// parse global options ini/mame32.ini
 	load_options(global, OPTIONS_GLOBAL, GLOBAL_OPTIONS);
+
+	printf("LoadOptionsAndSettings\n");
+
+	std::string error_string;
+	global.set_value(OPTION_LANGUAGE, global.value(OPTION_LANGUAGE), OPTION_PRIORITY_CMDLINE, error_string);
+	GetLanguageDir();
+
+	setup_language(global);
+	SetLangcode(GetLangcode());
+	SetUseLangList(UseLangList());
 }
 
 void SetDirectories(windows_options &opts)
@@ -2382,7 +2442,9 @@ void LoadFolderFlags(void)
 			char *ptr;
 
 			// Convert spaces to underscores
-			strcpy(folder_name, lpFolder->m_lpTitle);
+			char* stemp = ui_utf8_from_wstring(lpFolder->m_lpTitle);
+			strcpy(folder_name, stemp);
+			free(stemp);
 			ptr = folder_name;
 			while (*ptr && *ptr != '\0')
 			{
@@ -2416,7 +2478,9 @@ void LoadFolderFlags(void)
 			const char *value;
 
 			// Convert spaces to underscores
-			strcpy(folder_name, lpFolder->m_lpTitle);
+			char* stemp = ui_utf8_from_wstring(lpFolder->m_lpTitle);
+			strcpy(folder_name, stemp);
+			free(stemp);
 			ptr = folder_name;
 			while (*ptr && *ptr != '\0')
 			{
@@ -2464,7 +2528,9 @@ static void AddFolderFlags(winui_options &opts)
 			char *ptr;
 
 			// Convert spaces to underscores
-			strcpy(folder_name, lpFolder->m_lpTitle);
+			char* stemp = ui_utf8_from_wstring(lpFolder->m_lpTitle);
+			strcpy(folder_name, stemp);
+			free(stemp);
 			ptr = folder_name;
 			while (*ptr && *ptr != '\0')
 			{
@@ -2806,3 +2872,80 @@ void SetSLDir(const char* paths)
 	MameUISettings().set_value(MESSUI_SLPATH, paths, OPTION_PRIORITY_CMDLINE,error_string);
 }
 
+
+
+#include "strconv.h"
+
+static WCHAR *wstring_from_utf8_my(const char *utf8string)
+{
+	int char_count;
+	WCHAR *result;
+
+	// convert MAME string (UTF-8) to UTF-16
+	char_count = MultiByteToWideChar(CP_UTF8, 0, utf8string, -1, NULL, 0);
+	result = (WCHAR *)malloc(char_count * sizeof(*result));
+	if (result != NULL)
+		MultiByteToWideChar(CP_UTF8, 0, utf8string, -1, result, char_count);
+
+	return result;
+}
+
+static char *utf8_from_wstring_my(const WCHAR *wstring)
+{
+	int char_count;
+	char *result;
+
+	// convert UTF-16 to MAME string (UTF-8)
+	char_count = WideCharToMultiByte(CP_UTF8, 0, wstring, -1, NULL, 0, NULL, NULL);
+	result = (char *)malloc(char_count * sizeof(*result));
+	if (result != NULL)
+		WideCharToMultiByte(CP_UTF8, 0, wstring, -1, result, char_count, NULL, NULL);
+
+	return result;
+}
+
+WCHAR *options_get_wstring(winui_options &opts, const char *name)
+{
+	const char *stemp = opts.value(name);
+
+	if (stemp == NULL)
+		return NULL;
+
+	return wstring_from_utf8_my(stemp);
+}
+
+void options_set_wstring(winui_options &opts, const char *name, const WCHAR *value, int priority)
+{
+	char *utf8_value = NULL;
+
+	if (value)
+		utf8_value = utf8_from_wstring_my(value);
+
+	std::string error_string;
+	opts.set_value(name, utf8_value, priority, error_string);
+
+	free(utf8_value);
+}
+
+WCHAR *options_get_wstring(windows_options &opts, const char *name)
+{
+	const char *stemp = opts.value(name);
+
+	if (stemp == NULL)
+		return NULL;
+
+	return wstring_from_utf8_my(stemp);
+}
+
+void options_set_wstring(windows_options &opts, const char *name, const WCHAR *value, int priority)
+{
+	char *utf8_value = NULL;
+
+	if (value)
+		utf8_value = utf8_from_wstring_my(value);
+
+	std::string error_string;
+	opts.set_value(name, utf8_value, priority, error_string);
+
+	free(utf8_value);
+}

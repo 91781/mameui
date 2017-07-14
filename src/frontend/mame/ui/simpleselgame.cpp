@@ -227,7 +227,7 @@ void simple_menu_select_game::populate(float &customtop, float &custombottom)
 	if (matchcount == 0)
 	{
 		std::string txt = string_format(
-				_("No machines found. Please check the rompath specified in the %1$s.ini file.\n\n"
+			_LANGUAGE_CORE_TRANS_("No machines found. Please check the rompath specified in the %1$s.ini file.\n\n"
 				"If this is your first time using %2$s, please see the config.txt file in "
 				"the docs directory for information on configuring %2$s."),
 				emulator_info::get_configname(),
@@ -257,7 +257,7 @@ void simple_menu_select_game::populate(float &customtop, float &custombottom)
 	if (stack_has_special_main_menu())
 	{
 		item_append(menu_item_type::SEPARATOR);
-		item_append(_("Configure Options"), "", 0, (void *)1);
+		item_append(_LANGUAGE_CORE_TRANS_("Configure Options"), "", 0, (void *)1);
 		skip_main_items = 1;
 	}
 
@@ -282,9 +282,9 @@ void simple_menu_select_game::custom_render(void *selectedref, float top, float 
 
 	// display the current typeahead
 	if (m_search[0] != 0)
-		tempbuf[0] = string_format(_("Type name or select: %1$s_"), m_search);
+		tempbuf[0] = string_format(_LANGUAGE_CORE_TRANS_("Type name or select: %1$s_"), m_search);
 	else
-		tempbuf[0] = _("Type name or select: (random)");
+		tempbuf[0] = _LANGUAGE_CORE_TRANS_("Type name or select: (random)");
 
 	// get the size of the text
 	ui().draw_text_full(container(), tempbuf[0].c_str(), 0.0f, 0.0f, 1.0f, ui::text_layout::CENTER, ui::text_layout::TRUNCATE,
@@ -317,36 +317,36 @@ void simple_menu_select_game::custom_render(void *selectedref, float top, float 
 		const char *gfxstat, *soundstat;
 
 		// first line is game name
-		tempbuf[0] = string_format(_("%1$-.100s"), driver->description);
+		tempbuf[0] = string_format(_LANGUAGE_CORE_TRANS_("%1$-.100s"), driver->description);
 
 		// next line is year, manufacturer
-		tempbuf[1] = string_format(_("%1$s, %2$-.100s"), driver->year, driver->manufacturer);
+		tempbuf[1] = string_format(_LANGUAGE_CORE_TRANS_("%1$s, %2$-.100s"), driver->year, driver->manufacturer);
 
 		// next line source path
-		tempbuf[2] = string_format(_("Driver: %1$-.100s"), core_filename_extract_base(driver->source_file));
+		tempbuf[2] = string_format(_LANGUAGE_CORE_TRANS_("Driver: %1$-.100s"), core_filename_extract_base(driver->source_file));
 
 		// next line is overall driver status
 		if (driver->flags & MACHINE_NOT_WORKING)
-			tempbuf[3].assign(_("Overall: NOT WORKING"));
+			tempbuf[3].assign(_LANGUAGE_CORE_TRANS_("Overall: NOT WORKING"));
 		else if (driver->flags & MACHINE_UNEMULATED_PROTECTION)
-			tempbuf[3].assign(_("Overall: Unemulated Protection"));
+			tempbuf[3].assign(_LANGUAGE_CORE_TRANS_("Overall: Unemulated Protection"));
 		else
-			tempbuf[3].assign(_("Overall: Working"));
+			tempbuf[3].assign(_LANGUAGE_CORE_TRANS_("Overall: Working"));
 
 		// next line is graphics, sound status
 		if (driver->flags & (MACHINE_IMPERFECT_GRAPHICS | MACHINE_WRONG_COLORS | MACHINE_IMPERFECT_COLORS))
-			gfxstat = _("Imperfect");
+			gfxstat = _LANGUAGE_CORE_TRANS_("Imperfect");
 		else
-			gfxstat = _("OK");
+			gfxstat = _LANGUAGE_CORE_TRANS_("OK");
 
 		if (driver->flags & MACHINE_NO_SOUND)
-			soundstat = _("Unimplemented");
+			soundstat = _LANGUAGE_CORE_TRANS_("Unimplemented");
 		else if (driver->flags & MACHINE_IMPERFECT_SOUND)
-			soundstat = _("Imperfect");
+			soundstat = _LANGUAGE_CORE_TRANS_("Imperfect");
 		else
-			soundstat = _("OK");
+			soundstat = _LANGUAGE_CORE_TRANS_("OK");
 
-		tempbuf[4] = string_format(_("Gfx: %s, Sound: %s"), gfxstat, soundstat);
+		tempbuf[4] = string_format(_LANGUAGE_CORE_TRANS_("Gfx: %s, Sound: %s"), gfxstat, soundstat);
 	}
 	else
 	{

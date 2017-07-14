@@ -25,7 +25,7 @@ menu_pty_info::~menu_pty_info()
 
 void menu_pty_info::populate(float &customtop, float &custombottom)
 {
-	item_append(_("Pseudo terminals"), "", FLAG_DISABLE, nullptr);
+	item_append(_LANGUAGE_CORE_TRANS_("Pseudo terminals"), "", FLAG_DISABLE, nullptr);
 	item_append("", "", FLAG_DISABLE, nullptr);
 
 	for (device_pty_interface &pty : pty_interface_iterator(machine().root_device()))
@@ -34,7 +34,7 @@ void menu_pty_info::populate(float &customtop, float &custombottom)
 		if (pty.is_open())
 			item_append(port_name, pty.slave_name(), FLAG_DISABLE, nullptr);
 		else
-			item_append(port_name, _("[failed]"), FLAG_DISABLE, nullptr);
+			item_append(port_name, _LANGUAGE_CORE_TRANS_("[failed]"), FLAG_DISABLE, nullptr);
 		item_append("", "", FLAG_DISABLE, nullptr);
 	}
 }

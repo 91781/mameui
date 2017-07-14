@@ -3,6 +3,7 @@
 // Used by mameui.rc
 //
 #define IDPAUSE                         3
+#define IDS_UI_FONT                     53 // status bar (mamep)
 #define IDS_UI_FILE                     61
 #define IDS_UI_VIEW                     62
 #define IDS_UI_OPTIONS                  63
@@ -91,6 +92,37 @@
 #define IDD_PROP_CONTROLLER             185
 #define IDD_PROP_SCREEN                 187
 #define IDD_PROP_DEBUG                  188
+
+#define IDD_PALETTE                     191 // UI_COLOR_DISPLAY
+#define IDD_PCBINFO                     192 // USE_VIEW_PCBINFO
+#define IDB_TOOLBAR_US                  193
+#define IDB_TOOLBAR_CN                  194
+#define IDB_TOOLBAR_TW                  195
+#define IDB_TOOLBAR_FR                  196
+#define IDB_TOOLBAR_DE                  197
+#define IDB_TOOLBAR_IT                  198
+#define IDB_TOOLBAR_JP                  199
+#define IDB_TOOLBAR_KR                  200
+#define IDB_TOOLBAR_ES                  201
+#define IDB_TOOLBAR_CA                  202
+#define IDB_TOOLBAR_VA                  203
+#define IDB_TOOLBAR_PL                  204
+#define IDB_TOOLBAR_PT                  205
+#define IDB_TOOLBAR_BR                  206
+#define IDB_TOOLBAR_HU                  207
+#define IDB_SPLASH                      210 // USE_SHOW_SPLASH_SCREEN
+#define IDI_INFO                        701
+#define IDI_LARGE                       702
+#define IDI_SMALL                       703
+#define IDI_LIST                        704
+#define IDI_DETAILS                     705
+#define IDI_GROUP                       706
+#define IDI_PROPERTY                    707
+#define IDI_PCBINFO                     708 // USE_VIEW_PCBINFO
+#define IDI_SND                         709
+#define IDI_BIOS                        710
+#define IDI_VIDEO                       711
+
 #define IDI_SOUNDTAB                    666
 #define IDC_LIST                        1000
 #define IDC_JOYSTICK                    1003
@@ -322,6 +354,10 @@
 #define IDC_SNAPSIZETEXT                1252
 #define IDC_SNAPSIZEX                   1253
 #define IDC_FILTER_MECHANICAL           1254
+
+#define IDC_USE_LIST                    1441 // local language gamelist
+#define IDC_SCALEEFFECT                 1442 // USE_SCALE_EFFECTS
+
 #define IDC_SPLITTER3                   2000
 #define IDC_SWTAB                       2001
 #define IDC_SWLIST                      2002
@@ -437,6 +473,25 @@
 #define ID_OPTIONS_MAMEINFO             40100
 #define ID_OPTIONS_HISTORY              40101
 #define ID_VIEW_SOFTWARE_AREA           40102
+
+#define ID_BIOS_PROPERTIES              40112 // menu: Properties for BIOS
+
+#define ID_LANGUAGE_ENGLISH_US          40201
+#define ID_LANGUAGE_SMPL_CHINESE        40202
+#define ID_LANGUAGE_TRAD_CHINESE        40203
+#define ID_LANGUAGE_FRENCH              40204
+#define ID_LANGUAGE_GERMAN              40205
+#define ID_LANGUAGE_ITALIAN             40206
+#define ID_LANGUAGE_JAPANESE            40207
+#define ID_LANGUAGE_KOREAN              40208
+#define ID_LANGUAGE_SPANISH             40209
+#define ID_LANGUAGE_CATALAN             40210
+#define ID_LANGUAGE_VALENCIAN           40211
+#define ID_LANGUAGE_POLISH              40212
+#define ID_LANGUAGE_PORTUGUESE_PT       40213
+#define ID_LANGUAGE_PORTUGUESE_BRA      40214
+#define ID_LANGUAGE_HUNGARIAN           40215
+
 #define IDC_STATIC                      -1
 
 // Next default values for new objects

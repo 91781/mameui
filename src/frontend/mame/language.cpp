@@ -34,11 +34,19 @@ inline uint32_t endianchange(uint32_t value) {
 	return (b0 << 24) | (b1 << 16) | (b2 << 8) | b3;
 }
 
+#include "../../emu/ui/lang.h"
 void load_translation(emu_options &m_options)
 {
 	g_translation.clear();
 	emu_file file(m_options.language_path(), OPEN_FLAG_READ);
-	auto name = std::string(m_options.language());
+	//auto name = std::string(m_options.language());
+	printf("load_translation language_path: %s\n", m_options.language_path());
+	std::string name;
+	printf("current lang code: %d\n", lang_get_langcode());
+	if (lang_get_langcode() == 1)//UI_LANG_ZH_CN
+		name = std::string("Chinese_Simplified");
+	else
+		name = std::string("English");
 	strreplace(name, " ", "_");
 	strreplace(name, "(", "");
 	strreplace(name, ")", "");

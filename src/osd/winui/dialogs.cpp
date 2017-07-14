@@ -44,6 +44,10 @@
 #include "winutf8.h"
 #include "drivenum.h"
 
+#include "translate.h"
+
+#include <shlwapi.h>
+
 #ifdef _MSC_VER
 #define snprintf _snprintf
 #endif
@@ -86,6 +90,8 @@ INT_PTR CALLBACK ResetDialogProc(HWND hDlg, UINT Msg, WPARAM wParam, LPARAM lPar
 	switch (Msg)
 	{
 	case WM_INITDIALOG:
+		TranslateDialog(hDlg, lParam, FALSE);
+
 		return TRUE;
 
 	case WM_HELP:
@@ -109,27 +115,27 @@ INT_PTR CALLBACK ResetDialogProc(HWND hDlg, UINT Msg, WPARAM wParam, LPARAM lPar
 			if (resetFilters || resetGames || resetUI || resetDefaults)
 			{
 
-				TCHAR temp[400];
-				_tcscpy(temp, TEXT(MAMEUINAME));
-				_tcscat(temp, TEXT(" will now reset the following\n"));
-				_tcscat(temp, TEXT("to the default settings:\n\n"));
+				TCHAR temp[1024];
+				_tcscpy(temp, _UIW(TEXT(MAMEUINAME
+					" will now reset the following\n"
+					"to the default settings:\n\n")));
 
 				if (resetDefaults)
-					_tcscat(temp, TEXT("Global game options\n"));
+					_tcscat(temp, _UIW(TEXT("Global game options\n")));
 				if (resetGames)
-					_tcscat(temp, TEXT("Individual game options\n"));
+					_tcscat(temp, _UIW(TEXT("Individual game options\n")));
 				if (resetFilters)
-					_tcscat(temp, TEXT("Custom folder filters\n"));
+					_tcscat(temp, _UIW(TEXT("Custom folder filters\n")));
 				if (resetUI)
 				{
-					_tcscat(temp, TEXT("User interface settings\n\n"));
-					_tcscat(temp, TEXT("Resetting the User Interface options\n"));
-					_tcscat(temp, TEXT("requires exiting "));
-					_tcscat(temp, TEXT(MAMEUINAME));
-					_tcscat(temp, TEXT(".\n"));
+					_tcscat(temp, _UIW(TEXT("User interface settings\n\n")));
+					_tcscat(temp, _UIW(TEXT("Resetting the User Interface options\n"
+						"requires exiting "
+						MAMEUINAME
+						".\n")));
 				}
-				_tcscat(temp, TEXT("\nDo you wish to continue?"));
-				if (MessageBox(hDlg, temp, TEXT("Restore Settings"), IDOK) == IDOK)
+				_tcscat(temp, _UIW(TEXT("\nDo you wish to continue?")));
+				if (MessageBox(hDlg, temp, _UIW(TEXT("Restore Settings")), IDOK) == IDOK)
 				{
 					if (resetFilters)
 						ResetFilters();
@@ -182,10 +188,18 @@ INT_PTR CALLBACK InterfaceDialogProc(HWND hDlg, UINT Msg, WPARAM wParam, LPARAM 
 	switch (Msg)
 	{
 	case WM_INITDIALOG:
+		TranslateDialog(hDlg, lParam, FALSE);
+
 		Button_SetCheck(GetDlgItem(hDlg,IDC_START_GAME_CHECK),GetGameCheck());
 		Button_SetCheck(GetDlgItem(hDlg,IDC_JOY_GUI),GetJoyGUI());
 		Button_SetCheck(GetDlgItem(hDlg,IDC_KEY_GUI),GetKeyGUI());
 		Button_SetCheck(GetDlgItem(hDlg,IDC_HIDE_MOUSE),GetHideMouseOnStartup());
+#ifdef USE_SHOW_SPLASH_SCREEN
+		Button_SetCheck(GetDlgItem(hDlg, IDC_DISPLAY_SPLASH_SCREEN), GetDisplaySplashScreen());
+#endif /* USE_SHOW_SPLASH_SCREEN */
+#ifdef TREE_SHEET
+		Button_SetCheck(GetDlgItem(hDlg, IDC_SHOW_TREE_SHEET), GetShowTreeSheet());
+#endif /* TREE_SHEET */
 
 		// Get the current value of the control
 		SendDlgItemMessage(hDlg, IDC_CYCLETIMESEC, TBM_SETRANGE, (WPARAM)FALSE, (LPARAM)MAKELONG(0, 60)); /* [0, 60] */
@@ -197,23 +211,23 @@ INT_PTR CALLBACK InterfaceDialogProc(HWND hDlg, UINT Msg, WPARAM wParam, LPARAM 
 		Button_SetCheck(GetDlgItem(hDlg,IDC_STRETCH_SCREENSHOT_LARGER), GetStretchScreenShotLarger());
 		Button_SetCheck(GetDlgItem(hDlg,IDC_FILTER_INHERIT), GetFilterInherit());
 		Button_SetCheck(GetDlgItem(hDlg,IDC_NOOFFSET_CLONES), GetOffsetClones());
-		(void)ComboBox_AddString(GetDlgItem(hDlg, IDC_HISTORY_TAB), TEXT("Snapshot"));
+		(void)ComboBox_AddString(GetDlgItem(hDlg, IDC_HISTORY_TAB), _UIW(TEXT("Snapshot")));
 		(void)ComboBox_SetItemData(GetDlgItem(hDlg, IDC_HISTORY_TAB), nTabCount++, TAB_SCREENSHOT);
-		(void)ComboBox_AddString(GetDlgItem(hDlg, IDC_HISTORY_TAB), TEXT("Flyer"));
+		(void)ComboBox_AddString(GetDlgItem(hDlg, IDC_HISTORY_TAB), _UIW(TEXT("Flyer")));
 		(void)ComboBox_SetItemData(GetDlgItem(hDlg, IDC_HISTORY_TAB), nTabCount++, TAB_FLYER);
-		(void)ComboBox_AddString(GetDlgItem(hDlg, IDC_HISTORY_TAB), TEXT("Cabinet"));
+		(void)ComboBox_AddString(GetDlgItem(hDlg, IDC_HISTORY_TAB), _UIW(TEXT("Cabinet")));
 		(void)ComboBox_SetItemData(GetDlgItem(hDlg, IDC_HISTORY_TAB), nTabCount++, TAB_CABINET);
-		(void)ComboBox_AddString(GetDlgItem(hDlg, IDC_HISTORY_TAB), TEXT("Marquee"));
+		(void)ComboBox_AddString(GetDlgItem(hDlg, IDC_HISTORY_TAB), _UIW(TEXT("Marquee")));
 		(void)ComboBox_SetItemData(GetDlgItem(hDlg, IDC_HISTORY_TAB), nTabCount++, TAB_MARQUEE);
-		(void)ComboBox_AddString(GetDlgItem(hDlg, IDC_HISTORY_TAB), TEXT("Title"));
+		(void)ComboBox_AddString(GetDlgItem(hDlg, IDC_HISTORY_TAB), _UIW(TEXT("Title")));
 		(void)ComboBox_SetItemData(GetDlgItem(hDlg, IDC_HISTORY_TAB), nTabCount++, TAB_TITLE);
-		(void)ComboBox_AddString(GetDlgItem(hDlg, IDC_HISTORY_TAB), TEXT("Control Panel"));
+		(void)ComboBox_AddString(GetDlgItem(hDlg, IDC_HISTORY_TAB), _UIW(TEXT("Control Panel")));
 		(void)ComboBox_SetItemData(GetDlgItem(hDlg, IDC_HISTORY_TAB), nTabCount++, TAB_CONTROL_PANEL);
-		(void)ComboBox_AddString(GetDlgItem(hDlg, IDC_HISTORY_TAB), TEXT("PCB"));
+		(void)ComboBox_AddString(GetDlgItem(hDlg, IDC_HISTORY_TAB), _UIW(TEXT("PCB")));
 		(void)ComboBox_SetItemData(GetDlgItem(hDlg, IDC_HISTORY_TAB), nTabCount++, TAB_PCB);
-		(void)ComboBox_AddString(GetDlgItem(hDlg, IDC_HISTORY_TAB), TEXT("All"));
+		(void)ComboBox_AddString(GetDlgItem(hDlg, IDC_HISTORY_TAB), _UIW(TEXT("All")));
 		(void)ComboBox_SetItemData(GetDlgItem(hDlg, IDC_HISTORY_TAB), nTabCount++, TAB_ALL);
-		(void)ComboBox_AddString(GetDlgItem(hDlg, IDC_HISTORY_TAB), TEXT("None"));
+		(void)ComboBox_AddString(GetDlgItem(hDlg, IDC_HISTORY_TAB), _UIW(TEXT("None")));
 		(void)ComboBox_SetItemData(GetDlgItem(hDlg, IDC_HISTORY_TAB), nTabCount++, TAB_NONE);
 		if (GetHistoryTab() < MAX_TAB_TYPES) {
 			(void)ComboBox_SetCurSel(GetDlgItem(hDlg, IDC_HISTORY_TAB), GetHistoryTab());
@@ -221,15 +235,15 @@ INT_PTR CALLBACK InterfaceDialogProc(HWND hDlg, UINT Msg, WPARAM wParam, LPARAM 
 		else {
 			(void)ComboBox_SetCurSel(GetDlgItem(hDlg, IDC_HISTORY_TAB), GetHistoryTab()-TAB_SUBTRACT);
 		}
-		(void)ComboBox_AddString(GetDlgItem(hDlg, IDC_SNAPNAME), TEXT("Gamename"));
+		(void)ComboBox_AddString(GetDlgItem(hDlg, IDC_SNAPNAME), _UIW(TEXT("Gamename")));
 		(void)ComboBox_SetItemData(GetDlgItem(hDlg, IDC_SNAPNAME), nPatternCount++, "%g");
-		(void)ComboBox_AddString(GetDlgItem(hDlg, IDC_SNAPNAME), TEXT("Gamename + Increment"));
+		(void)ComboBox_AddString(GetDlgItem(hDlg, IDC_SNAPNAME), _UIW(TEXT("Gamename + Increment")));
 		(void)ComboBox_SetItemData(GetDlgItem(hDlg, IDC_SNAPNAME), nPatternCount++, "%g%i");
-		(void)ComboBox_AddString(GetDlgItem(hDlg, IDC_SNAPNAME), TEXT("Gamename/Gamename"));
+		(void)ComboBox_AddString(GetDlgItem(hDlg, IDC_SNAPNAME), _UIW(TEXT("Gamename/Gamename")));
 		(void)ComboBox_SetItemData(GetDlgItem(hDlg, IDC_SNAPNAME), nPatternCount++, "%g/%g");
-		(void)ComboBox_AddString(GetDlgItem(hDlg, IDC_SNAPNAME), TEXT("Gamename/Gamename + Increment"));
+		(void)ComboBox_AddString(GetDlgItem(hDlg, IDC_SNAPNAME), _UIW(TEXT("Gamename/Gamename + Increment")));
 		(void)ComboBox_SetItemData(GetDlgItem(hDlg, IDC_SNAPNAME), nPatternCount++, "%g/%g%i");
-		(void)ComboBox_AddString(GetDlgItem(hDlg, IDC_SNAPNAME), TEXT("Gamename/Increment"));
+		(void)ComboBox_AddString(GetDlgItem(hDlg, IDC_SNAPNAME), _UIW(TEXT("Gamename/Increment")));
 		(void)ComboBox_SetItemData(GetDlgItem(hDlg, IDC_SNAPNAME), nPatternCount, "%g/%i");
 		//Default to this setting
 		(void)ComboBox_SetCurSel(GetDlgItem(hDlg, IDC_SNAPNAME), nPatternCount++);
@@ -394,19 +408,21 @@ INT_PTR CALLBACK FilterDialogProc(HWND hDlg, UINT Msg, WPARAM wParam, LPARAM lPa
 		LPTREEFOLDER lpParent = NULL;
 		LPCFILTER_ITEM g_lpFilterList = GetFilterList();
 
+		TranslateDialog(hDlg, lParam, FALSE);
+
 		dwFilters = 0;
 
 		if (folder != NULL)
 		{
-			char tmp[80];
+			WCHAR tmp[80];
 
 			win_set_window_text_utf8(GetDlgItem(hDlg, IDC_FILTER_EDIT), g_FilterText.c_str());
 			Edit_SetSel(GetDlgItem(hDlg, IDC_FILTER_EDIT), 0, -1);
 			// Mask out non filter flags
 			dwFilters = folder->m_dwFlags & F_MASK;
 			// Display current folder name in dialog titlebar
-			snprintf(tmp,ARRAY_LENGTH(tmp),"Filters for %s Folder",folder->m_lpTitle);
-			win_set_window_text_utf8(hDlg, tmp);
+			snwprintf(tmp, ARRAY_LENGTH(tmp), w_lang_message(UI_MSG_OSD1, TEXT("Filters for %s Folder")), folder->m_lpTitle);
+			SetWindowText(hDlg, tmp);
 			if ( GetFilterInherit() )
 			{
 				BOOL bShowExplanation = FALSE;
@@ -600,6 +616,8 @@ INT_PTR CALLBACK AboutDialogProc(HWND hDlg, UINT Msg, WPARAM wParam, LPARAM lPar
 	switch (Msg)
 	{
 	case WM_INITDIALOG:
+		TranslateDialog(hDlg, lParam, FALSE);
+
 		{
 			HBITMAP hBmp;
 			hBmp = (HBITMAP)LoadImage(GetModuleHandle(NULL), MAKEINTRESOURCE(IDB_ABOUT),
@@ -635,6 +653,19 @@ INT_PTR CALLBACK AddCustomFileDialogProc(HWND hDlg, UINT Msg, WPARAM wParam, LPA
 		BOOL first_entry = TRUE;
 		HIMAGELIST treeview_icons = GetTreeViewIconList();
 
+		static HFONT hFont;
+		LOGFONTW logfontW;
+
+		TranslateDialog(hDlg, lParam, TRUE);
+
+		if (hFont != NULL)
+			DeleteObject(hFont);
+
+		GetTranslatedFont(&logfontW);
+		hFont = TranslateCreateFont(&logfontW);
+
+		SetWindowFont(GetDlgItem(hDlg, IDC_CUSTOM_TREE), hFont, FALSE);
+
 		// current game passed in using DialogBoxParam()
 		driver_index = lParam;
 
@@ -658,7 +689,7 @@ INT_PTR CALLBACK AddCustomFileDialogProc(HWND hDlg, UINT Msg, WPARAM wParam, LPA
 					tvis.hParent = TVI_ROOT;
 					tvis.hInsertAfter = TVI_SORT;
 					tvi.mask = TVIF_TEXT | TVIF_PARAM | TVIF_IMAGE | TVIF_SELECTEDIMAGE;
-					tvi.pszText = folders[i]->m_lptTitle;
+					tvi.pszText = folders[i]->m_lpTitle;
 					tvi.lParam = (LPARAM)folders[i];
 					tvi.iImage = GetTreeViewIconIndex(folders[i]->m_nIconId);
 					tvi.iSelectedImage = 0;
@@ -679,7 +710,7 @@ INT_PTR CALLBACK AddCustomFileDialogProc(HWND hDlg, UINT Msg, WPARAM wParam, LPA
 							tvis.hParent = hti;
 							tvis.hInsertAfter = TVI_SORT;
 							tvi.mask = TVIF_TEXT | TVIF_PARAM | TVIF_IMAGE | TVIF_SELECTEDIMAGE;
-							tvi.pszText = folders[jj]->m_lptTitle;
+							tvi.pszText = folders[jj]->m_lpTitle;
 							tvi.lParam = (LPARAM)folders[jj];
 							tvi.iImage = GetTreeViewIconIndex(folders[jj]->m_nIconId);
 							tvi.iSelectedImage = 0;
@@ -704,8 +735,9 @@ INT_PTR CALLBACK AddCustomFileDialogProc(HWND hDlg, UINT Msg, WPARAM wParam, LPA
 			}
 		}
 
-		win_set_window_text_utf8(GetDlgItem(hDlg,IDC_CUSTOMFILE_GAME),
-			ModifyThe(driver_list::driver(driver_index).description));
+		SetWindowText(GetDlgItem(hDlg, IDC_CUSTOMFILE_GAME),
+			UseLangList() ? _LSTW(driversw[driver_index]->description)
+			: driversw[driver_index]->modify_the);
 
 		res++;
 		return TRUE;
@@ -744,14 +776,16 @@ INT_PTR CALLBACK DirectXDialogProc(HWND hDlg, UINT Msg, WPARAM wParam, LPARAM lP
 {
 	HWND hEdit;
 
-	const char *directx_help = MAMEUINAME " requires DirectX version 9 or later.\r\n";
+	const WCHAR *directx_help = TEXT(MAMEUINAME " requires DirectX version 9 or later.\r\n");
 
 	switch (Msg)
 	{
 	case WM_INITDIALOG:
+		TranslateDialog(hDlg, lParam, FALSE);
+
 		hEdit = GetDlgItem(hDlg, IDC_DIRECTX_HELP);
 		Edit_SetSel(hEdit, Edit_GetTextLength(hEdit), Edit_GetTextLength(hEdit));
-		Edit_ReplaceSel(hEdit, directx_help);
+		Edit_ReplaceSel(hEdit, w_lang_message(UI_MSG_OSD1, directx_help));
 		return 1;
 
 	case WM_COMMAND:

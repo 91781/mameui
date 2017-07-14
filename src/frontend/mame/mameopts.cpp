@@ -442,7 +442,7 @@ std::map<std::string, std::string> mame_options::evaluate_initial_softlist_optio
 //  parse_standard_inis - parse the standard set
 //  of INI files
 //-------------------------------------------------
-
+#include "clifront.h"
 void mame_options::parse_standard_inis(emu_options &options, std::string &error_string, const game_driver *driver)
 {
 	// start with an empty string
@@ -452,6 +452,9 @@ void mame_options::parse_standard_inis(emu_options &options, std::string &error_
 	// we do this twice so that the first file can change the INI path
 	parse_org_ini(options,emulator_info::get_configname(), OPTION_PRIORITY_MAME_INI); // MESSUI
 	parse_one_ini(options,emulator_info::get_configname(), OPTION_PRIORITY_MAME_INI, &error_string);
+
+	printf("emu_options-->mame_options-->parse_standard_inis-->setup_language\n");
+	setup_language(options);
 
 	// debug mode: parse "debug.ini" as well
 	if (options.debug())

@@ -300,7 +300,7 @@ void submenu::handle()
 			}
 			break;
 		default:
-			osd_printf_error("Unhandled option: %s", _(sm_option.description));
+			osd_printf_error("Unhandled option: %s", _LANGUAGE_CORE_TRANS_(sm_option.description));
 			break;
 		}
 	}
@@ -326,13 +326,13 @@ void submenu::populate(float &customtop, float &custombottom)
 		switch (sm_option->type)
 		{
 		case option_type::HEAD:
-			item_append(_(sm_option->description), "", FLAG_DISABLE | FLAG_UI_HEADING, nullptr);
+			item_append(_LANGUAGE_CORE_TRANS_(sm_option->description), "", FLAG_DISABLE | FLAG_UI_HEADING, nullptr);
 			break;
 		case option_type::SEP:
 			item_append(menu_item_type::SEPARATOR);
 			break;
 		case option_type::CMD:
-			item_append(_(sm_option->description), "", 0, static_cast<void*>(&(*sm_option)));
+			item_append(_LANGUAGE_CORE_TRANS_(sm_option->description), "", 0, static_cast<void*>(&(*sm_option)));
 			break;
 		case option_type::EMU:
 		case option_type::UI:
@@ -341,7 +341,7 @@ void submenu::populate(float &customtop, float &custombottom)
 			{
 			case OPTION_BOOLEAN:
 				arrow_flags = sm_option->options->bool_value(sm_option->name) ? FLAG_RIGHT_ARROW : FLAG_LEFT_ARROW;
-				item_append(_(sm_option->description),
+				item_append(_LANGUAGE_CORE_TRANS_(sm_option->description),
 					(arrow_flags == FLAG_RIGHT_ARROW) ? "On" : "Off",
 					arrow_flags,
 					static_cast<void*>(&(*sm_option)));
@@ -361,7 +361,7 @@ void submenu::populate(float &customtop, float &custombottom)
 						i_max = std::numeric_limits<int>::max();
 					}
 					arrow_flags = get_arrow_flags(i_min, i_max, i_cur);
-					item_append(_(sm_option->description),
+					item_append(_LANGUAGE_CORE_TRANS_(sm_option->description),
 						sm_option->entry->value(),
 						arrow_flags,
 						static_cast<void*>(&(*sm_option)));
@@ -383,7 +383,7 @@ void submenu::populate(float &customtop, float &custombottom)
 					}
 					arrow_flags = get_arrow_flags(f_min, f_max, f_cur);
 					std::string tmptxt = string_format("%g", f_cur);
-					item_append(_(sm_option->description),
+					item_append(_LANGUAGE_CORE_TRANS_(sm_option->description),
 						tmptxt.c_str(),
 						arrow_flags,
 						static_cast<void*>(&(*sm_option)));
@@ -394,21 +394,21 @@ void submenu::populate(float &customtop, float &custombottom)
 					std::string const v_cur(sm_option->entry->value());
 					int const cur_value = std::distance(sm_option->value.begin(), std::find(sm_option->value.begin(), sm_option->value.end(), v_cur));
 					arrow_flags = get_arrow_flags(0, int(unsigned(sm_option->value.size() - 1)), cur_value);
-					item_append(_(sm_option->description),
+					item_append(_LANGUAGE_CORE_TRANS_(sm_option->description),
 							sm_option->options->value(sm_option->name),
 							arrow_flags, static_cast<void*>(&(*sm_option)));
 				}
 				break;
 			default:
 				arrow_flags = FLAG_RIGHT_ARROW;
-				item_append(_(sm_option->description),
+				item_append(_LANGUAGE_CORE_TRANS_(sm_option->description),
 					sm_option->options->value(sm_option->name),
 					arrow_flags, static_cast<void*>(&(*sm_option)));
 				break;
 			}
 			break;
 		default:
-			osd_printf_error("Unknown option type: %s", _(sm_option->description));
+			osd_printf_error("Unknown option type: %s", _LANGUAGE_CORE_TRANS_(sm_option->description));
 			break;
 		}
 	}
@@ -425,7 +425,7 @@ void submenu::custom_render(void *selectedref, float top, float bottom, float or
 {
 	float width;
 
-	ui().draw_text_full(container(), _(m_options[0].description), 0.0f, 0.0f, 1.0f, ui::text_layout::CENTER, ui::text_layout::TRUNCATE,
+	ui().draw_text_full(container(), _LANGUAGE_CORE_TRANS_(m_options[0].description), 0.0f, 0.0f, 1.0f, ui::text_layout::CENTER, ui::text_layout::TRUNCATE,
 			mame_ui_manager::NONE, rgb_t::white(), rgb_t::black(), &width, nullptr);
 	width += 2 * UI_BOX_LR_BORDER;
 	float maxwidth = std::max(origx2 - origx1, width);
@@ -445,7 +445,7 @@ void submenu::custom_render(void *selectedref, float top, float bottom, float or
 	y1 += UI_BOX_TB_BORDER;
 
 	// draw the text within it
-	ui().draw_text_full(container(), _(m_options[0].description), x1, y1, x2 - x1, ui::text_layout::CENTER, ui::text_layout::TRUNCATE,
+	ui().draw_text_full(container(), _LANGUAGE_CORE_TRANS_(m_options[0].description), x1, y1, x2 - x1, ui::text_layout::CENTER, ui::text_layout::TRUNCATE,
 		mame_ui_manager::NORMAL, UI_TEXT_COLOR, UI_TEXT_BG_COLOR, nullptr, nullptr);
 
 	if (selectedref != nullptr)

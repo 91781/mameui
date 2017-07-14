@@ -108,7 +108,7 @@ void menu_custom_ui::handle()
 				else if (menu_event->iptkey == IPT_UI_SELECT)
 				{
 					std::vector<std::string> s_sel(ARRAY_LENGTH(HIDE_STATUS));
-					std::transform(std::begin(HIDE_STATUS), std::end(HIDE_STATUS), s_sel.begin(), [](auto &s) { return _(s); });
+					std::transform(std::begin(HIDE_STATUS), std::end(HIDE_STATUS), s_sel.begin(), [](auto &s) { return _LANGUAGE_CORE_TRANS_(s); });
 					menu::stack_push<menu_selector>(ui(), container(), std::move(s_sel), ui_globals::panels_status);
 				}
 				break;
@@ -140,17 +140,17 @@ void menu_custom_ui::handle()
 void menu_custom_ui::populate(float &customtop, float &custombottom)
 {
 	uint32_t arrow_flags;
-	item_append(_("Fonts"), "", 0, (void *)(uintptr_t)FONT_MENU);
-	item_append(_("Colors"), "", 0, (void *)(uintptr_t)COLORS_MENU);
+	item_append(_LANGUAGE_CORE_TRANS_("Fonts"), "", 0, (void *)(uintptr_t)FONT_MENU);
+	item_append(_LANGUAGE_CORE_TRANS_("Colors"), "", 0, (void *)(uintptr_t)COLORS_MENU);
 
 	if (!m_lang.empty())
 	{
 		arrow_flags = get_arrow_flags<std::uint16_t>(0, m_lang.size() - 1, m_currlang);
-		item_append(_("Language"), m_lang[m_currlang].c_str(), arrow_flags, (void *)(uintptr_t)LANGUAGE_MENU);
+		item_append(_LANGUAGE_CORE_TRANS_("Language"), m_lang[m_currlang].c_str(), arrow_flags, (void *)(uintptr_t)LANGUAGE_MENU);
 	}
 
 	arrow_flags = get_arrow_flags<uint16_t>(0, HIDE_BOTH, ui_globals::panels_status);
-	item_append(_("Show side panels"), _(HIDE_STATUS[ui_globals::panels_status]), arrow_flags, (void *)(uintptr_t)HIDE_MENU);
+	item_append(_LANGUAGE_CORE_TRANS_("Show side panels"), _LANGUAGE_CORE_TRANS_(HIDE_STATUS[ui_globals::panels_status]), arrow_flags, (void *)(uintptr_t)HIDE_MENU);
 
 	item_append(menu_item_type::SEPARATOR);
 	customtop = ui().get_line_height() + 3.0f * UI_BOX_TB_BORDER;
@@ -164,7 +164,7 @@ void menu_custom_ui::custom_render(void *selectedref, float top, float bottom, f
 {
 	float width;
 
-	ui().draw_text_full(container(), _("Custom UI Settings"), 0.0f, 0.0f, 1.0f, ui::text_layout::CENTER, ui::text_layout::TRUNCATE,
+	ui().draw_text_full(container(), _LANGUAGE_CORE_TRANS_("Custom UI Settings"), 0.0f, 0.0f, 1.0f, ui::text_layout::CENTER, ui::text_layout::TRUNCATE,
 									mame_ui_manager::NONE, rgb_t::white(), rgb_t::black(), &width, nullptr);
 	width += 2 * UI_BOX_LR_BORDER;
 	float maxwidth = std::max(origx2 - origx1, width);
@@ -184,7 +184,7 @@ void menu_custom_ui::custom_render(void *selectedref, float top, float bottom, f
 	y1 += UI_BOX_TB_BORDER;
 
 	// draw the text within it
-	ui().draw_text_full(container(), _("Custom UI Settings"), x1, y1, x2 - x1, ui::text_layout::CENTER, ui::text_layout::TRUNCATE,
+	ui().draw_text_full(container(), _LANGUAGE_CORE_TRANS_("Custom UI Settings"), x1, y1, x2 - x1, ui::text_layout::CENTER, ui::text_layout::TRUNCATE,
 									mame_ui_manager::NORMAL, UI_TEXT_COLOR, UI_TEXT_BG_COLOR, nullptr, nullptr);
 }
 
@@ -242,7 +242,7 @@ void menu_font_ui::list()
 	machine().osd().get_font_families(machine().options().font_path(), m_fonts);
 
 	// add default string to the top of array
-	m_fonts.emplace(m_fonts.begin(), std::string("default"), std::string(_("default")));
+	m_fonts.emplace(m_fonts.begin(), std::string("default"), std::string(_LANGUAGE_CORE_TRANS_("default")));
 }
 
 //-------------------------------------------------
@@ -345,24 +345,24 @@ void menu_font_ui::populate(float &customtop, float &custombottom)
 
 	// add fonts option
 	arrow_flags = get_arrow_flags<std::uint16_t>(0, m_fonts.size() - 1, m_actual);
-	item_append(_("UI Font"), m_fonts[m_actual].second, arrow_flags, (void *)(uintptr_t)MUI_FNT);
+	item_append(_LANGUAGE_CORE_TRANS_("UI Font"), m_fonts[m_actual].second, arrow_flags, (void *)(uintptr_t)MUI_FNT);
 
 #ifdef UI_WINDOWS
 	if (m_fonts[m_actual].first != "default")
 	{
-		item_append(_("Bold"), m_bold ? "On" : "Off", m_bold ? FLAG_RIGHT_ARROW : FLAG_LEFT_ARROW, (void *)(uintptr_t)MUI_BOLD);
-		item_append(_("Italic"), m_italic ? "On" : "Off", m_italic ? FLAG_RIGHT_ARROW : FLAG_LEFT_ARROW, (void *)(uintptr_t)MUI_ITALIC);
+		item_append(_LANGUAGE_CORE_TRANS_("Bold"), m_bold ? "On" : "Off", m_bold ? FLAG_RIGHT_ARROW : FLAG_LEFT_ARROW, (void *)(uintptr_t)MUI_BOLD);
+		item_append(_LANGUAGE_CORE_TRANS_("Italic"), m_italic ? "On" : "Off", m_italic ? FLAG_RIGHT_ARROW : FLAG_LEFT_ARROW, (void *)(uintptr_t)MUI_ITALIC);
 	}
 #endif
 
 	arrow_flags = get_arrow_flags(m_font_min, m_font_max, m_font_size);
-	item_append(_("Lines"), string_format("%2d", m_font_size), arrow_flags, (void *)(uintptr_t)FONT_SIZE);
+	item_append(_LANGUAGE_CORE_TRANS_("Lines"), string_format("%2d", m_font_size), arrow_flags, (void *)(uintptr_t)FONT_SIZE);
 
 	item_append(menu_item_type::SEPARATOR);
 
 	// add item
 	arrow_flags = get_arrow_flags(m_info_min, m_info_max, m_info_size);
-	item_append(_("Infos text size"), string_format("%3.2f", m_info_size), arrow_flags, (void *)(uintptr_t)INFOS_SIZE);
+	item_append(_LANGUAGE_CORE_TRANS_("Infos text size"), string_format("%3.2f", m_info_size), arrow_flags, (void *)(uintptr_t)INFOS_SIZE);
 
 	item_append(menu_item_type::SEPARATOR);
 
@@ -378,7 +378,7 @@ void menu_font_ui::custom_render(void *selectedref, float top, float bottom, flo
 	float width;
 
 	// top text
-	std::string topbuf(_("UI Fonts Settings"));
+	std::string topbuf(_LANGUAGE_CORE_TRANS_("UI Fonts Settings"));
 
 	ui().draw_text_full(container(), topbuf.c_str(), 0.0f, 0.0f, 1.0f, ui::text_layout::CENTER, ui::text_layout::TRUNCATE,
 									mame_ui_manager::NONE, rgb_t::white(), rgb_t::black(), &width, nullptr);
@@ -405,7 +405,7 @@ void menu_font_ui::custom_render(void *selectedref, float top, float bottom, flo
 
 	if ((uintptr_t)selectedref == INFOS_SIZE)
 	{
-		topbuf = _("Sample text - Lorem ipsum dolor sit amet, consectetur adipiscing elit.");
+		topbuf = _LANGUAGE_CORE_TRANS_("Sample text - Lorem ipsum dolor sit amet, consectetur adipiscing elit.");
 
 		ui().draw_text_full(container(), topbuf.c_str(), 0.0f, 0.0f, 1.0f, ui::text_layout::LEFT, ui::text_layout::NEVER,
 										mame_ui_manager::NONE, rgb_t::white(), rgb_t::black(), &width, nullptr, m_info_size);
@@ -503,25 +503,25 @@ void menu_colors_ui::handle()
 
 void menu_colors_ui::populate(float &customtop, float &custombottom)
 {
-	item_append(_("Normal text"), "", 0, (void *)(uintptr_t)MUI_TEXT_COLOR);
-	item_append(_("Selected color"), "", 0, (void *)(uintptr_t)MUI_SELECTED_COLOR);
-	item_append(_("Normal text background"), "", 0, (void *)(uintptr_t)MUI_TEXT_BG_COLOR);
-	item_append(_("Selected background color"), "", 0, (void *)(uintptr_t)MUI_SELECTED_BG_COLOR);
-	item_append(_("Subitem color"), "", 0, (void *)(uintptr_t)MUI_SUBITEM_COLOR);
-	item_append(_("Clone"), "", 0, (void *)(uintptr_t)MUI_CLONE_COLOR);
-	item_append(_("Border"), "", 0, (void *)(uintptr_t)MUI_BORDER_COLOR);
-	item_append(_("Background"), "", 0, (void *)(uintptr_t)MUI_BACKGROUND_COLOR);
-	item_append(_("Dipswitch"), "", 0, (void *)(uintptr_t)MUI_DIPSW_COLOR);
-	item_append(_("Unavailable color"), "", 0, (void *)(uintptr_t)MUI_UNAVAILABLE_COLOR);
-	item_append(_("Slider color"), "", 0, (void *)(uintptr_t)MUI_SLIDER_COLOR);
-	item_append(_("Gfx viewer background"), "", 0, (void *)(uintptr_t)MUI_GFXVIEWER_BG_COLOR);
-	item_append(_("Mouse over color"), "", 0, (void *)(uintptr_t)MUI_MOUSEOVER_COLOR);
-	item_append(_("Mouse over background color"), "", 0, (void *)(uintptr_t)MUI_MOUSEOVER_BG_COLOR);
-	item_append(_("Mouse down color"), "", 0, (void *)(uintptr_t)MUI_MOUSEDOWN_COLOR);
-	item_append(_("Mouse down background color"), "", 0, (void *)(uintptr_t)MUI_MOUSEDOWN_BG_COLOR);
+	item_append(_LANGUAGE_CORE_TRANS_("Normal text"), "", 0, (void *)(uintptr_t)MUI_TEXT_COLOR);
+	item_append(_LANGUAGE_CORE_TRANS_("Selected color"), "", 0, (void *)(uintptr_t)MUI_SELECTED_COLOR);
+	item_append(_LANGUAGE_CORE_TRANS_("Normal text background"), "", 0, (void *)(uintptr_t)MUI_TEXT_BG_COLOR);
+	item_append(_LANGUAGE_CORE_TRANS_("Selected background color"), "", 0, (void *)(uintptr_t)MUI_SELECTED_BG_COLOR);
+	item_append(_LANGUAGE_CORE_TRANS_("Subitem color"), "", 0, (void *)(uintptr_t)MUI_SUBITEM_COLOR);
+	item_append(_LANGUAGE_CORE_TRANS_("Clone"), "", 0, (void *)(uintptr_t)MUI_CLONE_COLOR);
+	item_append(_LANGUAGE_CORE_TRANS_("Border"), "", 0, (void *)(uintptr_t)MUI_BORDER_COLOR);
+	item_append(_LANGUAGE_CORE_TRANS_("Background"), "", 0, (void *)(uintptr_t)MUI_BACKGROUND_COLOR);
+	item_append(_LANGUAGE_CORE_TRANS_("Dipswitch"), "", 0, (void *)(uintptr_t)MUI_DIPSW_COLOR);
+	item_append(_LANGUAGE_CORE_TRANS_("Unavailable color"), "", 0, (void *)(uintptr_t)MUI_UNAVAILABLE_COLOR);
+	item_append(_LANGUAGE_CORE_TRANS_("Slider color"), "", 0, (void *)(uintptr_t)MUI_SLIDER_COLOR);
+	item_append(_LANGUAGE_CORE_TRANS_("Gfx viewer background"), "", 0, (void *)(uintptr_t)MUI_GFXVIEWER_BG_COLOR);
+	item_append(_LANGUAGE_CORE_TRANS_("Mouse over color"), "", 0, (void *)(uintptr_t)MUI_MOUSEOVER_COLOR);
+	item_append(_LANGUAGE_CORE_TRANS_("Mouse over background color"), "", 0, (void *)(uintptr_t)MUI_MOUSEOVER_BG_COLOR);
+	item_append(_LANGUAGE_CORE_TRANS_("Mouse down color"), "", 0, (void *)(uintptr_t)MUI_MOUSEDOWN_COLOR);
+	item_append(_LANGUAGE_CORE_TRANS_("Mouse down background color"), "", 0, (void *)(uintptr_t)MUI_MOUSEDOWN_BG_COLOR);
 
 	item_append(menu_item_type::SEPARATOR);
-	item_append(_("Restore originals colors"), "", 0, (void *)(uintptr_t)MUI_RESTORE);
+	item_append(_LANGUAGE_CORE_TRANS_("Restore originals colors"), "", 0, (void *)(uintptr_t)MUI_RESTORE);
 
 	custombottom = customtop = ui().get_line_height() + 3.0f * UI_BOX_TB_BORDER;
 }
@@ -536,7 +536,7 @@ void menu_colors_ui::custom_render(void *selectedref, float top, float bottom, f
 	float line_height = ui().get_line_height();
 
 	// top text
-	std::string topbuf(_("UI Colors Settings"));
+	std::string topbuf(_LANGUAGE_CORE_TRANS_("UI Colors Settings"));
 
 	ui().draw_text_full(container(), topbuf.c_str(), 0.0f, 0.0f, 1.0f, ui::text_layout::CENTER, ui::text_layout::NEVER,
 									mame_ui_manager::NONE, rgb_t::white(), rgb_t::black(), &width, nullptr);
@@ -564,7 +564,7 @@ void menu_colors_ui::custom_render(void *selectedref, float top, float bottom, f
 	// bottom text
 	// get the text for 'UI Select'
 	std::string ui_select_text = machine().input().seq_name(machine().ioport().type_seq(IPT_UI_SELECT, 0, SEQ_TYPE_STANDARD));
-	topbuf = string_format(_("Double click or press %1$s to change the color value"), ui_select_text);
+	topbuf = string_format(_LANGUAGE_CORE_TRANS_("Double click or press %1$s to change the color value"), ui_select_text);
 
 	ui().draw_text_full(container(), topbuf.c_str(), 0.0f, 0.0f, 1.0f, ui::text_layout::CENTER, ui::text_layout::NEVER,
 									mame_ui_manager::NONE, rgb_t::white(), rgb_t::black(), &width, nullptr);
@@ -590,7 +590,7 @@ void menu_colors_ui::custom_render(void *selectedref, float top, float bottom, f
 									mame_ui_manager::NORMAL, UI_TEXT_COLOR, UI_TEXT_BG_COLOR, nullptr, nullptr);
 
 	// compute maxwidth
-	topbuf = _("Menu Preview");
+	topbuf = _LANGUAGE_CORE_TRANS_("Menu Preview");
 
 	ui().draw_text_full(container(), topbuf.c_str(), 0.0f, 0.0f, 1.0f, ui::text_layout::CENTER, ui::text_layout::NEVER,
 									mame_ui_manager::NONE, rgb_t::white(), rgb_t::black(), &width, nullptr);
@@ -598,11 +598,11 @@ void menu_colors_ui::custom_render(void *selectedref, float top, float bottom, f
 
 	std::string sampletxt[5];
 
-	sampletxt[0] = _("Normal");
-	sampletxt[1] = _("Subitem");
-	sampletxt[2] = _("Selected");
-	sampletxt[3] = _("Mouse Over");
-	sampletxt[4] = _("Clone");
+	sampletxt[0] = _LANGUAGE_CORE_TRANS_("Normal");
+	sampletxt[1] = _LANGUAGE_CORE_TRANS_("Subitem");
+	sampletxt[2] = _LANGUAGE_CORE_TRANS_("Selected");
+	sampletxt[3] = _LANGUAGE_CORE_TRANS_("Mouse Over");
+	sampletxt[4] = _LANGUAGE_CORE_TRANS_("Clone");
 
 	for (auto & elem: sampletxt)
 	{
@@ -829,42 +829,42 @@ void menu_rgb_ui::populate(float &customtop, float &custombottom)
 	// set filter arrow
 	uint32_t arrow_flags = FLAG_LEFT_ARROW | FLAG_RIGHT_ARROW;
 	std::string s_text = std::string(m_search).append("_");
-	item_append(_("ARGB Settings"), "", FLAG_DISABLE | FLAG_UI_HEADING, nullptr);
+	item_append(_LANGUAGE_CORE_TRANS_("ARGB Settings"), "", FLAG_DISABLE | FLAG_UI_HEADING, nullptr);
 
 	if (m_lock_ref != RGB_ALPHA)
 	{
 		arrow_flags = get_arrow_flags<uint8_t>(0, 255, m_color->a());
-		item_append(_("Alpha"), string_format("%3u", m_color->a()), arrow_flags, (void *)(uintptr_t)RGB_ALPHA);
+		item_append(_LANGUAGE_CORE_TRANS_("Alpha"), string_format("%3u", m_color->a()), arrow_flags, (void *)(uintptr_t)RGB_ALPHA);
 	}
 	else
-		item_append(_("Alpha"), s_text, 0, (void *)(uintptr_t)RGB_ALPHA);
+		item_append(_LANGUAGE_CORE_TRANS_("Alpha"), s_text, 0, (void *)(uintptr_t)RGB_ALPHA);
 
 	if (m_lock_ref != RGB_RED)
 	{
 		arrow_flags = get_arrow_flags<uint8_t>(0, 255, m_color->r());
-		item_append(_("Red"), string_format("%3u", m_color->r()), arrow_flags, (void *)(uintptr_t)RGB_RED);
+		item_append(_LANGUAGE_CORE_TRANS_("Red"), string_format("%3u", m_color->r()), arrow_flags, (void *)(uintptr_t)RGB_RED);
 	}
 	else
-		item_append(_("Red"), s_text, 0, (void *)(uintptr_t)RGB_RED);
+		item_append(_LANGUAGE_CORE_TRANS_("Red"), s_text, 0, (void *)(uintptr_t)RGB_RED);
 
 	if (m_lock_ref != RGB_GREEN)
 	{
 		arrow_flags = get_arrow_flags<uint8_t>(0, 255, m_color->g());
-		item_append(_("Green"), string_format("%3u", m_color->g()), arrow_flags, (void *)(uintptr_t)RGB_GREEN);
+		item_append(_LANGUAGE_CORE_TRANS_("Green"), string_format("%3u", m_color->g()), arrow_flags, (void *)(uintptr_t)RGB_GREEN);
 	}
 	else
-		item_append(_("Green"), s_text, 0, (void *)(uintptr_t)RGB_GREEN);
+		item_append(_LANGUAGE_CORE_TRANS_("Green"), s_text, 0, (void *)(uintptr_t)RGB_GREEN);
 
 	if (m_lock_ref != RGB_BLUE)
 	{
 		arrow_flags = get_arrow_flags<uint8_t>(0, 255, m_color->b());
-		item_append(_("Blue"), string_format("%3u", m_color->b()), arrow_flags, (void *)(uintptr_t)RGB_BLUE);
+		item_append(_LANGUAGE_CORE_TRANS_("Blue"), string_format("%3u", m_color->b()), arrow_flags, (void *)(uintptr_t)RGB_BLUE);
 	}
 	else
-		item_append(_("Blue"), s_text, 0, (void *)(uintptr_t)RGB_BLUE);
+		item_append(_LANGUAGE_CORE_TRANS_("Blue"), s_text, 0, (void *)(uintptr_t)RGB_BLUE);
 
 	item_append(menu_item_type::SEPARATOR);
-	item_append(_("Choose from palette"), "", 0, (void *)(uintptr_t)PALETTE_CHOOSE);
+	item_append(_LANGUAGE_CORE_TRANS_("Choose from palette"), "", 0, (void *)(uintptr_t)PALETTE_CHOOSE);
 	item_append(menu_item_type::SEPARATOR);
 
 	custombottom = customtop = ui().get_line_height() + 3.0f * UI_BOX_TB_BORDER;
@@ -902,7 +902,7 @@ void menu_rgb_ui::custom_render(void *selectedref, float top, float bottom, floa
 	ui().draw_text_full(container(), m_title.c_str(), x1, y1, x2 - x1, ui::text_layout::CENTER, ui::text_layout::NEVER,
 						mame_ui_manager::NORMAL, UI_TEXT_COLOR, UI_TEXT_BG_COLOR);
 
-	std::string sampletxt(_("Color preview ="));
+	std::string sampletxt(_LANGUAGE_CORE_TRANS_("Color preview ="));
 	ui().draw_text_full(container(), sampletxt.c_str(), 0.0f, 0.0f, 1.0f, ui::text_layout::CENTER, ui::text_layout::NEVER,
 						mame_ui_manager::NONE, rgb_t::white(), rgb_t::black(), &width);
 	width += 2 * UI_BOX_LR_BORDER;
@@ -1038,7 +1038,7 @@ void menu_palette_sel::handle()
 void menu_palette_sel::populate(float &customtop, float &custombottom)
 {
 	for (unsigned x = 0; x < ARRAY_LENGTH(s_palette); ++x)
-		item_append(_(s_palette[x].first), s_palette[x].second, 0, (void *)(uintptr_t)(x + 1));
+		item_append(_LANGUAGE_CORE_TRANS_(s_palette[x].first), s_palette[x].second, 0, (void *)(uintptr_t)(x + 1));
 
 	item_append(menu_item_type::SEPARATOR);
 }

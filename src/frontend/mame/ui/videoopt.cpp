@@ -53,7 +53,7 @@ void menu_video_targets::populate(float &customtop, float &custombottom)
 			break;
 
 		/* add a menu item */
-		sprintf(buffer, _("Screen #%d"), targetnum);
+		sprintf(buffer, _LANGUAGE_CORE_TRANS_("Screen #%d"), targetnum);
 		item_append(buffer, "", 0, target);
 	}
 }
@@ -201,31 +201,31 @@ void menu_video_options::populate(float &customtop, float &custombottom)
 		case ROT180:    subtext = "180" UTF8_DEGREES;       break;
 		case ROT270:    subtext = "CCW 90" UTF8_DEGREES;    break;
 	}
-	item_append(_("Rotate"), subtext, FLAG_LEFT_ARROW | FLAG_RIGHT_ARROW, (void *)VIDEO_ITEM_ROTATE);
+	item_append(_LANGUAGE_CORE_TRANS_("Rotate"), subtext, FLAG_LEFT_ARROW | FLAG_RIGHT_ARROW, (void *)VIDEO_ITEM_ROTATE);
 
 	/* backdrop item */
 	enabled = target->backdrops_enabled();
-	item_append(_("Backdrops"), enabled ? _("Enabled") : _("Disabled"), enabled ? FLAG_LEFT_ARROW : FLAG_RIGHT_ARROW, (void *)VIDEO_ITEM_BACKDROPS);
+	item_append(_LANGUAGE_CORE_TRANS_("Backdrops"), enabled ? _LANGUAGE_CORE_TRANS_("Enabled") : _LANGUAGE_CORE_TRANS_("Disabled"), enabled ? FLAG_LEFT_ARROW : FLAG_RIGHT_ARROW, (void *)VIDEO_ITEM_BACKDROPS);
 
 	/* overlay item */
 	enabled = target->overlays_enabled();
-	item_append(_("Overlays"), enabled ? _("Enabled") : _("Disabled"), enabled ? FLAG_LEFT_ARROW : FLAG_RIGHT_ARROW, (void *)VIDEO_ITEM_OVERLAYS);
+	item_append(_LANGUAGE_CORE_TRANS_("Overlays"), enabled ? _LANGUAGE_CORE_TRANS_("Enabled") : _LANGUAGE_CORE_TRANS_("Disabled"), enabled ? FLAG_LEFT_ARROW : FLAG_RIGHT_ARROW, (void *)VIDEO_ITEM_OVERLAYS);
 
 	/* bezel item */
 	enabled = target->bezels_enabled();
-	item_append(_("Bezels"), enabled ? _("Enabled") : _("Disabled"), enabled ? FLAG_LEFT_ARROW : FLAG_RIGHT_ARROW, (void *)VIDEO_ITEM_BEZELS);
+	item_append(_LANGUAGE_CORE_TRANS_("Bezels"), enabled ? _LANGUAGE_CORE_TRANS_("Enabled") : _LANGUAGE_CORE_TRANS_("Disabled"), enabled ? FLAG_LEFT_ARROW : FLAG_RIGHT_ARROW, (void *)VIDEO_ITEM_BEZELS);
 
 	/* cpanel item */
 	enabled = target->cpanels_enabled();
-	item_append(_("CPanels"), enabled ? _("Enabled") : _("Disabled"), enabled ? FLAG_LEFT_ARROW : FLAG_RIGHT_ARROW, (void *)VIDEO_ITEM_CPANELS);
+	item_append(_LANGUAGE_CORE_TRANS_("CPanels"), enabled ? _LANGUAGE_CORE_TRANS_("Enabled") : _LANGUAGE_CORE_TRANS_("Disabled"), enabled ? FLAG_LEFT_ARROW : FLAG_RIGHT_ARROW, (void *)VIDEO_ITEM_CPANELS);
 
 	/* marquee item */
 	enabled = target->marquees_enabled();
-	item_append(_("Marquees"), enabled ? _("Enabled") : _("Disabled"), enabled ? FLAG_LEFT_ARROW : FLAG_RIGHT_ARROW, (void *)VIDEO_ITEM_MARQUEES);
+	item_append(_LANGUAGE_CORE_TRANS_("Marquees"), enabled ? _LANGUAGE_CORE_TRANS_("Enabled") : _LANGUAGE_CORE_TRANS_("Disabled"), enabled ? FLAG_LEFT_ARROW : FLAG_RIGHT_ARROW, (void *)VIDEO_ITEM_MARQUEES);
 
 	/* cropping */
 	enabled = target->zoom_to_screen();
-	item_append(_("View"), enabled ? _("Cropped") : _("Full"), enabled ? FLAG_RIGHT_ARROW : FLAG_LEFT_ARROW, (void *)VIDEO_ITEM_ZOOM);
+	item_append(_LANGUAGE_CORE_TRANS_("View"), enabled ? _LANGUAGE_CORE_TRANS_("Cropped") : _LANGUAGE_CORE_TRANS_("Full"), enabled ? FLAG_RIGHT_ARROW : FLAG_LEFT_ARROW, (void *)VIDEO_ITEM_ZOOM);
 }
 
 menu_video_options::~menu_video_options()

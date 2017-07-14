@@ -37,6 +37,7 @@
 #define OPTION_CROSSHAIRPATH        "crosshairpath"
 #define OPTION_PLUGINSPATH          "pluginspath"
 #define OPTION_LANGUAGEPATH         "languagepath"
+#define OPTION_LANGPATH             "langpath"
 #define OPTION_SWPATH               "swpath"
 
 // core directory options
@@ -190,6 +191,10 @@
 #define OPTION_HTTP                 "http"
 #define OPTION_HTTP_PORT            "http_port"
 #define OPTION_HTTP_ROOT            "http_root"
+
+// core language options
+#define OPTION_LANGUAGE             "language"
+#define OPTION_USE_LANG_LIST        "use_lang_list"
 
 //**************************************************************************
 //  TYPE DEFINITIONS

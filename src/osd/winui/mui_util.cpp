@@ -155,7 +155,7 @@ UINT GetDepth(HWND hWnd)
  */
 LONG GetCommonControlVersion()
 {
-	HMODULE hModule = GetModuleHandle(TEXT("comctl32"));
+	HMODULE hModule = GetModuleHandleW(TEXT("comctl32"));
 
 	if (hModule)
 	{
@@ -224,31 +224,31 @@ void DisplayTextFile(HWND hWnd, const char *cName)
 	switch((uintptr_t)hErr)
 	{
 	case 0:
-		msg = TEXT("The operating system is out of memory or resources.");
+		msg = _UIW(TEXT("The operating system is out of memory or resources."));
 		break;
 
 	case ERROR_FILE_NOT_FOUND:
-		msg = TEXT("The specified file was not found.");
+		msg = _UIW(TEXT("The specified file was not found."));
 		break;
 
 	case SE_ERR_NOASSOC :
-		msg = TEXT("There is no application associated with the given filename extension.");
+		msg = _UIW(TEXT("There is no application associated with the given filename extension."));
 		break;
 
 	case SE_ERR_OOM :
-		msg = TEXT("There was not enough memory to complete the operation.");
+		msg = _UIW(TEXT("There was not enough memory to complete the operation."));
 		break;
 
 	case SE_ERR_PNF :
-		msg = TEXT("The specified path was not found.");
+		msg = _UIW(TEXT("The specified path was not found."));
 		break;
 
 	case SE_ERR_SHARE :
-		msg = TEXT("A sharing violation occurred.");
+		msg = _UIW(TEXT("A sharing violation occurred."));
 		break;
 
 	default:
-		msg = TEXT("Unknown error.");
+		msg = _UIW(TEXT("Unknown error."));
 	}
 
 	MessageBox(NULL, msg, tName, MB_OK);
@@ -303,24 +303,33 @@ char * ConvertToWindowsNewlines(const char *source)
  * This assumes their is a pathname passed to the function
  * like src\drivers\blah.c
  */
-const char * GetDriverFilename(int nIndex)
+const WCHAR * GetDriverFilename(int nIndex)
 {
-	static char tmp[40];
-	std::string driver = core_filename_extract_base(driver_list::driver(nIndex).source_file);
-	strcpy(tmp, driver.c_str());
-	return tmp;
+	const WCHAR *ptmp;
+
+	const WCHAR *filename = driversw[nIndex]->source_file;
+
+	for (ptmp = filename; *ptmp; ptmp++)
+	{
+		if (*ptmp == '\\')
+			filename = ptmp + 1;
+		else if (*ptmp == '/')
+			filename = ptmp + 1;
+	}
+
+	return filename;
 }
 
-BOOL isDriverVector(const machine_config *config)
+int isDriverVector(const machine_config *config)
 {
 	const screen_device *screen  = config->first_screen();
 
 	if (screen)
 	{
 		if (SCREEN_TYPE_VECTOR == screen->screen_type())
-			return TRUE;
+			return 1;
 	}
-	return FALSE;
+	return 0;
 }
 
 int numberOfScreens(const machine_config *config)

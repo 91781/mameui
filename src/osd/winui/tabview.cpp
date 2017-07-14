@@ -256,7 +256,7 @@ void TabView_CalculateNextTab(HWND hwndTabView)
 	}
 }
 
-
+#include "translate.h"
 void TabView_Reset(HWND hwndTabView)
 {
 	struct TabViewInfo *pTabViewInfo;
@@ -281,13 +281,15 @@ void TabView_Reset(HWND hwndTabView)
 			t_text = ui_wstring_from_utf8(pTabViewInfo->pCallbacks->pfnGetTabLongName(i));
 			if( !t_text )
 				return;
-			tci.pszText = t_text;
+			tci.pszText = w_lang_message(UI_MSG_OSD1, t_text);
 			res = TabCtrl_InsertItem(hwndTabView, i, &tci);
 			free(t_text);
 		}
 	}
 	TabView_UpdateSelection(hwndTabView);
+#ifndef MY_VS2015_COMPILE
 	res++;
+#endif
 	b_res++;
 }
 

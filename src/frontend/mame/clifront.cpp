@@ -211,6 +211,9 @@ void cli_frontend::start_execution(mame_machine_manager *manager, std::vector<st
 	if (!option_errors.empty())
 		osd_printf_error("Error in command line:\n%s\n", strtrimspace(option_errors).c_str());
 
+	printf("clifron->start_execution-->setup_language\n");
+	setup_language(m_options);
+
 	// determine the base name of the EXE
 	std::string exename = core_filename_extract_base(args[0], true);
 
@@ -1479,4 +1482,39 @@ void cli_frontend::display_help(const char *exename)
 
 void cli_frontend::display_suggestions(const char *gamename)
 {
+}
+
+/***************************************************************************
+setup_language
+***************************************************************************/
+
+void setup_language(emu_options &options)
+{
+	printf("setup_language(emu_options &options)\n");
+	const char *langname = options.value(OPTION_LANGUAGE);
+	int use_lang_list = options.bool_value(OPTION_USE_LANG_LIST);
+
+	//int langcode = core_stricmp(langname, "auto") ?
+	//	lang_find_langname(langname) :
+	//	lang_find_codepage(osd_get_default_codepage());
+	int langcode = core_stricmp(langname, "auto") ?
+		lang_find_langname(langname) :
+		936;
+
+	if (langcode < 0)
+	{
+		langcode = UI_LANG_EN_US;
+		lang_set_langcode(options, langcode);
+//		set_osdcore_acp(ui_lang_info[langcode].codepage); 设置核心的语言 ? ?
+
+		if (core_stricmp(langname, "auto"))
+			osd_printf_warning("Invalid language value %s; reverting to %s\n",
+				langname, ui_lang_info[langcode].description);
+	}
+
+	lang_set_langcode(options, langcode);
+//	set_osdcore_acp(ui_lang_info[langcode].codepage);设置核心的语言??
+
+	lang_message_enable(UI_MSG_LIST, use_lang_list);
+	lang_message_enable(UI_MSG_MANUFACTURE, use_lang_list);
 }

@@ -262,7 +262,7 @@ image_init_result cassette_image_device::internal_load(bool is_create)
 {
 	cassette_image::error err;
 	device_image_interface *image = nullptr;
-	interface(image);
+	interface_my(image);
 
 	if (is_create || (length()==0)) // MESSUI - empty existing images are fine to write over.
 	{

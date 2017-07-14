@@ -61,6 +61,7 @@ BEGIN
         MENUITEM SEPARATOR
         MENUITEM "Op&en Other Software...",     ID_MESS_OPEN_SOFTWARE
         MENUITEM SEPARATOR
+		//MENUITEM "Properties &for BIOS",        ID_BIOS_PROPERTIES
         MENUITEM "Pr&operties",                 ID_GAME_PROPERTIES
         MENUITEM SEPARATOR
         MENUITEM "Audi&t existing sets",        ID_FILE_AUDIT_X
@@ -148,6 +149,7 @@ BEGIN
         MENUITEM SEPARATOR
         MENUITEM "A&udit",                      ID_GAME_AUDIT
         MENUITEM SEPARATOR
+		//MENUITEM "Properties &for BIOS",        ID_BIOS_PROPERTIES
         MENUITEM "Pr&operties",                 ID_GAME_PROPERTIES
         MENUITEM "Properties for driver",       ID_FOLDER_SOURCEPROPERTIES
     END
@@ -1346,6 +1348,25 @@ END
 
 IDB_ABOUT               BITMAP                  "res\\about.bmp"
 IDB_TOOLBAR             BITMAP    "res\\toolbar.bmp"
+IDB_TOOLBAR_US          BITMAP                  "res\\toolbar.bmp"
+IDB_TOOLBAR_CN          BITMAP                  "res\\toolbarc.bmp"
+IDB_TOOLBAR_TW          BITMAP                  "res\\toolbarc.bmp"
+IDB_TOOLBAR_FR          BITMAP                  "res\\toolbar.bmp"
+IDB_TOOLBAR_DE          BITMAP                  "res\\toolbar.bmp"
+IDB_TOOLBAR_IT          BITMAP                  "res\\toolbar.bmp"
+IDB_TOOLBAR_JP          BITMAP                  "res\\toolbarj.bmp"
+IDB_TOOLBAR_KR          BITMAP                  "res\\toolbark.bmp"
+IDB_TOOLBAR_ES          BITMAP                  "res\\toolbar.bmp"
+IDB_TOOLBAR_CA          BITMAP                  "res\\toolbar.bmp"
+IDB_TOOLBAR_VA          BITMAP                  "res\\toolbar.bmp"
+IDB_TOOLBAR_PL          BITMAP                  "res\\toolbar.bmp"
+IDB_TOOLBAR_PT          BITMAP                  "res\\toolbar.bmp"
+IDB_TOOLBAR_BR          BITMAP                  "res\\toolbar.bmp"
+IDB_TOOLBAR_HU          BITMAP                  "res\\toolbar.bmp"
+#ifdef USE_SHOW_SPLASH_SCREEN
+IDB_SPLASH              BITMAP                  "res\\splash.bmp"
+#endif /* USE_SHOW_SPLASH_SCREEN */
+
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -1446,6 +1467,7 @@ BEGIN
     ID_FOLDER_PROPERTIES    "Display folder properties"
     ID_FOLDER_AUDIT         "Audit items in this folder"
     ID_FILE_LOADSTATE       "Run a system starting with the given savestate"
+	//ID_BIOS_PROPERTIES      "Display properties for all games in this bios"
 END
 
 STRINGTABLE DISCARDABLE

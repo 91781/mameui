@@ -29,6 +29,7 @@
 #include "emucore.h"
 #include "eminline.h"
 #include "profiler.h"
+#include "ui/lang.h"
 
 // http interface helpers
 #include "http.h"

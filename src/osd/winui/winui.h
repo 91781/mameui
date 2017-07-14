@@ -58,10 +58,21 @@ typedef struct
 	const char *icon_name;
 } ICONDATA;
 
+struct _driverw
+{
+	WCHAR *name;
+	WCHAR *description;
+	WCHAR *modify_the;
+	WCHAR *manufacturer;
+	WCHAR *year;
+	WCHAR *source_file;
+};
+extern struct _driverw **driversw;
+
 extern TCHAR last_directory[MAX_PATH];
 
 typedef BOOL (WINAPI *common_file_dialog_proc)(LPOPENFILENAME lpofn);
-BOOL CommonFileDialog(common_file_dialog_proc cfd,char *filename, int filetype);
+BOOL CommonFileDialog(common_file_dialog_proc cfd, WCHAR *filename, int filetype);
 
 HWND GetMainWindow(void);
 HWND GetTreeView(void);
@@ -84,7 +95,7 @@ void UpdateListView(void);
 char * ModifyThe(const char *str);
 
 // Convert Ampersand so it can display in a static control
-char * ConvertAmpersandString(const char *s);
+LPTSTR ConvertAmpersandString(LPCTSTR s);
 
 // globalized for painting tree control
 HBITMAP GetBackgroundBitmap(void);
@@ -102,13 +113,34 @@ int GetParentRomSetIndex(const game_driver *driver);
 int GetGameNameIndex(const char *name);
 
 // sets text in part of the status bar on the main window
-void SetStatusBarText(int part_index, const char *message);
-void SetStatusBarTextF(int part_index, const char *fmt, ...) ATTR_PRINTF(2,3);
+void SetStatusBarText(int part_index, const WCHAR *message);
+void SetStatusBarTextF(int part_index, const WCHAR *fmt, ...);
 
 int MameUIMain(HINSTANCE hInstance, LPWSTR lpCmdLine, int nCmdShow);
 
 BOOL MouseHasBeenMoved(void);
 
 const char * GetSearchText(void);
+
+//mamep
+#include "translate.h"
+#define UI_MSG_UI	5//UI_MSG_OSD1
+#define UI_MSG_EXTRA	6//UI_MSG_OSD2
+
+#ifndef MAME_DEBUG
+#undef _
+#endif
+#undef _LST
+#undef _READINGS
+#undef _MANUFACT
+#undef _WINDOWS
+#undef _UI
+
+#define _W(str)		w_lang_message(UI_MSG_MAME, str)
+#define _LSTW(str)	w_lang_message(UI_MSG_LIST, str)
+#define _READINGSW(str)	w_lang_message(UI_MSG_READINGS, str)
+#define _MANUFACTW(str)	w_lang_message(UI_MSG_MANUFACTURE, str)
+#define _WINDOWSW(str)	w_lang_message(UI_MSG_OSD0, str)
+#define _UIW(str)	w_lang_message(UI_MSG_UI, str)
 
 #endif

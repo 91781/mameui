@@ -13,6 +13,7 @@
 #pragma once
 
 #include "emuopts.h"
+#include "mame.h"
 
 // don't include osd_interface in header files
 class osd_interface;
@@ -66,5 +67,7 @@ private:
 	osd_interface &     m_osd;
 	int                 m_result;
 };
+
+void setup_language(emu_options &options);
 
 #endif  /* MAME_FRONTEND_CLIFRONT_H */
